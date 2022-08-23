@@ -1,0 +1,7 @@
+"0","```r
+altitude_locations %>%
+  filter(day_night == \"Day\") %>%
+  ggplot(aes(x = fix, y = alt_hat)) +
+  geom_boxplot() +
+  EnvStats::stat_n_text()
+```"

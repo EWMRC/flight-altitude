@@ -1,0 +1,138 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(sf)
+library(mapview)
+library(suncalc)
+library(googledrive)
+library(there)
+```
+
+```{r}
+altitude_locations <- st_read("altitude_locations_w_dem.shp") %>%
+  mutate(date = NULL)
+flight_locations <- altitude_locations %>%
+  filter(flight == 1)
+
+flight_locations$timestamp <- flight_locations$timestamp %>% ymd_hms() 
+
+#flight_locations$hour_utc <- flight_locations$timestamp %>%  hour()
+```
+
+#Distinguishing between day and night locations (between sunrise and sunset)
+```{r}
+flight_locations %>%
+  st_drop_geometry() %>%
+  dplyr::transmute(date = as.Date(timestamp), lat = lat, lon = long) %>%
+  getSunlightTimes(data = .) %>%
+  pull(sunrise) -> 
+  flight_locations$sunrise
+
+flight_locations %>%
+  st_drop_geometry() %>%
+  dplyr::transmute(date = as.Date(timestamp), lat = lat, lon = long) %>%
+  getSunlightTimes(data = .) %>%
+  pull(sunset) -> 
+  flight_locations$sunset
+
+flight_locations %>%
+  mutate(day_night = if_else(timestamp > sunrise & timestamp < sunset, "Day", "Night")) ->
+  flight_locations
+```
+
+Showing elevation differences between day and night flight locations
+```{r fig.height=10, fig.width=7}
+ggplot(flight_locations, aes(x = day_night, y = altitude)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Time of Day") +
+  ylab("Altitude (m)") +
+  EnvStats::stat_n_text()
+```
+
+Breaking night flight locations out by individual, age, and sex
+```{r}
+night_flight_locations <- flight_locations %>%
+  filter(day_night == "Night") %>%
+  rename(`Movebank ID` = ind_ident)
+
+as_id("https://drive.google.com/file/d/19JA5OztH3hS4MPfVnH5zswDxSSLcWxL3/view?usp=sharing") %>%
+  drive_download(path = here_file("Data", "Google_drive_downloads","capture_sheet.xlsx"), overwrite = TRUE)
+
+capture_sheet <- readxl::read_excel(here_file("Data", "Google_drive_downloads","capture_sheet.xlsx"), col_types = c("text", "text", "date", "numeric", "numeric", "numeric", "numeric", "text", "text", "text", "text", "text", "text", "numeric", "numeric", "numeric", "numeric", "numeric", "text", "text", "text", "text")) %>%
+  mutate(`Argos ID` = as.character(`Argos ID`))
+
+capture_sheet %>%
+  dplyr::select(`Movebank ID`, Sex, Age) %>%
+  right_join(night_flight_locations) ->
+  night_flight_locations
+
+
+night_flight_locations$`Movebank ID` %>% unique() %>% length()
+
+#locations broken out by age and sex
+night_flight_locations %>%
+  group_by(Sex, Age) %>%
+  tally() %>%
+  View()
+
+#individuals broken out by age and sex
+night_flight_locations %>%
+  dplyr::select(`Movebank ID`, Sex, Age) %>%
+  distinct() %>%
+  group_by(Sex, Age) %>%
+  tally() %>%
+  View()
+
+```
+
+Attaching season so that I can further break out by season
+```{r}
+night_flight_locations %>%
+  mutate(month_day = as.numeric(paste0(month(timestamp), "." , day(timestamp)))) %>%
+  mutate(season = ifelse(month_day > 9 | month_day < 2, "Fall", "Breeding")) %>%
+  mutate(season = ifelse(month_day > 2 & month_day < 6, "Spring", season)) ->
+  night_flight_locations
+
+#locations broken out by age and sex
+night_flight_locations %>%
+  filter(season == "Spring") %>%
+  group_by(Sex, Age) %>%
+  tally() %>%
+  View()
+
+#individuals broken out by age and sex
+night_flight_locations %>%
+  filter(season == "Spring") %>%
+  dplyr::select(`Movebank ID`, Sex, Age, season) %>%
+  distinct() %>%
+  group_by(Sex, Age) %>%
+  tally() %>%
+  View()
+```
+
+Running the histogram (by season this time)
+```{r}
+night_flight_locations %>%
+  filter(season != "Breeding") %>% 
+  ggplot(aes(x = season, y = altitude)) +
+  geom_boxplot() +
+  theme_bw() +
+  xlab("Season") +
+  ylab("Altitude (m)") +
+  EnvStats::stat_n_text()
+
+ggsave("altitude_by_season.png", width = 6, height = 5)
+```
+
+
+saving night flight locations as a shapefile
+```{r}
+st_write(night_flight_locations, "night_flight_locations_8_4_21.shp")
+```
+

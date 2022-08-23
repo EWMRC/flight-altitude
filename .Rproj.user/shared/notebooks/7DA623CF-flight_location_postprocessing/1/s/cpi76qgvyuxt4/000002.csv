@@ -1,0 +1,13 @@
+"0","```r
+st_write(night_flight_locations, \"night_flight_locations_9_6_21.shp\")
+
+```"
+"1","Field names abbreviated for ESRI Shapefile driver
+"
+"1","Writing layer `night_flight_locations_9_6_21' to data source 
+  `night_flight_locations_9_6_21.shp' using driver `ESRI Shapefile'
+"
+"1","GDAL Message 6: Normalized/laundered field name: 'sex' to 'sex_1'GDAL Message 6: Normalized/laundered field name: 'age' to 'age_1'GDAL Message 6: Field time create as date field, though DateTime requested.GDAL Message 6: Field sunrise create as date field, though DateTime requested.GDAL Message 6: Field sunset create as date field, though DateTime requested.
+"
+"1","Writing 102 features with 19 fields without geometries.
+"

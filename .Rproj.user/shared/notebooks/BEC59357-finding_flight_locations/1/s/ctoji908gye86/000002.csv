@@ -1,0 +1,9 @@
+"0","```r
+amwo_data <- getMovebankData(study = \"American Woodcock Migration Ecology in Eastern North America\", 
+                             login = login, 
+                             removeDuplicatedTimestamps=TRUE)
+
+```"
+"1","removeDupilcatedTimestamps was set to TRUE, this will retain the first of multiple records with the same animal ID and timestamp, and remove any subsequent duplicates
+2 location(s) is/are removed by removeDuplicatedTimestamps
+"

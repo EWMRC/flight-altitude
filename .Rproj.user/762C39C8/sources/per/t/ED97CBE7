@@ -1,0 +1,32 @@
+{
+    "id": "ED97CBE7",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1628085485079.0,
+    "source_on_save": false,
+    "relative_order": 5,
+    "properties": {
+        "expression": "flight_locations",
+        "caption": "flight_locations",
+        "totalObservations": "383",
+        "displayedObservations": "383",
+        "variables": "18",
+        "cacheKey": "9D6ABB3F",
+        "object": "flight_locations",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=flight_locations&cache_key=9D6ABB3F&max_cols=50",
+        "preview": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 4121975853659732514,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1628085485079,
+    "read_only": false,
+    "read_only_alternatives": []
+}

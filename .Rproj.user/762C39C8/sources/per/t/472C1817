@@ -1,0 +1,32 @@
+{
+    "id": "472C1817",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1628106575843.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "expression": "altitude_locations",
+        "caption": "altitude_locations",
+        "totalObservations": "6120",
+        "displayedObservations": "6120",
+        "variables": "15",
+        "cacheKey": "3C37CDD7",
+        "object": "altitude_locations",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=altitude_locations&cache_key=3C37CDD7&max_cols=50",
+        "preview": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 7165064689148523892,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1628106575843,
+    "read_only": false,
+    "read_only_alternatives": []
+}

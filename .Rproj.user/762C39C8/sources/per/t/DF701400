@@ -1,0 +1,32 @@
+{
+    "id": "DF701400",
+    "path": null,
+    "project_path": null,
+    "type": "r_dataframe",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1628088005723.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "expression": "t",
+        "caption": "t",
+        "totalObservations": "383",
+        "displayedObservations": "383",
+        "variables": "17",
+        "cacheKey": "EAF70B19",
+        "object": "t",
+        "environment": "",
+        "contentUrl": "grid_resource/gridviewer.html?env=&obj=t&cache_key=EAF70B19&max_cols=50",
+        "preview": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 3976728160286814752,
+    "encoding": "",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1628088005723,
+    "read_only": false,
+    "read_only_alternatives": []
+}

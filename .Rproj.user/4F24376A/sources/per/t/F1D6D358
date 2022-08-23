@@ -1,0 +1,25 @@
+{
+    "id": "F1D6D358",
+    "path": "C:/Users/liama/OneDrive - University of Maine System/MaineAnalysis/Projects/flight_locations/flight_location_postprocessing.Rmd",
+    "project_path": "flight_location_postprocessing.Rmd",
+    "type": "r_markdown",
+    "hash": "1369764577",
+    "contents": "",
+    "dirty": false,
+    "created": 1660918482485.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "chunk_output_type": "inline",
+        "source_window_id": "",
+        "Source": "Source"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1648739659,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1648739659,
+    "read_only": false,
+    "read_only_alternatives": []
+}

@@ -1,0 +1,7 @@
+Project a csv as a 3D shapefile in Arc (altitude_locs_3D.shp)
+Convert the projection to Horizontal: NAD 1983 (2011) Vertical: NAVD88 (height) (ftUS) (altitude_locs_3D_geoid.shp)
+Use Add XY Coordinates to include a field with transformed Z coordinates
+Calculate a new column (elev_geoid) that converts ft to m by multiplying the Z field by 0.3048
+Use extract values to points to extract the terrain height from the raster mosaic in elev.gdb (altitude_locs_3D_geoid_terrain_height.shp)
+Calculate a new field (alt_hat) that is elev_geoid - RASTERVALU
+Read into R and analyse
