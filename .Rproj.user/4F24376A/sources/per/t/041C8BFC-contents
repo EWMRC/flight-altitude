@@ -3,6 +3,7 @@
 # there might be ways to quantify argos error that would be more informative
 # than adding an error term to a model but I'm not sure
 
+# edit to test github desktop commits
 
 library(boot)
 library(jagsUI)

@@ -3,7 +3,7 @@
     "path": "C:/Users/liama/Downloads/fake altitude model.R",
     "project_path": null,
     "type": "r_source",
-    "hash": "3821839157",
+    "hash": "3736399550",
     "contents": "",
     "dirty": false,
     "created": 1660921931742.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "87,44",
-        "scrollLine": "64"
+        "cursorPosition": "5,37",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1660921928,
+    "lastKnownWriteTime": 1661304076,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1660921928,
+    "last_content_update": 1661304076310,
     "read_only": false,
     "read_only_alternatives": []
 }
