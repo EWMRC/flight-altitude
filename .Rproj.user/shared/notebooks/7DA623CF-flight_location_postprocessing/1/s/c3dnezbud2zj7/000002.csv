@@ -1,5 +1,0 @@
-"0","altitude_locations %>%"
-"0","  #filter(day_night == ""Day"") %>%"
-"0","  ggplot(aes(x = day_night, y = alt_hat)) +"
-"0","  geom_boxplot() +"
-"0","  EnvStats::stat_n_text()"

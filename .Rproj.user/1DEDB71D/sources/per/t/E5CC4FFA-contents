@@ -12,7 +12,7 @@ library(there)
 ```
 
 ```{r}
-login <- movebankLogin(username = "acfish", password="EPvzvNSUJ8")
+login <- movebankLogin(username = "LA_Berigan", password = "33szcNUtv4iyPGU")
 amwo_data <- getMovebankData(study = "American Woodcock Migration Ecology in Eastern North America", 
                              login = login, 
                              removeDuplicatedTimestamps=TRUE)
@@ -35,5 +35,7 @@ amwo_data %>%
 amwo_data %>%
   filter(!is.na(height_above_wgs84)) %>%
   write.csv("altitude_locs_3D.csv")
+
+# Vertical datum is WKID::115700
 ```
 

@@ -15,16 +15,18 @@ library(colorspace)
 ```
 
 ```{r}
-altitude_locations <- st_read("altitude_locs_3D_geoid_terrain_height.shp") %>%
+altitude_locations <- st_read("altitude_locs_3D_geoid_terrain_height_8_25_22.shp") %>%
   st_drop_geometry() %>%
   mutate(time = NULL,
          POINT_X = NULL,
          POINT_Y = NULL,
          POINT_Z = NULL,
          POINT_M = NULL,
-         Field1 = NULL) %>%
+         Field1 = NULL,
+         elev_geoid = as.numeric(elev_geoid)) %>%
   rename(terrain_height = RASTERVALU,
-         height_above_ellipsoid = height_abo)
+         height_above_ellipsoid = height_abo) %>%
+  mutate(alt_hat = elev_geoid - terrain_height)
 
 prior_alt_locations <- read.csv("altitude_locs_3D.csv") %>%
   dplyr::select(ID, time, lon, lat)
@@ -91,6 +93,7 @@ altitude_locations_3D %>%
   quantile(c(.99))
 
 #Calling anything at night that is higher than 115.3186 m a flight location
+# 8/25/22 new boundary is 107.5387 
 ```
 
 Breaking night flight locations out by individual, age, and sex
@@ -98,7 +101,7 @@ Breaking night flight locations out by individual, age, and sex
 night_flight_locations <- altitude_locations_3D %>%
   filter(day_night == "Night") %>%
   rename(`Movebank ID` = ID) %>%
-  filter(alt_hat > 115.3186)
+  filter(alt_hat > 107.5387)
 
 as_id("https://drive.google.com/file/d/19JA5OztH3hS4MPfVnH5zswDxSSLcWxL3/view?usp=sharing") %>%
   drive_download(path = here_file("Data", "Google_drive_downloads","capture_sheet.xlsx"), overwrite = TRUE)
@@ -112,7 +115,7 @@ capture_sheet %>%
   night_flight_locations
 
 
-night_flight_locations$`Movebank ID` %>% unique() %>% length() #50 individuals
+night_flight_locations$`Movebank ID` %>% unique() %>% length() #50 individuals #8/25/2022 72 individuals
 
 #locations broken out by age and sex
 night_flight_locations %>%
@@ -166,7 +169,7 @@ night_flight_locations %>%
   ylab("Altitude (m)") +
   EnvStats::stat_n_text()
 
-ggsave("altitude_by_season_revised.png", width = 6, height = 5)
+ggsave("altitude_by_season_revised_8_25_22.png", width = 6, height = 5)
 ```
 
 

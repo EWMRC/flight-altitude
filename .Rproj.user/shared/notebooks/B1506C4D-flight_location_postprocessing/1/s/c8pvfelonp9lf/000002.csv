@@ -1,7 +1,0 @@
-"0","```r
-altitude_locations_3D %>%
-  ggplot(aes(x = day_night, y = alt_hat)) +
-  geom_boxplot() +
-  EnvStats::stat_n_text() + 
-  theme_bw()
-```"
