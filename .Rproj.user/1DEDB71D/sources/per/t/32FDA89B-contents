@@ -175,7 +175,7 @@ ggsave("altitude_by_season_revised_8_25_22.png", width = 6, height = 5)
 
 saving night flight locations as a shapefile
 ```{r}
-st_write(night_flight_locations, "night_flight_locations_9_6_21.shp")
+st_write(night_flight_locations, "night_flight_locations_9_1_22.shp")
 ```
 
 Barplot with the # of night flight locations in each season broken out by age and sex
@@ -192,6 +192,6 @@ night_flight_locations %>%
   ylab("Number of locations") +
   scale_fill_manual(values = diverge_hcl(2, c = 130))
 
-ggsave("num_locs_age_sex_season_revised.png", width = 7, height = 5)
+ggsave("num_locs_age_sex_season_2022.png", width = 7, height = 5)
 ```
 
