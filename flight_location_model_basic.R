@@ -1,0 +1,16 @@
+sink(here("flight_location_model_basic.jags"))
+cat("model{
+   # likelihood
+    for (i in 1:n_obs){
+    HAT[i] ~ dnorm(mu_bias, tau_error)
+    }
+    
+    # priors
+    mu_bias ~ dnorm(0,0.001)
+
+    tau_error <- pow(sigma_error, -2) #precision
+    sigma_error ~ dunif(0, 2500) #standard deviation
+}  
+    
+    ")
+sink()

@@ -5,3 +5,5 @@ Calculate a new column (elev_geoid) that converts ft to m by multiplying the Z f
 Use extract values to points to extract the terrain height from the raster mosaic in elev.gdb (altitude_locs_3D_geoid_terrain_height.shp)
 Calculate a new field (alt_hat) that is elev_geoid - RASTERVALU
 Read into R and analyse
+
+This is out-of-date; see the model in this folder's toolbox for the most up-to-date method.
