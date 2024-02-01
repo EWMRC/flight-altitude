@@ -9,6 +9,7 @@ library(sf)
 library(lubridate)
 library(move)
 library(here)
+library(amt)
 ```
 
 ```{r}
@@ -31,6 +32,51 @@ amwo_data %>%
             point_state = behavioural_classification) ->
   amwo_data
 ```
+
+Delineate skips here (need to do it before I start filtering)
+```{r}
+amwo_nested <- amwo_data %>% 
+  nest(.by = ID)
+
+amwo_nested$track <- map(amwo_nested$data, function(x){ #remember to transform to 5070
+  a <- mk_track(x, .x = lon, .y = lat, crs = 4326, all_cols = TRUE) %>% 
+    transform_coords(5070)
+  a$sl <- step_lengths(a)
+  return(a)
+})
+
+amwo_nested$track <- map(amwo_nested$track, function(x){
+  x$moving <- NA
+  for(i in 1:nrow(x)){ # if it's the first row, the bird isn't moving
+    if(i == 1){
+      x$moving[i] <- FALSE
+    } else if(i == nrow(x)){ # if it's the last row, the bird isn't moving
+      x$moving[i] <- FALSE
+    } else {
+      if(x$sl[i-1] >= 1000 & x$sl[i] >= 1000){ #if the current and prior steps are both at least 1 km, the bird is moving
+        x$moving[i] <- TRUE
+      } else {
+        x$moving[i] <- FALSE
+      }
+    }
+  }
+  return(x)
+})
+
+amwo_nested <- amwo_nested %>% 
+  dplyr::select(ID, track) %>% 
+  unnest(cols = c(track)) %>% 
+  dplyr::select(event_id, moving)
+
+amwo_data <- amwo_data %>% 
+  left_join(amwo_nested)
+
+any(is.na(amwo_data$moving))# should be false
+
+amwo_data$moving %>% 
+  table()
+```
+
 
 ```{r}
 amwo_data %>%

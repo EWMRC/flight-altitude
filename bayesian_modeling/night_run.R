@@ -74,7 +74,7 @@ nb = 2000 # burnin
 nt = 1 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
-               model.file=here("flight_location_model_basic.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
+               model.file=here("night_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=F)
 
 print(m_test)

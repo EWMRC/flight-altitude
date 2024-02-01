@@ -1754,30 +1754,98 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoZXJlKVxuXG5gYGAifQ== -->
-<pre class="r"><code>library(here)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHNmKVxubGlicmFyeShsdWJyaWRhdGUpXG5saWJyYXJ5KG1vdmUpXG5gYGAifQ== -->
+<pre class="r"><code>library(tidyverse)
+library(sf)
+library(lubridate)
+library(move)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiaGVyZSgpIHN0YXJ0cyBhdCBEOi9PbmVEcml2ZSAtIFVuaXZlcnNpdHkgb2YgTWFpbmUgU3lzdGVtL01haW5lQW5hbHlzaXMvUHJvamVjdHMvZmxpZ2h0LWFsdGl0dWRlXG4ifQ== -->
-<pre><code>here() starts at D:/OneDrive - University of Maine System/MaineAnalysis/Projects/flight-altitude</code></pre>
+<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZW9zcGhlcmVcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogc3BcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogcmFzdGVyXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhyYXN0ZXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIHNlbGVjdFxuXG5BIHN1Y2Nlc3NvciB0byBgbW92ZWAgaGFzIGJlZW4gZGV2ZWxvcGVkIGFuZCBpcyBhdmFpbGFibGUgb24gY3JhbiAoYG1vdmUyYCwgaHR0cHM6Ly9iYXJ0ay5naXRsYWIuaW8vbW92ZTIvKS4gVGhpcyBicmluZ3Mgc3BlZWQgaW1wcm92ZW1lbnRzIGFuZCBpcyBiYXNlZCBvbiBgc2ZgLiBGZWVkYmFjayAoaW5jbHVkaW5nIG1pc3NpbmcgZnVuY3Rpb25hbGl0eSkgb24gdGhpcyBuZXcgcGFja2FnZSBpcyB3ZWxjb21lLCBmb3IgbmV3IHByb2plY3RzIGl0IG1pZ2h0IGJlIHdvcnRoIGNvbnNpZGVyaW5nIHN0YXJ0aW5nIGRpcmVjdGx5IHdpdGggYG1vdmUyYC5cbiJ9 -->
+<pre><code>Loading required package: geosphere
+Loading required package: sp
+Loading required package: raster
+
+Attaching package: ‘raster’
+
+The following object is masked from ‘package:dplyr’:
+
+    select
+
+A successor to `move` has been developed and is available on cran (`move2`, https://bartk.gitlab.io/move2/). This brings speed improvements and is based on `sf`. Feedback (including missing functionality) on this new package is welcome, for new projects it might be worth considering starting directly with `move2`.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoZXJlKVxubGlicmFyeShhbXQpXG5gYGAifQ== -->
+<pre class="r"><code>library(here)
+library(amt)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYYW104oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6bW92ZeKAmTpcblxuICAgIHNwZWVkXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpyYXN0ZXLigJk6XG5cbiAgICBiYm94LCBzZWxlY3RcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpzcOKAmTpcblxuICAgIGJib3hcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpnZW9zcGhlcmXigJk6XG5cbiAgICBjZW50cm9pZFxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyXG4ifQ== -->
+<pre><code>
+Attaching package: ‘amt’
+
+The following object is masked from ‘package:move’:
+
+    speed
+
+The following objects are masked from ‘package:raster’:
+
+    bbox, select
+
+The following object is masked from ‘package:sp’:
+
+    bbox
+
+The following object is masked from ‘package:geosphere’:
+
+    centroid
+
+The following object is masked from ‘package:stats’:
+
+    filter</code></pre>
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhIDwtIGdldE1vdmViYW5rRGF0YShzdHVkeSA9IFwiQW1lcmljYW4gV29vZGNvY2sgTWlncmF0aW9uIEVjb2xvZ3kgaW4gRWFzdGVybiBOb3J0aCBBbWVyaWNhXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoXCJtb3ZlYmFua19jcmVkZW50aWFscy5yZHNcIiksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZW1vdmVEdXBsaWNhdGVkVGltZXN0YW1wcz1UUlVFKVxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhIDwtIGdldE1vdmViYW5rRGF0YShzdHVkeSA9IFwiQW1lcmljYW4gV29vZGNvY2sgTWlncmF0aW9uIEVjb2xvZ3kgaW4gRWFzdGVybiBOb3J0aCBBbWVyaWNhXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoXCJtb3ZlYmFua19jcmVkZW50aWFscy5yZHNcIiksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZW1vdmVEdXBsaWNhdGVkVGltZXN0YW1wcz1UUlVFKVxuYGBgIn0= -->
 <pre class="r"><code>amwo_data &lt;- getMovebankData(study = &quot;American Woodcock Migration Ecology in Eastern North America&quot;, 
                              login = readRDS(&quot;movebank_credentials.rds&quot;), 
-                             removeDuplicatedTimestamps=TRUE)
-</code></pre>
+                             removeDuplicatedTimestamps=TRUE)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogVGhlcmUgYXJlIHRpbWVzdGFtcHMgMiBpbiB0aGUgdW51c2VkIGRhdGEgdGhhdCBhcmUgYWxzbyBpbiB0aGUgcmVhbCBkYXRhLCB0aG9zZSByZWNvcmRzIGFyZSBvbWl0dGVkcmVtb3ZlRHVwaWxjYXRlZFRpbWVzdGFtcHMgd2FzIHNldCB0byBUUlVFLCB0aGlzIHdpbGwgcmV0YWluIHRoZSBmaXJzdCBvZiBtdWx0aXBsZSByZWNvcmRzIHdpdGggdGhlIHNhbWUgYW5pbWFsIElEIGFuZCB0aW1lc3RhbXAsIGFuZCByZW1vdmUgYW55IHN1YnNlcXVlbnQgZHVwbGljYXRlc1xuV2FybmluZzogMyBsb2NhdGlvbihzKSBpcy9hcmUgcmVtb3ZlZCBieSByZW1vdmVEdXBsaWNhdGVkVGltZXN0YW1wc1xuIn0= -->
 <pre><code>Warning: There are timestamps 2 in the unused data that are also in the real data, those records are omittedremoveDupilcatedTimestamps was set to TRUE, this will retain the first of multiple records with the same animal ID and timestamp, and remove any subsequent duplicates
 Warning: 3 location(s) is/are removed by removeDuplicatedTimestamps</code></pre>
 <!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhIDwtIGFzLmRhdGEuZnJhbWUoYW13b19kYXRhKVxuYGBgIn0= -->
-<pre class="r"><code>amwo_data &lt;- as.data.frame(amwo_data)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhIDwtIGFzLmRhdGEuZnJhbWUoYW13b19kYXRhKVxuXG5hbXdvX2RhdGEgJT4lXG4gIHRyYW5zbXV0ZShJRCA9IGxvY2FsX2lkZW50aWZpZXIsXG4gICAgICAgICAgICB0aW1lID0gYXMuY2hhcmFjdGVyKHRpbWVzdGFtcCksXG4gICAgICAgICAgICBsb24gPSBsb2NhdGlvbl9sb25nLCBcbiAgICAgICAgICAgIGxhdCA9IGxvY2F0aW9uX2xhdCxcbiAgICAgICAgICAgIGV2ZW50X2lkID0gZXZlbnRfaWQsXG4gICAgICAgICAgICB0YWd0eXBlID0gY29tbWVudHMsXG4gICAgICAgICAgICBzZXggPSBzZXgsXG4gICAgICAgICAgICBhZ2UgPSB0YXhvbl9kZXRhaWwsXG4gICAgICAgICAgICBoZWlnaHRfYWJvdmVfd2dzODQgPSBoZWlnaHRfYWJvdmVfbXNsLFxuICAgICAgICAgICAgZml4ID0gbG9jYXRpb25fZXJyb3JfdGV4dCxcbiAgICAgICAgICAgIHBvaW50X3N0YXRlID0gYmVoYXZpb3VyYWxfY2xhc3NpZmljYXRpb24pIC0+XG4gIGFtd29fZGF0YVxuYGBgIn0= -->
+<pre class="r"><code>amwo_data &lt;- as.data.frame(amwo_data)
+
+amwo_data %&gt;%
+  transmute(ID = local_identifier,
+            time = as.character(timestamp),
+            lon = location_long, 
+            lat = location_lat,
+            event_id = event_id,
+            tagtype = comments,
+            sex = sex,
+            age = taxon_detail,
+            height_above_wgs84 = height_above_msl,
+            fix = location_error_text,
+            point_state = behavioural_classification) -&gt;
+  amwo_data</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Delineate skips here (need to do it before I start filtering)</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhJG1vdmluZyAlPiUgXG4gIHRhYmxlKClcblxuYGBgIn0= -->
+<pre class="r"><code>amwo_data$moving %&gt;% 
+  table()
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiLlxuRkFMU0UgIFRSVUUgXG4zMDgwMSAgNDA4MSBcbiJ9 -->
+<pre><code>.
+FALSE  TRUE 
+30801  4081 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -1793,7 +1861,7 @@ Warning: 3 location(s) is/are removed by removeDuplicatedTimestamps</code></pre>
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCmxpYnJhcnkobHVicmlkYXRlKQ0KbGlicmFyeShtb3ZlKQ0KbGlicmFyeShoZXJlKQ0KYGBgDQoNCmBgYHtyfQ0KYW13b19kYXRhIDwtIGdldE1vdmViYW5rRGF0YShzdHVkeSA9ICJBbWVyaWNhbiBXb29kY29jayBNaWdyYXRpb24gRWNvbG9neSBpbiBFYXN0ZXJuIE5vcnRoIEFtZXJpY2EiLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbG9naW4gPSByZWFkUkRTKCJtb3ZlYmFua19jcmVkZW50aWFscy5yZHMiKSwgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlbW92ZUR1cGxpY2F0ZWRUaW1lc3RhbXBzPVRSVUUpDQphbXdvX2RhdGEgPC0gYXMuZGF0YS5mcmFtZShhbXdvX2RhdGEpDQoNCmFtd29fZGF0YSAlPiUNCiAgdHJhbnNtdXRlKElEID0gbG9jYWxfaWRlbnRpZmllciwNCiAgICAgICAgICAgIHRpbWUgPSBhcy5jaGFyYWN0ZXIodGltZXN0YW1wKSwNCiAgICAgICAgICAgIGxvbiA9IGxvY2F0aW9uX2xvbmcsIA0KICAgICAgICAgICAgbGF0ID0gbG9jYXRpb25fbGF0LA0KICAgICAgICAgICAgZXZlbnRfaWQgPSBldmVudF9pZCwNCiAgICAgICAgICAgIHRhZ3R5cGUgPSBjb21tZW50cywNCiAgICAgICAgICAgIHNleCA9IHNleCwNCiAgICAgICAgICAgIGFnZSA9IHRheG9uX2RldGFpbCwNCiAgICAgICAgICAgIGhlaWdodF9hYm92ZV93Z3M4NCA9IGhlaWdodF9hYm92ZV9tc2wsDQogICAgICAgICAgICBmaXggPSBsb2NhdGlvbl9lcnJvcl90ZXh0LA0KICAgICAgICAgICAgcG9pbnRfc3RhdGUgPSBiZWhhdmlvdXJhbF9jbGFzc2lmaWNhdGlvbikgLT4NCiAgYW13b19kYXRhDQpgYGANCg0KYGBge3J9DQphbXdvX2RhdGEgJT4lDQogIGZpbHRlcigoIWlzLm5hKGhlaWdodF9hYm92ZV93Z3M4NCkpICYgKCFpcy5uYShwb2ludF9zdGF0ZSkpKSAlPiUNCiAgd3JpdGUuY3N2KGhlcmUoImludGVybWVkaWF0ZV9maWxlcyIsICJpbXBvcnRlZF9tb3ZlYmFua19kYXRhLmNzdiIpKQ0KDQojIFZlcnRpY2FsIGRhdHVtIGlzIFdLSUQ6OjExNTcwMA0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCmxpYnJhcnkobHVicmlkYXRlKQ0KbGlicmFyeShtb3ZlKQ0KbGlicmFyeShoZXJlKQ0KbGlicmFyeShhbXQpDQpgYGANCg0KYGBge3J9DQphbXdvX2RhdGEgPC0gZ2V0TW92ZWJhbmtEYXRhKHN0dWR5ID0gIkFtZXJpY2FuIFdvb2Rjb2NrIE1pZ3JhdGlvbiBFY29sb2d5IGluIEVhc3Rlcm4gTm9ydGggQW1lcmljYSIsIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoIm1vdmViYW5rX2NyZWRlbnRpYWxzLnJkcyIpLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVtb3ZlRHVwbGljYXRlZFRpbWVzdGFtcHM9VFJVRSkNCmFtd29fZGF0YSA8LSBhcy5kYXRhLmZyYW1lKGFtd29fZGF0YSkNCg0KYW13b19kYXRhICU+JQ0KICB0cmFuc211dGUoSUQgPSBsb2NhbF9pZGVudGlmaWVyLA0KICAgICAgICAgICAgdGltZSA9IGFzLmNoYXJhY3Rlcih0aW1lc3RhbXApLA0KICAgICAgICAgICAgbG9uID0gbG9jYXRpb25fbG9uZywgDQogICAgICAgICAgICBsYXQgPSBsb2NhdGlvbl9sYXQsDQogICAgICAgICAgICBldmVudF9pZCA9IGV2ZW50X2lkLA0KICAgICAgICAgICAgdGFndHlwZSA9IGNvbW1lbnRzLA0KICAgICAgICAgICAgc2V4ID0gc2V4LA0KICAgICAgICAgICAgYWdlID0gdGF4b25fZGV0YWlsLA0KICAgICAgICAgICAgaGVpZ2h0X2Fib3ZlX3dnczg0ID0gaGVpZ2h0X2Fib3ZlX21zbCwNCiAgICAgICAgICAgIGZpeCA9IGxvY2F0aW9uX2Vycm9yX3RleHQsDQogICAgICAgICAgICBwb2ludF9zdGF0ZSA9IGJlaGF2aW91cmFsX2NsYXNzaWZpY2F0aW9uKSAtPg0KICBhbXdvX2RhdGENCmBgYA0KDQpEZWxpbmVhdGUgc2tpcHMgaGVyZSAobmVlZCB0byBkbyBpdCBiZWZvcmUgSSBzdGFydCBmaWx0ZXJpbmcpDQpgYGB7cn0NCmFtd29fbmVzdGVkIDwtIGFtd29fZGF0YSAlPiUgDQogIG5lc3QoLmJ5ID0gSUQpDQoNCmFtd29fbmVzdGVkJHRyYWNrIDwtIG1hcChhbXdvX25lc3RlZCRkYXRhLCBmdW5jdGlvbih4KXsgI3JlbWVtYmVyIHRvIHRyYW5zZm9ybSB0byA1MDcwDQogIGEgPC0gbWtfdHJhY2soeCwgLnggPSBsb24sIC55ID0gbGF0LCBjcnMgPSA0MzI2LCBhbGxfY29scyA9IFRSVUUpICU+JSANCiAgICB0cmFuc2Zvcm1fY29vcmRzKDUwNzApDQogIGEkc2wgPC0gc3RlcF9sZW5ndGhzKGEpDQogIHJldHVybihhKQ0KfSkNCg0KYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJHRyYWNrLCBmdW5jdGlvbih4KXsNCiAgeCRtb3ZpbmcgPC0gTkENCiAgZm9yKGkgaW4gMTpucm93KHgpKXsgIyBpZiBpdCdzIHRoZSBmaXJzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZw0KICAgIGlmKGkgPT0gMSl7DQogICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRQ0KICAgIH0gZWxzZSBpZihpID09IG5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGxhc3Qgcm93LCB0aGUgYmlyZCBpc24ndCBtb3ZpbmcNCiAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFDQogICAgfSBlbHNlIHsNCiAgICAgIGlmKHgkc2xbaS0xXSA+PSAxMDAwICYgeCRzbFtpXSA+PSAxMDAwKXsgI2lmIHRoZSBjdXJyZW50IGFuZCBwcmlvciBzdGVwcyBhcmUgYm90aCBhdCBsZWFzdCAxIGttLCB0aGUgYmlyZCBpcyBtb3ZpbmcNCiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gVFJVRQ0KICAgICAgfSBlbHNlIHsNCiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gRkFMU0UNCiAgICAgIH0NCiAgICB9DQogIH0NCiAgcmV0dXJuKHgpDQp9KQ0KDQphbXdvX25lc3RlZCA8LSBhbXdvX25lc3RlZCAlPiUgDQogIGRwbHlyOjpzZWxlY3QoSUQsIHRyYWNrKSAlPiUgDQogIHVubmVzdChjb2xzID0gYyh0cmFjaykpICU+JSANCiAgZHBseXI6OnNlbGVjdChldmVudF9pZCwgbW92aW5nKQ0KDQphbXdvX2RhdGEgPC0gYW13b19kYXRhICU+JSANCiAgbGVmdF9qb2luKGFtd29fbmVzdGVkKQ0KDQphbnkoaXMubmEoYW13b19kYXRhJG1vdmluZykpIyBzaG91bGQgYmUgZmFsc2UNCg0KYW13b19kYXRhJG1vdmluZyAlPiUgDQogIHRhYmxlKCkNCmBgYA0KDQoNCmBgYHtyfQ0KYW13b19kYXRhICU+JQ0KICBmaWx0ZXIoKCFpcy5uYShoZWlnaHRfYWJvdmVfd2dzODQpKSAmICghaXMubmEocG9pbnRfc3RhdGUpKSkgJT4lDQogIHdyaXRlLmNzdihoZXJlKCJpbnRlcm1lZGlhdGVfZmlsZXMiLCAiaW1wb3J0ZWRfbW92ZWJhbmtfZGF0YS5jc3YiKSkNCg0KIyBWZXJ0aWNhbCBkYXR1bSBpcyBXS0lEOjoxMTU3MDANCmBgYA0KDQo=</div>
 
 
 

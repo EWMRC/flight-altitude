@@ -1,4 +1,4 @@
-sink(here("flight_location_model_basic.jags"))
+sink(here("night_model.jags"))
 cat("model{
    # likelihood
     for (i in 1:n_obs){

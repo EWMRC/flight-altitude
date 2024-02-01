@@ -94,7 +94,7 @@ nb = 2000 # burnin
 nt = 1 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
-               model.file=here("bayesian_modeling", "flight_location_model_adv.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
+               model.file=here("bayesian_modeling", "night_migrating_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
 
 print(m_test)
