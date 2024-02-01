@@ -1,4 +1,4 @@
-sink(here("flight_location_model_adv.jags"))
+sink(here("bayesian_modeling", "flight_location_model_adv.jags"))
 cat("model{
    # likelihood
     for (i in 1:n_obs){

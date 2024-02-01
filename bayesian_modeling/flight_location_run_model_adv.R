@@ -8,6 +8,7 @@ covariates <- read.csv(here("intermediate_files", "imported_movebank_data.csv"))
 
 raw_data <- st_read(here("intermediate_files", "raw_elevation_values.shp")) %>% 
   st_drop_geometry() %>% 
+  arrange(Field1) %>% 
   dplyr::select(t_hae_m)
 
 raw_data <- covariates %>% 
@@ -46,21 +47,35 @@ raw_data %>%
   tally()
 
 # plot results
-raw_data %>% 
-  filter(day_night == "Day") %>% 
-  pull(height_above_terrain) %>% 
-  hist()
+# raw_data %>% 
+#   filter(day_night == "Day") %>% 
+#   pull(height_above_terrain) %>% 
+#   hist()
+# 
+# raw_data %>% 
+#   filter(day_night == "Night") %>% 
+#   pull(height_above_terrain) %>% 
+#   hist()
 
-raw_data %>% 
-  filter(day_night == "Night") %>% 
-  pull(height_above_terrain) %>% 
-  hist()
+## running the model
+# altitude_data <- raw_data %>% 
+#   mutate(HAT_index = case_match(day_night,
+#                                 "Day" ~ 1,
+#                                 "Night" ~ NA))
 
-## running the model (starting with the basic, "will it run" model)
-altitude_data <- raw_data %>% 
-  mutate(HAT_index = case_match(day_night,
-                                "Day" ~ 1,
-                                "Night" ~ NA))
+altitude_data <- raw_data %>% #possible night location if a) the bird is migrating and b) the point is nocturnal
+  mutate(HAT_index = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night", NA, 1))
+
+# plot results
+# altitude_data %>%
+#   filter(is.na(HAT_index)) %>%
+#   pull(height_above_terrain) %>%
+#   hist()
+# 
+# altitude_data %>%
+#   filter(!is.na(HAT_index)) %>%
+#   pull(height_above_terrain) %>%
+#   hist()
 
 inits <- function(){list(mu_bias=rnorm(1,0,1),
                          mu_flight=runif(1,0,500),
@@ -79,7 +94,7 @@ nb = 2000 # burnin
 nt = 1 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
-               model.file=here("flight_location_model_adv.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
+               model.file=here("bayesian_modeling", "flight_location_model_adv.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
 
 print(m_test)
