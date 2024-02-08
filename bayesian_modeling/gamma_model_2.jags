@@ -1,0 +1,24 @@
+model{
+   # likelihood
+    for (i in 1:n_obs){
+    HAT[i] ~ dnorm(mu_observed[i], tau_error) # adding gps-specific error
+    mu_observed[i] <- mu_bias + (HAT_index[i]-1)*real_alt[i] # on average, the observed altitude should be the real altitude + the average bias
+    real_alt[i] ~ dgamma(shape_flight, rate_flight) # distribution of real flight altitudes
+    }
+    
+    # priors
+    # for (k in 1:n_obs){
+    # HAT_index[k] ~ dcat(c(0.50, 0.50)) # HAT_index can be either 1 or 2
+    # }
+   
+    mu_bias ~ dnorm(0, 0.001) #negative values allowed
+    tau_error <- pow(sigma_error, -2) #precision
+    sigma_error ~ dunif(0, 2500) #standard deviation
+
+    shape_flight ~ dnorm(1.24, 10) T(0,)
+    # rate_flight ~ dnorm(0.003, 10) T(0,)
+    rate_flight <- pow(scale_flight, -1)
+    scale_flight ~ dnorm(300,0.000025) T(0,)
+}  
+    
+    

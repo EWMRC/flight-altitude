@@ -14,10 +14,18 @@ raw_data <- st_read(here("intermediate_files", "raw_elevation_values.shp")) %>%
 raw_data <- covariates %>% 
   bind_cols(raw_data)
 
+# raw_data %>% 
+#   filter(on_land == FALSE & fix == "3D") %>% 
+#   View()
+
+# Add point states for Fall 2023 data
+raw_data[which(raw_data$event_id %in% c(30345319747, 30343576421, 30343576426, 30343576431, 30311757193)), "point_state"] <- "Point state: Migratory (fall)"
+
 #calculate height above terrain and begin filtering to 3D fixes
 raw_data <- raw_data %>% 
   mutate(height_above_terrain = height_above_wgs84 - t_hae_m) %>% 
-  filter(fix == "3D")
+  filter(fix == "3D") %>% 
+  filter(point_state != "") #filter out empty point states
 
 # hist(raw_data$height_above_terrain)
 # summary(raw_data$height_above_terrain)
@@ -52,14 +60,17 @@ raw_data %>%
 # this also implies that tracks cannot begin or end on a flight location. Given the small number of these in our
 # dataset, I'm okay with that assumption for now
 
-### This comes out to no possible flight locations. Probably a bug in here somewhere- take a closer look
-
 altitude_data <- raw_data %>% 
   mutate(HAT_index = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, NA, 1))
 
-altitude_data %>% # maximum number of potential flight locations: 428
+# if this is an overwater location, and it fits all of the prior assumption, we designate it as a known flight location
+
+altitude_data <- altitude_data %>% 
+  mutate(HAT_index = if_else(on_land == FALSE & is.na(HAT_index), 2, HAT_index))
+
+altitude_data %>% 
   group_by(HAT_index) %>% 
-  tally()
+  tally() # 5 "known" flight locations, 423 possible flight locations
   
 # plot results
 altitude_data %>%
@@ -72,12 +83,17 @@ altitude_data %>%
   pull(height_above_terrain) %>%
   hist(main = "Possible flight locations")
 
+altitude_data %>%
+  filter(HAT_index ==2) %>%
+  pull(height_above_terrain) %>%
+  hist(main = "Known flight locations")
+
 inits <- function(){list(mu_bias=rnorm(1,0,1),
                          mu_flight=runif(1,0,500),
                          sigma_error=runif(1,0,100),
                          sigma_flight=runif(1,0,200))}
 
-parameters <- c("mu_bias", "sigma_error", "mu_flight", "sigma_flight") #
+parameters <- c("mu_bias", "sigma_error", "mu_flight", "sigma_flight", "real_alt") #
 
 jags_data <- list(HAT = altitude_data$height_above_terrain,
                   n_obs = nrow(altitude_data),
@@ -89,7 +105,7 @@ nb <- 2000 # burnin
 nt <- 1 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
-               model.file=here("bayesian_modeling", "night_migrating_skip_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
+               model.file=here("bayesian_modeling", "night_mig_skip_overwater_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
 
 print(m_test)

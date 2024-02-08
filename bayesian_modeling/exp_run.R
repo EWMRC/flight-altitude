@@ -73,11 +73,11 @@ altitude_data %>%
   hist(main = "Possible flight locations")
 
 inits <- function(){list(mu_bias=rnorm(1,0,1),
-                         mu_flight=runif(1,0,500),
+                         lambda_flight=runif(1,0,500),
                          sigma_error=runif(1,0,100),
-                         sigma_flight=runif(1,0,200))}
+                         scale_flight=runif(1,0,200))}
 
-parameters <- c("mu_bias", "sigma_error", "mu_flight", "sigma_flight") #
+parameters <- c("mu_bias", "sigma_error", "lambda_flight", "scale_flight") #
 
 jags_data <- list(HAT = altitude_data$height_above_terrain,
                   n_obs = nrow(altitude_data),
@@ -89,7 +89,7 @@ nb <- 2000 # burnin
 nt <- 1 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
-               model.file=here("bayesian_modeling", "night_migrating_skip_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
+               model.file=here("bayesian_modeling", "exp_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
 
 print(m_test)

@@ -1754,68 +1754,43 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHNmKVxubGlicmFyeShsdWJyaWRhdGUpXG5saWJyYXJ5KG1vdmUpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHNmKVxubGlicmFyeShsdWJyaWRhdGUpXG5saWJyYXJ5KG1vdmUpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGFtdClcbmBgYCJ9 -->
 <pre class="r"><code>library(tidyverse)
 library(sf)
 library(lubridate)
-library(move)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZW9zcGhlcmVcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogc3BcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogcmFzdGVyXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhyYXN0ZXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIHNlbGVjdFxuXG5BIHN1Y2Nlc3NvciB0byBgbW92ZWAgaGFzIGJlZW4gZGV2ZWxvcGVkIGFuZCBpcyBhdmFpbGFibGUgb24gY3JhbiAoYG1vdmUyYCwgaHR0cHM6Ly9iYXJ0ay5naXRsYWIuaW8vbW92ZTIvKS4gVGhpcyBicmluZ3Mgc3BlZWQgaW1wcm92ZW1lbnRzIGFuZCBpcyBiYXNlZCBvbiBgc2ZgLiBGZWVkYmFjayAoaW5jbHVkaW5nIG1pc3NpbmcgZnVuY3Rpb25hbGl0eSkgb24gdGhpcyBuZXcgcGFja2FnZSBpcyB3ZWxjb21lLCBmb3IgbmV3IHByb2plY3RzIGl0IG1pZ2h0IGJlIHdvcnRoIGNvbnNpZGVyaW5nIHN0YXJ0aW5nIGRpcmVjdGx5IHdpdGggYG1vdmUyYC5cbiJ9 -->
-<pre><code>Loading required package: geosphere
-Loading required package: sp
-Loading required package: raster
-
-Attaching package: ‘raster’
-
-The following object is masked from ‘package:dplyr’:
-
-    select
-
-A successor to `move` has been developed and is available on cran (`move2`, https://bartk.gitlab.io/move2/). This brings speed improvements and is based on `sf`. Feedback (including missing functionality) on this new package is welcome, for new projects it might be worth considering starting directly with `move2`.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoZXJlKVxubGlicmFyeShhbXQpXG5gYGAifQ== -->
-<pre class="r"><code>library(here)
+library(move)
+library(here)
 library(amt)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYYW104oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6bW92ZeKAmTpcblxuICAgIHNwZWVkXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpyYXN0ZXLigJk6XG5cbiAgICBiYm94LCBzZWxlY3RcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpzcOKAmTpcblxuICAgIGJib3hcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpnZW9zcGhlcmXigJk6XG5cbiAgICBjZW50cm9pZFxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyXG4ifQ== -->
-<pre><code>
-Attaching package: ‘amt’
-
-The following object is masked from ‘package:move’:
-
-    speed
-
-The following objects are masked from ‘package:raster’:
-
-    bbox, select
-
-The following object is masked from ‘package:sp’:
-
-    bbox
-
-The following object is masked from ‘package:geosphere’:
-
-    centroid
-
-The following object is masked from ‘package:stats’:
-
-    filter</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhIDwtIGdldE1vdmViYW5rRGF0YShzdHVkeSA9IFwiQW1lcmljYW4gV29vZGNvY2sgTWlncmF0aW9uIEVjb2xvZ3kgaW4gRWFzdGVybiBOb3J0aCBBbWVyaWNhXCIsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoXCJtb3ZlYmFua19jcmVkZW50aWFscy5yZHNcIiksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZW1vdmVEdXBsaWNhdGVkVGltZXN0YW1wcz1UUlVFKVxuYGBgIn0= -->
-<pre class="r"><code>amwo_data &lt;- getMovebankData(study = &quot;American Woodcock Migration Ecology in Eastern North America&quot;, 
-                             login = readRDS(&quot;movebank_credentials.rds&quot;), 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW13b19kYXRhIDwtIGdldE1vdmViYW5rRGF0YShzdHVkeSA9IFxcQW1lcmljYW4gV29vZGNvY2sgTWlncmF0aW9uIEVjb2xvZ3kgaW4gRWFzdGVybiBOb3J0aCBBbWVyaWNhXFwsIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoXFxtb3ZlYmFua19jcmVkZW50aWFscy5yZHNcXCksIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICByZW1vdmVEdXBsaWNhdGVkVGltZXN0YW1wcz1UUlVFKVxuYGBgXG5gYGAifQ== -->
+<pre class="r"><code>```r
+amwo_data &lt;- getMovebankData(study = \American Woodcock Migration Ecology in Eastern North America\, 
+                             login = readRDS(\movebank_credentials.rds\), 
                              removeDuplicatedTimestamps=TRUE)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogVGhlcmUgYXJlIHRpbWVzdGFtcHMgMiBpbiB0aGUgdW51c2VkIGRhdGEgdGhhdCBhcmUgYWxzbyBpbiB0aGUgcmVhbCBkYXRhLCB0aG9zZSByZWNvcmRzIGFyZSBvbWl0dGVkcmVtb3ZlRHVwaWxjYXRlZFRpbWVzdGFtcHMgd2FzIHNldCB0byBUUlVFLCB0aGlzIHdpbGwgcmV0YWluIHRoZSBmaXJzdCBvZiBtdWx0aXBsZSByZWNvcmRzIHdpdGggdGhlIHNhbWUgYW5pbWFsIElEIGFuZCB0aW1lc3RhbXAsIGFuZCByZW1vdmUgYW55IHN1YnNlcXVlbnQgZHVwbGljYXRlc1xuV2FybmluZzogMyBsb2NhdGlvbihzKSBpcy9hcmUgcmVtb3ZlZCBieSByZW1vdmVEdXBsaWNhdGVkVGltZXN0YW1wc1xuIn0= -->
-<pre><code>Warning: There are timestamps 2 in the unused data that are also in the real data, those records are omittedremoveDupilcatedTimestamps was set to TRUE, this will retain the first of multiple records with the same animal ID and timestamp, and remove any subsequent duplicates
-Warning: 3 location(s) is/are removed by removeDuplicatedTimestamps</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhIDwtIGFzLmRhdGEuZnJhbWUoYW13b19kYXRhKVxuXG5hbXdvX2RhdGEgJT4lXG4gIHRyYW5zbXV0ZShJRCA9IGxvY2FsX2lkZW50aWZpZXIsXG4gICAgICAgICAgICB0aW1lID0gYXMuY2hhcmFjdGVyKHRpbWVzdGFtcCksXG4gICAgICAgICAgICBsb24gPSBsb2NhdGlvbl9sb25nLCBcbiAgICAgICAgICAgIGxhdCA9IGxvY2F0aW9uX2xhdCxcbiAgICAgICAgICAgIGV2ZW50X2lkID0gZXZlbnRfaWQsXG4gICAgICAgICAgICB0YWd0eXBlID0gY29tbWVudHMsXG4gICAgICAgICAgICBzZXggPSBzZXgsXG4gICAgICAgICAgICBhZ2UgPSB0YXhvbl9kZXRhaWwsXG4gICAgICAgICAgICBoZWlnaHRfYWJvdmVfd2dzODQgPSBoZWlnaHRfYWJvdmVfbXNsLFxuICAgICAgICAgICAgZml4ID0gbG9jYXRpb25fZXJyb3JfdGV4dCxcbiAgICAgICAgICAgIHBvaW50X3N0YXRlID0gYmVoYXZpb3VyYWxfY2xhc3NpZmljYXRpb24pIC0+XG4gIGFtd29fZGF0YVxuYGBgIn0= -->
-<pre class="r"><code>amwo_data &lt;- as.data.frame(amwo_data)
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogVGhlcmUgYXJlIHRpbWVzdGFtcHMgMiBpbiB0aGUgdW51c2VkIGRhdGEgdGhhdCBhcmUgYWxzbyBpbiB0aGUgcmVhbCBkYXRhLCB0aG9zZSByZWNvcmRzIGFyZSBvbWl0dGVkcmVtb3ZlRHVwaWxjYXRlZFRpbWVzdGFtcHMgd2FzIHNldCB0byBUUlVFLCB0aGlzIHdpbGwgcmV0YWluIHRoZSBmaXJzdCBvZiBtdWx0aXBsZSByZWNvcmRzIHdpdGggdGhlIHNhbWUgYW5pbWFsIElEIGFuZCB0aW1lc3RhbXAsIGFuZCByZW1vdmUgYW55IHN1YnNlcXVlbnQgZHVwbGljYXRlc1xuV2FybmluZzogMyBsb2NhdGlvbihzKSBpcy9hcmUgcmVtb3ZlZCBieSByZW1vdmVEdXBsaWNhdGVkVGltZXN0YW1wc1xuIn0= --&gt;
+</code></pre>
+<p>Warning: There are timestamps 2 in the unused data that are also in
+the real data, those records are omittedremoveDupilcatedTimestamps was
+set to TRUE, this will retain the first of multiple records with the
+same animal ID and timestamp, and remove any subsequent duplicates
+Warning: 3 location(s) is/are removed by removeDuplicatedTimestamps</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW13b19kYXRhIDwtIGFzLmRhdGEuZnJhbWUoYW13b19kYXRhKVxuXG5hbXdvX2RhdGEgJT4lXG4gIHRyYW5zbXV0ZShJRCA9IGxvY2FsX2lkZW50aWZpZXIsXG4gICAgICAgICAgICB0aW1lID0gYXMuY2hhcmFjdGVyKHRpbWVzdGFtcCksXG4gICAgICAgICAgICBsb24gPSBsb2NhdGlvbl9sb25nLCBcbiAgICAgICAgICAgIGxhdCA9IGxvY2F0aW9uX2xhdCxcbiAgICAgICAgICAgIGV2ZW50X2lkID0gZXZlbnRfaWQsXG4gICAgICAgICAgICB0YWd0eXBlID0gY29tbWVudHMsXG4gICAgICAgICAgICBzZXggPSBzZXgsXG4gICAgICAgICAgICBhZ2UgPSB0YXhvbl9kZXRhaWwsXG4gICAgICAgICAgICBoZWlnaHRfYWJvdmVfd2dzODQgPSBoZWlnaHRfYWJvdmVfbXNsLFxuICAgICAgICAgICAgZml4ID0gbG9jYXRpb25fZXJyb3JfdGV4dCxcbiAgICAgICAgICAgIHBvaW50X3N0YXRlID0gYmVoYXZpb3VyYWxfY2xhc3NpZmljYXRpb24pIC0+XG4gIGFtd29fZGF0YVxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+amwo_data &lt;- as.data.frame(amwo_data)
 
 amwo_data %&gt;%
   transmute(ID = local_identifier,
@@ -1830,38 +1805,219 @@ amwo_data %&gt;%
             fix = location_error_text,
             point_state = behavioural_classification) -&gt;
   amwo_data</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>Delineate skips here (need to do it before I start filtering)</p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhJG1vdmluZyAlPiUgXG4gIHRhYmxlKClcblxuYGBgIn0= -->
-<pre class="r"><code>amwo_data$moving %&gt;% 
-  table()
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Delineate skips here (need to do it before I start filtering)
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW13b19uZXN0ZWQgPC0gYW13b19kYXRhICU+JSBcbiAgbmVzdCguYnkgPSBJRClcblxuYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJGRhdGEsIGZ1bmN0aW9uKHgpeyAjcmVtZW1iZXIgdG8gdHJhbnNmb3JtIHRvIDUwNzBcbiAgYSA8LSBta190cmFjayh4LCAueCA9IGxvbiwgLnkgPSBsYXQsIGNycyA9IDQzMjYsIGFsbF9jb2xzID0gVFJVRSkgJT4lIFxuICAgIHRyYW5zZm9ybV9jb29yZHMoNTA3MClcbiAgYSRzbCA8LSBzdGVwX2xlbmd0aHMoYSlcbiAgcmV0dXJuKGEpXG59KVxuXG5hbXdvX25lc3RlZCR0cmFjayA8LSBtYXAoYW13b19uZXN0ZWQkdHJhY2ssIGZ1bmN0aW9uKHgpe1xuICB4JG1vdmluZyA8LSBOQVxuICBmb3IoaSBpbiAxOm5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGZpcnN0IHJvdywgdGhlIGJpcmQgaXNuJ3QgbW92aW5nXG4gICAgaWYoaSA9PSAxKXtcbiAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFXG4gICAgfSBlbHNlIGlmKGkgPT0gbnJvdyh4KSl7ICMgaWYgaXQncyB0aGUgbGFzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZ1xuICAgICAgeCRtb3ZpbmdbaV0gPC0gRkFMU0VcbiAgICB9IGVsc2Uge1xuICAgICAgaWYoeCRzbFtpLTFdID49IDEwMDAgJiB4JHNsW2ldID49IDEwMDApeyAjaWYgdGhlIGN1cnJlbnQgYW5kIHByaW9yIHN0ZXBzIGFyZSBib3RoIGF0IGxlYXN0IDEga20sIHRoZSBiaXJkIGlzIG1vdmluZ1xuICAgICAgICB4JG1vdmluZ1tpXSA8LSBUUlVFXG4gICAgICB9IGVsc2Uge1xuICAgICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRVxuICAgICAgfVxuICAgIH1cbiAgfVxuICByZXR1cm4oeClcbn0pXG5cbmFtd29fbmVzdGVkIDwtIGFtd29fbmVzdGVkICU+JSBcbiAgZHBseXI6OnNlbGVjdChJRCwgdHJhY2spICU+JSBcbiAgdW5uZXN0KGNvbHMgPSBjKHRyYWNrKSkgJT4lIFxuICBkcGx5cjo6c2VsZWN0KGV2ZW50X2lkLCBtb3ZpbmcpXG5cbmFtd29fZGF0YSA8LSBhbXdvX2RhdGEgJT4lIFxuICBsZWZ0X2pvaW4oYW13b19uZXN0ZWQpXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+amwo_nested &lt;- amwo_data %&gt;% 
+  nest(.by = ID)
+
+amwo_nested$track &lt;- map(amwo_nested$data, function(x){ #remember to transform to 5070
+  a &lt;- mk_track(x, .x = lon, .y = lat, crs = 4326, all_cols = TRUE) %&gt;% 
+    transform_coords(5070)
+  a$sl &lt;- step_lengths(a)
+  return(a)
+})
+
+amwo_nested$track &lt;- map(amwo_nested$track, function(x){
+  x$moving &lt;- NA
+  for(i in 1:nrow(x)){ # if it&#39;s the first row, the bird isn&#39;t moving
+    if(i == 1){
+      x$moving[i] &lt;- FALSE
+    } else if(i == nrow(x)){ # if it&#39;s the last row, the bird isn&#39;t moving
+      x$moving[i] &lt;- FALSE
+    } else {
+      if(x$sl[i-1] &gt;= 1000 &amp; x$sl[i] &gt;= 1000){ #if the current and prior steps are both at least 1 km, the bird is moving
+        x$moving[i] &lt;- TRUE
+      } else {
+        x$moving[i] &lt;- FALSE
+      }
+    }
+  }
+  return(x)
+})
+
+amwo_nested &lt;- amwo_nested %&gt;% 
+  dplyr::select(ID, track) %&gt;% 
+  unnest(cols = c(track)) %&gt;% 
+  dplyr::select(event_id, moving)
+
+amwo_data &lt;- amwo_data %&gt;% 
+  left_join(amwo_nested)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZyB3aXRoIGBieSA9IGpvaW5fYnkoZXZlbnRfaWQpYFxuIn0= --&gt;
 </code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiLlxuRkFMU0UgIFRSVUUgXG4zMDgwMSAgNDA4MSBcbiJ9 -->
-<pre><code>.
-FALSE  TRUE 
-30801  4081 </code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhICU+JVxuICBmaWx0ZXIoKCFpcy5uYShoZWlnaHRfYWJvdmVfd2dzODQpKSAmICghaXMubmEocG9pbnRfc3RhdGUpKSkgJT4lXG4gIHdyaXRlLmNzdihoZXJlKFwiaW50ZXJtZWRpYXRlX2ZpbGVzXCIsIFwiaW1wb3J0ZWRfbW92ZWJhbmtfZGF0YS5jc3ZcIikpXG5cbiMgVmVydGljYWwgZGF0dW0gaXMgV0tJRDo6MTE1NzAwXG5gYGAifQ== -->
-<pre class="r"><code>amwo_data %&gt;%
+<p>Joining with <code>by = join_by(event_id)</code></p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW55KGlzLm5hKGFtd29fZGF0YSRtb3ZpbmcpKSMgc2hvdWxkIGJlIGZhbHNlXG5gYGBcbmBgYCJ9 --&gt;
+
+```r
+```r
+any(is.na(amwo_data$moving))# should be false</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== --&gt;
+</code></pre>
+<p>[1] FALSE</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW13b19kYXRhJG1vdmluZyAlPiUgXG4gIHRhYmxlKClcbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+amwo_data$moving %&gt;% 
+  table()</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiLlxuRkFMU0UgIFRSVUUgXG4zMDgwMSAgNDA4MSBcbiJ9 --&gt;
+</code></pre>
+<p>. FALSE TRUE 30801 4081</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+Is a location overwater?
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW13b19zZiA8LSBhbXdvX2RhdGEgJT4lIFxuICBzdF9hc19zZihjb29yZHMgPSBjKFxcbG9uXFwsIFxcbGF0XFwpLCBjcnMgPSA0MzI2LCByZW1vdmUgPSBGQUxTRSlcblxuY29hc3RsaW5lX3BvbHlnb24gPC0gc3RfcmVhZChcXEQ6L09uZURyaXZlIC0gVW5pdmVyc2l0eSBvZiBNYWluZSBTeXN0ZW0vTWFpbmVBbmFseXNpcy9EYXRhL2NvYXN0bGluZS9uZV8xMG1fY29hc3RsaW5lX3BvbHkuc2hwXFwpICU+JSBcbiAgc3RfdHJhbnNmb3JtKDQzMjYpICU+JSBcbiAgdHJhbnNtdXRlKG9uX2xhbmQgPSBUUlVFKVxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+amwo_sf &lt;- amwo_data %&gt;% 
+  st_as_sf(coords = c(\lon\, \lat\), crs = 4326, remove = FALSE)
+
+coastline_polygon &lt;- st_read(\D:/OneDrive - University of Maine System/MaineAnalysis/Data/coastline/ne_10m_coastline_poly.shp\) %&gt;% 
+  st_transform(4326) %&gt;% 
+  transmute(on_land = TRUE)</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgbmVfMTBtX2NvYXN0bGluZV9wb2x5JyBmcm9tIGRhdGEgc291cmNlIFxuICBgRDpcXE9uZURyaXZlIC0gVW5pdmVyc2l0eSBvZiBNYWluZSBTeXN0ZW1cXE1haW5lQW5hbHlzaXNcXERhdGFcXGNvYXN0bGluZVxcbmVfMTBtX2NvYXN0bGluZV9wb2x5LnNocCcgXG4gIHVzaW5nIGRyaXZlciBgRVNSSSBTaGFwZWZpbGUnXG5TaW1wbGUgZmVhdHVyZSBjb2xsZWN0aW9uIHdpdGggNDA4NCBmZWF0dXJlcyBhbmQgMSBmaWVsZFxuR2VvbWV0cnkgdHlwZTogUE9MWUdPTlxuRGltZW5zaW9uOiAgICAgWFlcbkJvdW5kaW5nIGJveDogIHhtaW46IC0xNzkuODcxOSB5bWluOiAtODMuMjI2ODIgeG1heDogMTc5Ljk1MjYgeW1heDogODMuNjM0MVxuR2VvZGV0aWMgQ1JTOiAgV0dTIDg0XG4ifQ== --&gt;
+</code></pre>
+<p>Reading layer <code>ne_10m_coastline_poly&#39; from data source</code>D:-
+University of Maine System_10m_coastline_poly.shp’ using driver `ESRI
+Shapefile’ Simple feature collection with 4084 features and 1 field
+Geometry type: POLYGON Dimension: XY Bounding box: xmin: -179.8719 ymin:
+-83.22682 xmax: 179.9526 ymax: 83.6341 Geodetic CRS: WGS 84</p>
+<pre><code>
+
+
+&lt;!-- rnb-output-end --&gt;
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW13b19zZiA8LSBhbXdvX3NmICU+JSBcbiAgc3Rfam9pbihjb2FzdGxpbmVfcG9seWdvbilcblxuIyBBcyB0aGUgY29hc3RsaW5lIGlzbid0IHBlcmZlY3QsIEkgaGF2ZSBzb21lIGV4Y2VwdGlvbnMgaGVyZSB0aGF0IEknbGwgc2V0IHRvIG9uIGxhbmRcbm92ZXJ3YXRlcl9leGNlcHRpb25zIDwtIHJlYWQuY3N2KGhlcmUoXFxvdmVyd2F0ZXJfZXhjZXB0aW9ucy5jc3ZcXCkpXG5cbmFtd29fc2YgPC0gYW13b19zZiAlPiVcbiAgbXV0YXRlKG9uX2xhbmQgPSBpZl9lbHNlKGV2ZW50X2lkICVpbiUgb3ZlcndhdGVyX2V4Y2VwdGlvbnMkZXZlbnRfaWQsIFRSVUUsIG9uX2xhbmQpKVxuXG4jIHNldCBuYSB2YWx1ZXMgdG8gRkFMU0UgKGllIG9ubGFuZCA9PSBGQUxTRSBpcyBhbiBvdmVyd2F0ZXIgbG9jYXRpb24pXG5hbXdvX3NmIDwtIGFtd29fc2YgJT4lXG4gIG11dGF0ZShvbl9sYW5kID0gaWZfZWxzZShpcy5uYShvbl9sYW5kKSwgRkFMU0UsIG9uX2xhbmQpKVxuXG4jIGNvdW50IHRoZSBudW1iZXIgb2Ygb3ZlcndhdGVyIGxvY2F0aW9uc1xuYW13b19zZiAlPiUgXG4gIHN0X2Ryb3BfZ2VvbWV0cnkoKSAlPiUgXG4gIGdyb3VwX2J5KG9uX2xhbmQpICU+JSBcbiAgdGFsbHkoKVxuYGBgXG5gYGByXG5cbiMgbWFwIHRoZSBvdmVyd2F0ZXIgbG9jYXRpb25zOiBnb29kIGZvciBwcm9vZmluZyB0aGUgbG9jYXRpb25zXG4jIGFtd29fc2YgJT4lIFxuIyAgIGZpbHRlcihvbl9sYW5kID09IEZBTFNFKSAlPiUgXG4jICAgbWFwdmlldzo6bWFwdmlldygpXG5cbmBgYFxuYGBgIn0= --&gt;
+
+```r
+```r
+amwo_sf &lt;- amwo_sf %&gt;% 
+  st_join(coastline_polygon)
+
+# As the coastline isn&#39;t perfect, I have some exceptions here that I&#39;ll set to on land
+overwater_exceptions &lt;- read.csv(here(\overwater_exceptions.csv\))
+
+amwo_sf &lt;- amwo_sf %&gt;%
+  mutate(on_land = if_else(event_id %in% overwater_exceptions$event_id, TRUE, on_land))
+
+# set na values to FALSE (ie onland == FALSE is an overwater location)
+amwo_sf &lt;- amwo_sf %&gt;%
+  mutate(on_land = if_else(is.na(on_land), FALSE, on_land))
+
+# count the number of overwater locations
+amwo_sf %&gt;% 
+  st_drop_geometry() %&gt;% 
+  group_by(on_land) %&gt;% 
+  tally()</code></pre>
+<pre class="r"><code>
+# map the overwater locations: good for proofing the locations
+# amwo_sf %&gt;% 
+#   filter(on_land == FALSE) %&gt;% 
+#   mapview::mapview()
+</code></pre>
+<pre><code>
+&lt;!-- rnb-source-end --&gt;
+
+&lt;!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MiwibmNvbCI6Miwic3VtbWFyeSI6eyJBIHRpYmJsZSI6IjIgw5cgMiJ9fSwicmRmIjoiSDRzSUFBQUFBQUFBQmwyUVRXN0NNQkNGSjg0UHdoSXRVcytSTEFvTERsRDFBQlZJN0NxVHVEU3FHVWVKYWJ0azJWTVR4c0d6cURmMm0rZjVuanp6OXJKZnliMEVnQlN5VkVDYWs0Ujh0MzB0TndDWm9DS0JET2IrL3FXbUp4TGVsT0dHcVFGZ0Vlb2x3Tjl6Qk9hb1RucTRQMUxUM1p4WmZEY0tHdzdIQ0pyMzlxZGljRXEvMERHTzR6Vk9yNDBhT0oxTjJTaW5xbytlZUtwaVpHWTcxMW9rU1BoNWlnaE8rc2g0UEtQL1NWUFduMmY4S3RmUmM5cmhNYXdrQ1N0WkJDMythLzhMTVFhOENIaWg4ZGlpNW5HTU9takR5WTMrRHZLQjlqR3RvK3I2RmgzUFNlNVFPZXNVSTdLMmhwMXBjcmplQU9KeUkxTGtBUUFBIn0= --&gt;
+
+&lt;div data-pagedtable=&quot;false&quot;&gt;
+  &lt;script data-pagedtable-source type=&quot;application/json&quot;&gt;
+{&quot;columns&quot;:[{&quot;label&quot;:[&quot;on_land&quot;],&quot;name&quot;:[1],&quot;type&quot;:[&quot;lgl&quot;],&quot;align&quot;:[&quot;right&quot;]},{&quot;label&quot;:[&quot;n&quot;],&quot;name&quot;:[2],&quot;type&quot;:[&quot;int&quot;],&quot;align&quot;:[&quot;right&quot;]}],&quot;data&quot;:[{&quot;1&quot;:&quot;FALSE&quot;,&quot;2&quot;:&quot;16&quot;},{&quot;1&quot;:&quot;TRUE&quot;,&quot;2&quot;:&quot;34866&quot;}],&quot;options&quot;:{&quot;columns&quot;:{&quot;min&quot;:{},&quot;max&quot;:[10],&quot;total&quot;:[2]},&quot;rows&quot;:{&quot;min&quot;:[10],&quot;max&quot;:[10],&quot;total&quot;:[2]},&quot;pages&quot;:{}}}
+  &lt;/script&gt;
+&lt;/div&gt;
+
+&lt;!-- rnb-frame-end --&gt;
+
+&lt;!-- rnb-chunk-end --&gt;
+
+
+&lt;!-- rnb-text-begin --&gt;
+
+
+
+Save for later use
+
+&lt;!-- rnb-text-end --&gt;
+
+
+&lt;!-- rnb-chunk-begin --&gt;
+
+
+&lt;!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYW13b19kYXRhJG9uX2xhbmQgPC0gYW13b19zZiRvbl9sYW5kXG5cbmFtd29fZGF0YSAlPiVcbiAgZmlsdGVyKCghaXMubmEoaGVpZ2h0X2Fib3ZlX3dnczg0KSkgJiAoIWlzLm5hKHBvaW50X3N0YXRlKSkpICU+JVxuICB3cml0ZS5jc3YoaGVyZShcXGludGVybWVkaWF0ZV9maWxlc1xcLCBcXGltcG9ydGVkX21vdmViYW5rX2RhdGEuY3N2XFwpKVxuXG4jIFZlcnRpY2FsIGRhdHVtIGlzIFdLSUQ6OjExNTcwMFxuYGBgXG5gYGAifQ== --&gt;
+
+```r
+```r
+amwo_data$on_land &lt;- amwo_sf$on_land
+
+amwo_data %&gt;%
   filter((!is.na(height_above_wgs84)) &amp; (!is.na(point_state))) %&gt;%
-  write.csv(here(&quot;intermediate_files&quot;, &quot;imported_movebank_data.csv&quot;))
+  write.csv(here(\intermediate_files\, \imported_movebank_data.csv\))
 
 # Vertical datum is WKID::115700</code></pre>
+<p>```</p>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCmxpYnJhcnkobHVicmlkYXRlKQ0KbGlicmFyeShtb3ZlKQ0KbGlicmFyeShoZXJlKQ0KbGlicmFyeShhbXQpDQpgYGANCg0KYGBge3J9DQphbXdvX2RhdGEgPC0gZ2V0TW92ZWJhbmtEYXRhKHN0dWR5ID0gIkFtZXJpY2FuIFdvb2Rjb2NrIE1pZ3JhdGlvbiBFY29sb2d5IGluIEVhc3Rlcm4gTm9ydGggQW1lcmljYSIsIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoIm1vdmViYW5rX2NyZWRlbnRpYWxzLnJkcyIpLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVtb3ZlRHVwbGljYXRlZFRpbWVzdGFtcHM9VFJVRSkNCmFtd29fZGF0YSA8LSBhcy5kYXRhLmZyYW1lKGFtd29fZGF0YSkNCg0KYW13b19kYXRhICU+JQ0KICB0cmFuc211dGUoSUQgPSBsb2NhbF9pZGVudGlmaWVyLA0KICAgICAgICAgICAgdGltZSA9IGFzLmNoYXJhY3Rlcih0aW1lc3RhbXApLA0KICAgICAgICAgICAgbG9uID0gbG9jYXRpb25fbG9uZywgDQogICAgICAgICAgICBsYXQgPSBsb2NhdGlvbl9sYXQsDQogICAgICAgICAgICBldmVudF9pZCA9IGV2ZW50X2lkLA0KICAgICAgICAgICAgdGFndHlwZSA9IGNvbW1lbnRzLA0KICAgICAgICAgICAgc2V4ID0gc2V4LA0KICAgICAgICAgICAgYWdlID0gdGF4b25fZGV0YWlsLA0KICAgICAgICAgICAgaGVpZ2h0X2Fib3ZlX3dnczg0ID0gaGVpZ2h0X2Fib3ZlX21zbCwNCiAgICAgICAgICAgIGZpeCA9IGxvY2F0aW9uX2Vycm9yX3RleHQsDQogICAgICAgICAgICBwb2ludF9zdGF0ZSA9IGJlaGF2aW91cmFsX2NsYXNzaWZpY2F0aW9uKSAtPg0KICBhbXdvX2RhdGENCmBgYA0KDQpEZWxpbmVhdGUgc2tpcHMgaGVyZSAobmVlZCB0byBkbyBpdCBiZWZvcmUgSSBzdGFydCBmaWx0ZXJpbmcpDQpgYGB7cn0NCmFtd29fbmVzdGVkIDwtIGFtd29fZGF0YSAlPiUgDQogIG5lc3QoLmJ5ID0gSUQpDQoNCmFtd29fbmVzdGVkJHRyYWNrIDwtIG1hcChhbXdvX25lc3RlZCRkYXRhLCBmdW5jdGlvbih4KXsgI3JlbWVtYmVyIHRvIHRyYW5zZm9ybSB0byA1MDcwDQogIGEgPC0gbWtfdHJhY2soeCwgLnggPSBsb24sIC55ID0gbGF0LCBjcnMgPSA0MzI2LCBhbGxfY29scyA9IFRSVUUpICU+JSANCiAgICB0cmFuc2Zvcm1fY29vcmRzKDUwNzApDQogIGEkc2wgPC0gc3RlcF9sZW5ndGhzKGEpDQogIHJldHVybihhKQ0KfSkNCg0KYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJHRyYWNrLCBmdW5jdGlvbih4KXsNCiAgeCRtb3ZpbmcgPC0gTkENCiAgZm9yKGkgaW4gMTpucm93KHgpKXsgIyBpZiBpdCdzIHRoZSBmaXJzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZw0KICAgIGlmKGkgPT0gMSl7DQogICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRQ0KICAgIH0gZWxzZSBpZihpID09IG5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGxhc3Qgcm93LCB0aGUgYmlyZCBpc24ndCBtb3ZpbmcNCiAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFDQogICAgfSBlbHNlIHsNCiAgICAgIGlmKHgkc2xbaS0xXSA+PSAxMDAwICYgeCRzbFtpXSA+PSAxMDAwKXsgI2lmIHRoZSBjdXJyZW50IGFuZCBwcmlvciBzdGVwcyBhcmUgYm90aCBhdCBsZWFzdCAxIGttLCB0aGUgYmlyZCBpcyBtb3ZpbmcNCiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gVFJVRQ0KICAgICAgfSBlbHNlIHsNCiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gRkFMU0UNCiAgICAgIH0NCiAgICB9DQogIH0NCiAgcmV0dXJuKHgpDQp9KQ0KDQphbXdvX25lc3RlZCA8LSBhbXdvX25lc3RlZCAlPiUgDQogIGRwbHlyOjpzZWxlY3QoSUQsIHRyYWNrKSAlPiUgDQogIHVubmVzdChjb2xzID0gYyh0cmFjaykpICU+JSANCiAgZHBseXI6OnNlbGVjdChldmVudF9pZCwgbW92aW5nKQ0KDQphbXdvX2RhdGEgPC0gYW13b19kYXRhICU+JSANCiAgbGVmdF9qb2luKGFtd29fbmVzdGVkKQ0KDQphbnkoaXMubmEoYW13b19kYXRhJG1vdmluZykpIyBzaG91bGQgYmUgZmFsc2UNCg0KYW13b19kYXRhJG1vdmluZyAlPiUgDQogIHRhYmxlKCkNCmBgYA0KDQoNCmBgYHtyfQ0KYW13b19kYXRhICU+JQ0KICBmaWx0ZXIoKCFpcy5uYShoZWlnaHRfYWJvdmVfd2dzODQpKSAmICghaXMubmEocG9pbnRfc3RhdGUpKSkgJT4lDQogIHdyaXRlLmNzdihoZXJlKCJpbnRlcm1lZGlhdGVfZmlsZXMiLCAiaW1wb3J0ZWRfbW92ZWJhbmtfZGF0YS5jc3YiKSkNCg0KIyBWZXJ0aWNhbCBkYXR1bSBpcyBXS0lEOjoxMTU3MDANCmBgYA0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCmxpYnJhcnkobHVicmlkYXRlKQ0KbGlicmFyeShtb3ZlKQ0KbGlicmFyeShoZXJlKQ0KbGlicmFyeShhbXQpDQpgYGANCg0KYGBge3J9DQphbXdvX2RhdGEgPC0gZ2V0TW92ZWJhbmtEYXRhKHN0dWR5ID0gIkFtZXJpY2FuIFdvb2Rjb2NrIE1pZ3JhdGlvbiBFY29sb2d5IGluIEVhc3Rlcm4gTm9ydGggQW1lcmljYSIsIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoIm1vdmViYW5rX2NyZWRlbnRpYWxzLnJkcyIpLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVtb3ZlRHVwbGljYXRlZFRpbWVzdGFtcHM9VFJVRSkNCmFtd29fZGF0YSA8LSBhcy5kYXRhLmZyYW1lKGFtd29fZGF0YSkNCg0KYW13b19kYXRhICU+JQ0KICB0cmFuc211dGUoSUQgPSBsb2NhbF9pZGVudGlmaWVyLA0KICAgICAgICAgICAgdGltZSA9IGFzLmNoYXJhY3Rlcih0aW1lc3RhbXApLA0KICAgICAgICAgICAgbG9uID0gbG9jYXRpb25fbG9uZywgDQogICAgICAgICAgICBsYXQgPSBsb2NhdGlvbl9sYXQsDQogICAgICAgICAgICBldmVudF9pZCA9IGV2ZW50X2lkLA0KICAgICAgICAgICAgdGFndHlwZSA9IGNvbW1lbnRzLA0KICAgICAgICAgICAgc2V4ID0gc2V4LA0KICAgICAgICAgICAgYWdlID0gdGF4b25fZGV0YWlsLA0KICAgICAgICAgICAgaGVpZ2h0X2Fib3ZlX3dnczg0ID0gaGVpZ2h0X2Fib3ZlX21zbCwNCiAgICAgICAgICAgIGZpeCA9IGxvY2F0aW9uX2Vycm9yX3RleHQsDQogICAgICAgICAgICBwb2ludF9zdGF0ZSA9IGJlaGF2aW91cmFsX2NsYXNzaWZpY2F0aW9uKSAtPg0KICBhbXdvX2RhdGENCmBgYA0KDQpEZWxpbmVhdGUgc2tpcHMgaGVyZSAobmVlZCB0byBkbyBpdCBiZWZvcmUgSSBzdGFydCBmaWx0ZXJpbmcpDQpgYGB7cn0NCmFtd29fbmVzdGVkIDwtIGFtd29fZGF0YSAlPiUgDQogIG5lc3QoLmJ5ID0gSUQpDQoNCmFtd29fbmVzdGVkJHRyYWNrIDwtIG1hcChhbXdvX25lc3RlZCRkYXRhLCBmdW5jdGlvbih4KXsgI3JlbWVtYmVyIHRvIHRyYW5zZm9ybSB0byA1MDcwDQogIGEgPC0gbWtfdHJhY2soeCwgLnggPSBsb24sIC55ID0gbGF0LCBjcnMgPSA0MzI2LCBhbGxfY29scyA9IFRSVUUpICU+JSANCiAgICB0cmFuc2Zvcm1fY29vcmRzKDUwNzApDQogIGEkc2wgPC0gc3RlcF9sZW5ndGhzKGEpDQogIHJldHVybihhKQ0KfSkNCg0KYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJHRyYWNrLCBmdW5jdGlvbih4KXsNCiAgeCRtb3ZpbmcgPC0gTkENCiAgZm9yKGkgaW4gMTpucm93KHgpKXsgIyBpZiBpdCdzIHRoZSBmaXJzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZw0KICAgIGlmKGkgPT0gMSl7DQogICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRQ0KICAgIH0gZWxzZSBpZihpID09IG5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGxhc3Qgcm93LCB0aGUgYmlyZCBpc24ndCBtb3ZpbmcNCiAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFDQogICAgfSBlbHNlIHsNCiAgICAgIGlmKHgkc2xbaS0xXSA+PSAxMDAwICYgeCRzbFtpXSA+PSAxMDAwKXsgI2lmIHRoZSBjdXJyZW50IGFuZCBwcmlvciBzdGVwcyBhcmUgYm90aCBhdCBsZWFzdCAxIGttLCB0aGUgYmlyZCBpcyBtb3ZpbmcNCiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gVFJVRQ0KICAgICAgfSBlbHNlIHsNCiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gRkFMU0UNCiAgICAgIH0NCiAgICB9DQogIH0NCiAgcmV0dXJuKHgpDQp9KQ0KDQphbXdvX25lc3RlZCA8LSBhbXdvX25lc3RlZCAlPiUgDQogIGRwbHlyOjpzZWxlY3QoSUQsIHRyYWNrKSAlPiUgDQogIHVubmVzdChjb2xzID0gYyh0cmFjaykpICU+JSANCiAgZHBseXI6OnNlbGVjdChldmVudF9pZCwgbW92aW5nKQ0KDQphbXdvX2RhdGEgPC0gYW13b19kYXRhICU+JSANCiAgbGVmdF9qb2luKGFtd29fbmVzdGVkKQ0KDQphbnkoaXMubmEoYW13b19kYXRhJG1vdmluZykpIyBzaG91bGQgYmUgZmFsc2UNCg0KYW13b19kYXRhJG1vdmluZyAlPiUgDQogIHRhYmxlKCkNCmBgYA0KDQpJcyBhIGxvY2F0aW9uIG92ZXJ3YXRlcj8NCmBgYHtyfQ0KYW13b19zZiA8LSBhbXdvX2RhdGEgJT4lIA0KICBzdF9hc19zZihjb29yZHMgPSBjKCJsb24iLCAibGF0IiksIGNycyA9IDQzMjYsIHJlbW92ZSA9IEZBTFNFKQ0KDQpjb2FzdGxpbmVfcG9seWdvbiA8LSBzdF9yZWFkKCJEOi9PbmVEcml2ZSAtIFVuaXZlcnNpdHkgb2YgTWFpbmUgU3lzdGVtL01haW5lQW5hbHlzaXMvRGF0YS9jb2FzdGxpbmUvbmVfMTBtX2NvYXN0bGluZV9wb2x5LnNocCIpICU+JSANCiAgc3RfdHJhbnNmb3JtKDQzMjYpICU+JSANCiAgdHJhbnNtdXRlKG9uX2xhbmQgPSBUUlVFKQ0KDQphbXdvX3NmIDwtIGFtd29fc2YgJT4lIA0KICBzdF9qb2luKGNvYXN0bGluZV9wb2x5Z29uKQ0KDQojIEFzIHRoZSBjb2FzdGxpbmUgaXNuJ3QgcGVyZmVjdCwgSSBoYXZlIHNvbWUgZXhjZXB0aW9ucyBoZXJlIHRoYXQgSSdsbCBzZXQgdG8gb24gbGFuZA0Kb3ZlcndhdGVyX2V4Y2VwdGlvbnMgPC0gcmVhZC5jc3YoaGVyZSgib3ZlcndhdGVyX2V4Y2VwdGlvbnMuY3N2IikpDQoNCmFtd29fc2YgPC0gYW13b19zZiAlPiUNCiAgbXV0YXRlKG9uX2xhbmQgPSBpZl9lbHNlKGV2ZW50X2lkICVpbiUgb3ZlcndhdGVyX2V4Y2VwdGlvbnMkZXZlbnRfaWQsIFRSVUUsIG9uX2xhbmQpKQ0KDQojIHNldCBuYSB2YWx1ZXMgdG8gRkFMU0UgKGllIG9ubGFuZCA9PSBGQUxTRSBpcyBhbiBvdmVyd2F0ZXIgbG9jYXRpb24pDQphbXdvX3NmIDwtIGFtd29fc2YgJT4lDQogIG11dGF0ZShvbl9sYW5kID0gaWZfZWxzZShpcy5uYShvbl9sYW5kKSwgRkFMU0UsIG9uX2xhbmQpKQ0KDQojIGNvdW50IHRoZSBudW1iZXIgb2Ygb3ZlcndhdGVyIGxvY2F0aW9ucw0KYW13b19zZiAlPiUgDQogIHN0X2Ryb3BfZ2VvbWV0cnkoKSAlPiUgDQogIGdyb3VwX2J5KG9uX2xhbmQpICU+JSANCiAgdGFsbHkoKQ0KDQojIG1hcCB0aGUgb3ZlcndhdGVyIGxvY2F0aW9uczogZ29vZCBmb3IgcHJvb2ZpbmcgdGhlIGxvY2F0aW9ucw0KIyBhbXdvX3NmICU+JSANCiMgICBmaWx0ZXIob25fbGFuZCA9PSBGQUxTRSkgJT4lIA0KIyAgIG1hcHZpZXc6Om1hcHZpZXcoKQ0KDQpgYGANCg0KDQpTYXZlIGZvciBsYXRlciB1c2UNCmBgYHtyfQ0KYW13b19kYXRhJG9uX2xhbmQgPC0gYW13b19zZiRvbl9sYW5kDQoNCmFtd29fZGF0YSAlPiUNCiAgZmlsdGVyKCghaXMubmEoaGVpZ2h0X2Fib3ZlX3dnczg0KSkgJiAoIWlzLm5hKHBvaW50X3N0YXRlKSkpICU+JQ0KICB3cml0ZS5jc3YoaGVyZSgiaW50ZXJtZWRpYXRlX2ZpbGVzIiwgImltcG9ydGVkX21vdmViYW5rX2RhdGEuY3N2IikpDQoNCiMgVmVydGljYWwgZGF0dW0gaXMgV0tJRDo6MTE1NzAwDQpgYGANCg0K</div>
 
 
 

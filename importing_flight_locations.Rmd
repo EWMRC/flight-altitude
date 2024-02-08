@@ -77,8 +77,46 @@ amwo_data$moving %>%
   table()
 ```
 
-
+Is a location overwater?
 ```{r}
+amwo_sf <- amwo_data %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+
+coastline_polygon <- st_read("D:/OneDrive - University of Maine System/MaineAnalysis/Data/coastline/ne_10m_coastline_poly.shp") %>% 
+  st_transform(4326) %>% 
+  transmute(on_land = TRUE)
+
+amwo_sf <- amwo_sf %>% 
+  st_join(coastline_polygon)
+
+# As the coastline isn't perfect, I have some exceptions here that I'll set to on land
+overwater_exceptions <- read.csv(here("overwater_exceptions.csv"))
+
+amwo_sf <- amwo_sf %>%
+  mutate(on_land = if_else(event_id %in% overwater_exceptions$event_id, TRUE, on_land))
+
+# set na values to FALSE (ie onland == FALSE is an overwater location)
+amwo_sf <- amwo_sf %>%
+  mutate(on_land = if_else(is.na(on_land), FALSE, on_land))
+
+# count the number of overwater locations
+amwo_sf %>% 
+  st_drop_geometry() %>% 
+  group_by(on_land) %>% 
+  tally()
+
+# map the overwater locations: good for proofing the locations
+# amwo_sf %>% 
+#   filter(on_land == FALSE) %>% 
+#   mapview::mapview()
+
+```
+
+
+Save for later use
+```{r}
+amwo_data$on_land <- amwo_sf$on_land
+
 amwo_data %>%
   filter((!is.na(height_above_wgs84)) & (!is.na(point_state))) %>%
   write.csv(here("intermediate_files", "imported_movebank_data.csv"))
