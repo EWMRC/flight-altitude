@@ -7,18 +7,20 @@ cat("model{
     real_alt[i] ~ dgamma(shape_flight, rate_flight) # distribution of real flight altitudes
     }
     
-    # priors
-    # for (k in 1:n_obs){
-    # HAT_index[k] ~ dcat(c(0.50, 0.50)) # HAT_index can be either 1 or 2
-    # }
+    #priors
+    for (k in 1:n_obs){
+    HAT_index[k] ~ dcat(c(0.6511628, 0.3488372)) # HAT_index can be either 1 or 2
+    }
    
-    mu_bias ~ dnorm(0, 0.001) #negative values allowed
+    mu_bias ~ dnorm(0, 1) #negative values allowed
     tau_error <- pow(sigma_error, -2) #precision
-    sigma_error ~ dunif(0, 2500) #standard deviation
+    sigma_error ~ dnorm(0, 1) T(0,) #standard deviation
+   
+    shape_flight ~ dnorm(0, prec_shape) T(0,)
+    prec_shape <- pow(5, -2)
+    rate_flight ~ dnorm(0, prec_rate) T(0,)
+    prec_rate <- pow(10, -2)
 
-    shape_flight ~ dnorm(1.24, 10) T(0,)
-    rate_flight ~ dnorm(0.003, 10) T(0,)
 }  
-    
     ")
 sink() 

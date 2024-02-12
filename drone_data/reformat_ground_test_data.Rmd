@@ -1,0 +1,22 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(sf)
+library(here)
+```
+
+```{r}
+#import data
+ground_data <- read.csv(here("intermediate_files", "raw_elevation_values_ground.csv"))
+
+ground_data <- ground_data %>% 
+  mutate(error = Altitude - t_hae_m_1)
+
+ground_mean <- mean(ground_data$error)
+ground_sd <- sd(ground_data$error)
+```
+

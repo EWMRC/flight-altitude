@@ -57,17 +57,6 @@ raw_data %>%
 altitude_data <- raw_data %>% 
   mutate(HAT_index = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, NA, 1))
 
-# # if this is an overwater location, and it fits all of the prior assumption, we designate it as a known flight location
-# 
-# altitude_data <- altitude_data %>% 
-#   mutate(HAT_index = if_else(on_land == FALSE & is.na(HAT_index), 2, HAT_index))
-
-# if this location is higher than would be expected in 95% of cases (10*1.96)
-# set index to 2. else, set index to 1.
-# note that this doesn't take bias into account
-altitude_data <- altitude_data %>% 
-  mutate(HAT_index = if_else(is.na(HAT_index) & height_above_terrain > 10*1.96, 2, 1))
-
 altitude_data %>% 
   group_by(HAT_index) %>% 
   tally() #428 possible flight locations
@@ -83,27 +72,26 @@ altitude_data %>%
 #   pull(height_above_terrain) %>%
 #   hist(main = "Possible flight locations")
 
-altitude_data %>%
-  filter(HAT_index == 2) %>%
-  pull(height_above_terrain) %>%
-  density() %>% 
-  plot(main = "Known flight locations")
+# Scale locations between -1 and 1
+altitude_data <- altitude_data %>% 
+  mutate(hat_scaled = height_above_terrain/2183.475)
+
 
 inits <- function(){list(mu_bias = rnorm(1,0,1),
-                         sigma_error = runif(1,0,100),
-                         shape_flight = rtruncnorm(n = 1, a = 0, mean = 0, sd = 1),
-                         rate_flight = rtruncnorm(n = 1, a = 0, mean = 0, sd = 1))}
+                         sigma_error = runif(1,0,1),
+                         shape_flight = runif(1,0,5), #
+                         rate_flight = runif(1,0,10))}
 
 parameters <- c("mu_bias", "sigma_error", "shape_flight", "rate_flight") #
 
-jags_data <- list(HAT = altitude_data$height_above_terrain,
+jags_data <- list(HAT = altitude_data$hat_scaled,
                   n_obs = nrow(altitude_data),
                   HAT_index = altitude_data$HAT_index)
 
 # running jags
 nc <- 3 # number of chains
-ni <- 8000 # number of iterations
-nb <- 5000 # burnin
+ni <- 80000 # number of iterations
+nb <- 10000 # burnin
 nt <- 1 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 

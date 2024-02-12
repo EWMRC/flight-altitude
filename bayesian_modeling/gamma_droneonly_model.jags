@@ -1,0 +1,17 @@
+model{
+
+    ### drone model
+    for(y in 1:drone_n){
+    drone_hat[y] ~ dnorm(mu_bias_flight, tau_error)
+    }
+    
+    ## priors
+
+    mu_bias_flight ~ dnorm(0, 1)
+    
+    # flight error
+    tau_error <- pow(sigma_error, -2) #precision
+    sigma_error ~ dnorm(0, 1) T(0,) #standard deviation
+
+}  
+    

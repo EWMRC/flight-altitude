@@ -1,0 +1,27 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(here)
+```
+
+```{r}
+drone_1 <- read.csv(here("drone_data", "drone_test_1_rformat.csv")) %>% 
+  dplyr::select(Latitude, Longitude, Altitude) %>% 
+  filter(!is.na(Latitude))
+
+drone_2 <- read.csv(here("drone_data", "drone_test_2_rformat.csv")) %>% 
+  dplyr::select(Latitude, Longitude, Altitude) %>% 
+  filter(!is.na(Latitude)) %>% 
+  filter(Altitude > 40) #these are results that would otherwise have been filtered out as 2D fixes, so I will not include them in the error distribution
+
+drone_data <- bind_rows(drone_1, drone_2)
+
+#mean(drone_data$Altitude)
+#sd(drone_data$Altitude)
+write.csv(drone_data, here("drone_data", "drone_data_combined.csv"))
+```
+

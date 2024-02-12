@@ -3,6 +3,8 @@ library(jagsUI)
 library(truncnorm)
 library(here)
 
+#working, although it's slightly underestimating the error. Within the stated margin.
+
 known_ground <- 13000
 unknown_flight <- 150
 known_flight <- 0 # 150
