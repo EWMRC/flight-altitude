@@ -5,3 +5,9 @@
 
 # credentials
 movebank_credentials.rds
+
+# large files
+gamma_age_300k.rds
+gamma_original_300k.rds
+gamma_season_300k.rds
+gamma_sex_300k.rds
