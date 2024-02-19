@@ -89,14 +89,16 @@ jags_data <- list(HAT = altitude_data$hat_scaled,
                   HAT_index = altitude_data$HAT_index)
 
 # running jags
-nc <- 3 # number of chains
-ni <- 80000 # number of iterations
+nc <- 4 # number of chains
+ni <- 300000 # number of iterations
 nb <- 10000 # burnin
-nt <- 1 # thin rate (keeps every 5th iteration)
+nt <- 5 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
                model.file=here("bayesian_modeling", "gamma_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
+
+saveRDS(m_test, file = here("bayesian_modeling", "gamma_original_300k.rds"))
 
 print(m_test)
 

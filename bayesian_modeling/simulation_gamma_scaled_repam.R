@@ -1,15 +1,13 @@
 library(tidyverse)
 library(jagsUI)
-library(truncnorm)
 library(here)
-
-#working, although it's slightly underestimating the error. Within the stated margin.
 
 known_ground <- 13000
 unknown_flight <- 150
-known_flight <- 0 # 150
-unknown_ground <- 430-150
-nsim <- known_ground + unknown_flight + known_flight + unknown_ground
+unknown_ground <- 280
+
+# unknown_flight <- 150*50 #model converges with more samples
+# unknown_ground <- 280*50
 
 shape <- 1.2470108
 rate <- 7.8222304
@@ -21,36 +19,13 @@ measurement_error <- 50/2183.475 #m
 known_ground_df <- tibble(HAT = rnorm(n=known_ground, mean=0, sd=measurement_error), HAT_index = rep(1, known_ground))
 unknown_ground_df <- tibble(HAT = rnorm(n=unknown_ground, mean=0, sd=measurement_error), HAT_index = rep(NA, unknown_ground))
 
-# known_flight_df <- tibble(HAT = rtruncnorm(n=known_flight, mean=330, sd=250, a = 0), HAT_index = rep(2, known_flight))
-
-known_flight_df <- tibble(HAT = rgamma(known_flight, shape = shape, rate = rate), HAT_index = rep(2, known_flight))
-known_flight_df$HAT <- map(known_flight_df$HAT, function(x){
-  rnorm(n=1, mean = x, sd=measurement_error)
-}) %>%
-  unlist()
-
-# unknown_flight_df <- tibble(HAT = rtruncnorm(n=unknown_flight, mean=330, sd=250, a = 0), HAT_index = rep(NA, unknown_flight))
 unknown_flight_df <- tibble(HAT = rgamma(unknown_flight, shape = shape, rate = rate), HAT_index = rep(NA, unknown_flight))
 unknown_flight_df$HAT <- map(unknown_flight_df$HAT, function(x){
   rnorm(n=1, mean = x, sd=measurement_error)
 }) %>%
   unlist()
 
-dt <- bind_rows(known_ground_df, unknown_ground_df, known_flight_df, unknown_flight_df)
-
-# dt <- data.frame(HAT=rep(NA, nsim), HAT_index=rep(NA, nsim))
-# dt$HAT_index <- c(rep(1, known_ground), rep(NA, unknown_flight), rep(NA, unknown_ground))
-# dt$HAT[1:known_ground] <- rnorm(n=known_ground, mean=0, sd=10)
-# dt$HAT[(known_ground+1):(known_ground+unknown_flight)] <- rnorm(n=unknown_flight, mean=330, sd=250)
-# dt$HAT[(known_ground+unknown_flight+1):nsim] <- rnorm(n=unknown_ground, mean=0, sd=10)
-
-hist(dt$HAT)
-
-# dt %>%
-#   filter(is.na(HAT_index)) %>%
-#   pull(HAT) %>%
-#   density() %>%
-#   plot()
+dt <- bind_rows(known_ground_df, unknown_ground_df, unknown_flight_df)
 
 sink(here("bayesian_modeling", "simulation_gamma_scaled_repam.jags"))
 cat("model{
@@ -63,7 +38,7 @@ cat("model{
     
     #priors
     for (k in 1:n_obs){
-    HAT_index[k] ~ dcat(c(0.6511628, 0.3488372)) # HAT_index can be either 1 or 2
+    HAT_index[k] ~ dcat(c(0.67, 0.33)) # 1 is a ground location, 2 is a flight location.
     }
    
     mu_bias ~ dnorm(0, 1) #negative values allowed
@@ -91,9 +66,9 @@ jags_data <- list(HAT = dt$HAT,
                   HAT_index = dt$HAT_index)
 # running jags
 nc <- 3 # number of chains
-ni <- 100000 # number of iterations
-nb <- 10000 # burnin
-nt <- 5 # thin rate (keeps every 5th iteration)
+ni <- 5000 # number of iterations
+nb <- 2000 # burnin
+nt <- 1 # thin rate (keeps every 5th iteration)
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
                model.file=here("bayesian_modeling", "simulation_gamma_scaled_repam.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
