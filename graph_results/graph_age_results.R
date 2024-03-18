@@ -5,7 +5,7 @@ library(ggpubr)
 library(here)
 library(ggnewscale)
 
-age_results <- readRDS(here("bayesian_modeling", "gamma_age_300k.rds"))
+age_results <- readRDS(here("bayesian_modeling", "gamma_age.rds"))
 # age_results <- readRDS(here("bayesian_modeling", "gamma_age.rds"))
 
 #examining mean flight altitudes
@@ -40,8 +40,8 @@ plot_mean_basic <- ggplot(mean_altitude, aes(x = samples,
        y = "Probability density",
        title  = "A",
        fill = "Age") + 
-  scale_fill_manual(values = c("Adult" = "#d8b365", "Juvenile" = "#3f7e7c")) +
-  scale_color_manual(values = c("Adult" = "#d8b365", "Juvenile" = "#3f7e7c")) +
+  scale_fill_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
+  scale_color_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   lims(y = c(-0.08, 1), x = c(0,750)) + #add a disclaimer that I cropped this
   guides(color = "none")
 
@@ -77,8 +77,8 @@ plot_sd_basic <- ggplot(sd_altitude, aes(x = samples,
        y = "Probability density",
        title = "B",
        fill = "Age") + 
-  scale_fill_manual(values = c("Adult" = "#d8b365", "Juvenile" = "#3f7e7c")) +
-  scale_color_manual(values = c("Adult" = "#d8b365", "Juvenile" = "#3f7e7c")) +
+  scale_fill_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
+  scale_color_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   lims(y = c(-0.08, 1), x = c(0,750)) +
   guides(color = "none")
 
@@ -149,14 +149,14 @@ plot_shape_rate_age <- ggplot() +
                   .width = c(.95, .8, .5)) +
   theme_bw() +
   labs(x = "Flight altitude", y = "Density", fill = "Credible intervals") +
-  scale_fill_manual(values = c("#fff2bb", "#d8b365", "#978847")) +
+  scale_fill_manual(values = c("#fee0d2", "#fc9272", "#de2d26")) +
   theme(legend.position = "none") +
   facet_wrap(vars(age), nrow = 2, ncol = 1) +
   new_scale_fill() +
   stat_lineribbon(data = filter(results_shape_rate_age, age == "Juvenile"),
                   mapping = aes(x = x, y = y, group = age),
                   .width = c(.95, .8, .5), alpha = 0.5) +
-  scale_fill_manual(values = c("#bffffd", "#5ab4ac", "#3f7e7c"))
+  scale_fill_manual(values = c("#deebf7", "#9ecae1", "#3182bd"))
 
 legend_adult <- ggplot() +
   stat_lineribbon(data = filter(results_shape_rate_age, age == "Adult"),
@@ -164,7 +164,7 @@ legend_adult <- ggplot() +
                   .width = c(.95, .8, .5)) +
   theme_bw() +
   labs(x = "Flight altitude", y = "Density", fill = "Adult credible intervals") +
-  scale_fill_manual(values = c("#fff2bb", "#d8b365", "#978847")) +
+  scale_fill_manual(values = c("#fee0d2", "#fc9272", "#de2d26")) +
   theme(legend.position = "bottom")
 
 legend_adult <- get_legend(legend_adult)
@@ -175,7 +175,7 @@ legend_juv <- ggplot() +
                   .width = c(.95, .8, .5)) +
   theme_bw() +
   labs(x = "Flight altitude", y = "Density", fill = "Juvenile credible intervals") +
-  scale_fill_manual(values = c("#bffffd", "#5ab4ac", "#3f7e7c")) +
+  scale_fill_manual(values = c("#deebf7", "#9ecae1", "#3182bd")) +
   theme(legend.position = "bottom")
 
 legend_juv <- get_legend(legend_juv)

@@ -96,7 +96,7 @@ jags_data <- list(HAT = altitude_data$hat_scaled,
 
 # running jags
 nc <- 4 # number of chains
-ni <- 300000 # number of iterations
+ni <- 200000 # number of iterations
 nb <- 10000 # burnin
 nt <- 5 # thin rate (keeps every 5th iteration)
 

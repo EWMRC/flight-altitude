@@ -4,7 +4,7 @@ library(tidybayes)
 library(ggpubr)
 library(here)
 
-original_results <- readRDS(here("bayesian_modeling", "gamma_original_300k.rds"))
+original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
 # original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
 
 #examining mean flight altitudes
