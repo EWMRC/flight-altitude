@@ -1,0 +1,124 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(jagsUI)
+library(here)
+library(furrr)
+# library(modeest)
+```
+
+```{r}
+original_results <- readRDS(here("bayesian_modeling", "gamma_original_300k.rds"))
+```
+
+Mode
+```{r}
+# mode (calculated from samples)
+mode_draws <- ((original_results$sims.list$shape_flight - 1)/original_results$sims.list$rate_flight)*2183.475
+
+mean(mode_draws); sd(mode_draws)
+
+# mode (calculated from mean shape and rate values)
+((original_results$mean$shape_flight - 1)/original_results$mean$rate_flight)*2183.475
+```
+
+Median
+```{r}
+plan(multisession)
+
+median_draws <- future_map2(.x = original_results$sims.list$shape_flight, 
+            .y = original_results$sims.list$rate_flight,
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = original_results$mean$shape_flight,
+                          rate = original_results$mean$rate_flight)
+              
+              res <- res * 2183.475
+              
+              return(median(res))
+            })
+
+plan(sequential)
+
+median_draws %>% 
+  unlist() %>% 
+  mean() #266.7297
+
+median_draws %>% 
+  unlist() %>% 
+  sd() #3.460729
+
+median_draws %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #(259.9976, 273.5555)
+```
+
+Are these birds regularly flying lower than the flight heights reported via radar?
+Calculate the percentage of these locations that fall below the minimum	threshold in Horton et al. 2016 (155m)
+```{r}
+t <- rgamma(n = 10000, 
+            shape = original_results$mean$shape_flight,
+            rate = original_results$mean$rate_flight)
+
+t <- t * 2183.475
+
+sum(t < 155)/10000
+
+plan(multisession)
+
+pct_below_threshold <- future_map2(.x = original_results$sims.list$shape_flight, 
+            .y = original_results$sims.list$rate_flight,
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = original_results$mean$shape_flight,
+                          rate = original_results$mean$rate_flight)
+              
+              res <- res * 2183.475
+              
+              return(sum(res < 155)/10000)
+            })
+
+plan(sequential)
+
+pct_below_threshold %>% 
+  unlist() %>% 
+  mean() #0.3143251
+
+pct_below_threshold %>% 
+  unlist() %>% 
+  sd() #0.004642529
+
+pct_below_threshold %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #(0.3052, 0.3234)
+```
+
+
+
+
+```{r}
+original_results$mean$shape_flight
+original_results$mean$rate_flight
+
+draws_from_mean <- rgamma(n = 10000, 
+                          shape = original_results$mean$shape_flight,
+                          rate = original_results$mean$rate_flight)
+
+draws_from_mean <- draws_from_mean*2183.475
+mlv(draws_from_mean, method = )
+
+gammaMode(shape = original_results$mean$shape_flight,
+          rate = original_results$mean$rate_flight)
+
+0.02571337*2183.475
+
+```
+

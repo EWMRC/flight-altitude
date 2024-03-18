@@ -1,0 +1,15 @@
+Look at flight altitude as a function of distance to coast?
+Altitude as a function of length of migratory step? Shouldn't be hard to calculate
+
+Alternatively- view as a species-specific look at how a relatively small
+migrant selects aerospace habitat
+What heights do they select relative to the mean? How well do they utilize
+the dominant wind? What does this suggest for their susceptibility to
+buildling collisions?
+
+Are these birds regularly flying lower than the flight heights reported via radar?
+	Calculate the percentage of these locations that fall below the minimum
+	threshold in Horton et al. 2016 (155m)
+	31.4% of locations below the minimum observation from radar (CI: 0.3052, 0.3234)
+	
+	Mode is rather low (56m); are we concerned?

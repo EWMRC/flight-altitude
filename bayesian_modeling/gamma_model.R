@@ -19,9 +19,7 @@ cat("model{
     sigma_error ~ dnorm(0, 1) T(0,) #standard deviation
    
     shape_flight ~ dnorm(0, 0.04) T(0,) #sd 5
-    # prec_shape <- pow(5, -2)
     rate_flight ~ dnorm(0, 0.01) T(0,) #sd 10
-    # prec_rate <- pow(10, -2)
 
 }  
     ")

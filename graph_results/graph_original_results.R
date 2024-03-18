@@ -122,3 +122,14 @@ ggsave(plot = plot_shape_rate,
        filename = here("graph_results", "plot_shape_rate.png"),
        width = 7/1.5,
        height = 5/1.5)
+
+# version that shows the minimum NEXRAD altitude
+plot_shape_rate_nexrad <- plot_shape_rate +
+  geom_vline(xintercept = 155, color = "red", linetype = 2, linewidth = 0.5, alpha = 0.5) +
+  annotate(geom = "text", x = 400, y = 4.7, label = "Minimum NEXRAD\ndetection altitude", 
+           color = "red", size = 2)
+
+ggsave(plot = plot_shape_rate_nexrad, 
+       filename = here("graph_results", "plot_shape_rate_nexrad.png"),
+       width = 7/1.5,
+       height = 5/1.5)
