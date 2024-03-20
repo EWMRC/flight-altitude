@@ -1,0 +1,33 @@
+Bootstrap: docker
+From: rocker/geospatial
+
+%files
+	/opt/ohpc/pub/JAGS/gnu8-4.3.0 /opt/ohpc/pub/JAGS/gnu8-4.3.0
+
+%environment
+	export PATH=/opt/ohpc/pub/JAGS/gnu8-4.3.0/bin:$PATH
+	export LD_LIBRARY_PATH=/opt/ohpc/pub/JAGS/gnu8-4.3.0/lib
+	export INCLUDE=/opt/ohpc/pub/JAGS/gnu8-4.3.0/include
+	export MANPATH=/opt/ohpc/pub/JAGS/gnu8-4.3.0/man
+
+%post
+	export PATH=/opt/ohpc/pub/JAGS/gnu8-4.3.0/bin:$PATH
+	export LD_LIBRARY_PATH=/opt/ohpc/pub/JAGS/gnu8-4.3.0/lib
+	export INCLUDE=/opt/ohpc/pub/JAGS/gnu8-4.3.0/include
+	export MANPATH=/opt/ohpc/pub/JAGS/gnu8-4.3.0/man
+	
+	R --vanilla -e 'install.packages("rjags", repos="http://cran.us.r-project.org")'
+	R --vanilla -e 'install.packages("tidyverse", repos="http://cran.us.r-project.org")'
+	R --vanilla -e 'install.packages("jagsUI", repos="http://cran.us.r-project.org")'
+        R --vanilla -e 'install.packages("sf", repos="http://cran.us.r-project.org")'
+        R --vanilla -e 'install.packages("suncalc", repos="http://cran.us.r-project.org")'
+        R --vanilla -e 'install.packages("here", repos="http://cran.us.r-project.org")'
+        R --vanilla -e 'install.packages("truncnorm", repos="http://cran.us.r-project.org")'
+
+
+# %runscript
+#	R $@
+
+%help
+	This container is the R rocker/geospatial container with the addition of the 
+	landscapemetrics R package. 

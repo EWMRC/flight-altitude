@@ -1,0 +1,491 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(jagsUI)
+library(here)
+library(furrr)
+```
+
+Adult is index 1, Juvenile 2
+```{r}
+season_results <- readRDS(here("bayesian_modeling", "gamma_age.rds"))
+```
+
+Mode
+```{r}
+# mode (calculated from samples)
+# fall
+mode_draws_adult <- ((season_results$sims.list$shape_flight[,1] - 1)/season_results$sims.list$rate_flight[,1])*2183.475
+
+mean(mode_draws_adult)
+#57.2387
+sd(mode_draws_adult)
+#101.048
+quantile(mode_draws_adult, probs = c(.025, .975))
+#-169.5780  225.2617 
+
+#spring
+mode_draws_juv <- ((season_results$sims.list$shape_flight[,2] - 1)/season_results$sims.list$rate_flight[,2])*2183.475
+
+mean(mode_draws_juv)
+#74.20405
+sd(mode_draws_juv)
+#71.28059
+quantile(mode_draws_juv, probs = c(.025, .975))
+#-79.71654 199.69409 
+```
+
+Median
+```{r}
+#fall
+plan(multisession)
+
+median_draws_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
+            .y = season_results$sims.list$rate_flight[,1],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              return(median(res))
+            })
+
+plan(sequential)
+
+median_draws_adult %>% 
+  unlist() %>% 
+  mean() #294.243
+
+# median_draws_adult %>% 
+#   unlist() %>% 
+#   sd() #57.11556
+
+median_draws_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #254.6625 332.8796
+
+median_draws_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #184.7205 407.5140
+
+# spring
+plan(multisession)
+
+median_draws_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
+            .y = season_results$sims.list$rate_flight[,2],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              return(median(res))
+            })
+
+plan(sequential)
+
+median_draws_juv %>% 
+  unlist() %>% 
+  mean() #260.1514
+
+# median_draws_juv %>% 
+#   unlist() %>% 
+#   sd() #42.31298
+
+median_draws_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #230.5052 288.4511
+
+median_draws_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #181.5864 345.3554
+```
+
+Mean
+```{r}
+#fall
+plan(multisession)
+
+mean_draws_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
+            .y = season_results$sims.list$rate_flight[,1],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              return(mean(res))
+            })
+
+plan(sequential)
+
+mean_draws_adult %>% 
+  unlist() %>% 
+  mean() #400.1174
+
+# mean_draws_adult %>% 
+#   unlist() %>% 
+#   sd() #56.15242
+
+mean_draws_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #360.0977 436.6900 
+
+mean_draws_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #301.2603 516.5560 
+
+#spring
+plan(multisession)
+
+mean_draws_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
+            .y = season_results$sims.list$rate_flight[,2],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              return(mean(res))
+            })
+
+plan(sequential)
+
+mean_draws_juv %>% 
+  unlist() %>% 
+  mean() #344.4008
+
+# mean_draws_juv %>% 
+#   unlist() %>% 
+#   sd() #40.81894
+
+mean_draws_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #316.2374 370.2197 
+
+mean_draws_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #269.8040 430.3563 
+```
+
+Are these birds regularly flying lower than the flight heights reported via radar?
+Calculate the percentage of these locations that fall below the minimum	threshold in Horton et al. 2016 (155m)
+```{r}
+#fall
+plan(multisession)
+
+pct_below_radar_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
+            .y = season_results$sims.list$rate_flight[,1],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              return(sum(res < 155)/10000)
+            })
+
+plan(sequential)
+
+pct_below_radar_threshold_adult %>% 
+  unlist() %>% 
+  mean() #0.288736
+
+# pct_below_radar_threshold_adult %>% 
+#   unlist() %>% 
+#   sd() #0.07868222
+
+pct_below_radar_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #0.2324 0.3408 
+
+pct_below_radar_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.1483 0.4528 
+
+#spring
+plan(multisession)
+
+pct_below_radar_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
+            .y = season_results$sims.list$rate_flight[,2],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              return(sum(res < 155)/10000)
+            })
+
+plan(sequential)
+
+pct_below_radar_threshold_juv %>% 
+  unlist() %>% 
+  mean() #0.314062
+
+# pct_below_radar_threshold_juv %>% 
+#   unlist() %>% 
+#   sd() #0.0705226
+
+pct_below_radar_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #0.2638 0.3630
+
+pct_below_radar_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.1815 0.4511
+```
+
+How may of these locations are at an altitude where they might collide with a building (0-47m)?
+```{r}
+#fall
+plan(multisession)
+
+pct_below_building_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
+            .y = season_results$sims.list$rate_flight[,1],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              derived <- sum(res <= 47)/10000
+              
+              return(derived)
+            })
+
+plan(sequential)
+
+pct_below_building_threshold_adult %>% 
+  unlist() %>% 
+  mean() #0.08989192
+
+# pct_below_building_threshold_adult %>% 
+#   unlist() %>% 
+#   sd() #0.05163886
+
+pct_below_building_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #0.0517 0.1173
+
+pct_below_building_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.0191000 0.2177025 
+
+#spring
+plan(multisession)
+
+pct_below_building_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
+            .y = season_results$sims.list$rate_flight[,2],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              derived <- sum(res <= 47)/10000
+              
+              return(derived)
+            })
+
+plan(sequential)
+
+pct_below_building_threshold_juv %>% 
+  unlist() %>% 
+  mean() #0.08937047
+
+# pct_below_building_threshold_juv %>% 
+#   unlist() %>% 
+#   sd() #0.04471384
+
+pct_below_building_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) # 0.0554 0.1165 
+
+pct_below_building_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.0230 0.1927 
+```
+
+How may of these locations are at an altitude where they might collide with a comm tower (0-244m)?
+```{r}
+#fall
+plan(multisession)
+
+pct_below_comm_tower_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
+            .y = season_results$sims.list$rate_flight[,1],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              derived <- sum(res <= 244)/10000
+              
+              return(derived)
+            })
+
+plan(sequential)
+
+pct_below_comm_tower_threshold_adult %>% 
+  unlist() %>% 
+  mean() #0.4305297
+
+# pct_below_comm_tower_threshold_adult %>% 
+#   unlist() %>% 
+#   sd() #0.07755391
+
+pct_below_comm_tower_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #0.3766 0.4848
+
+pct_below_comm_tower_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.2811 0.5809
+
+#spring
+plan(multisession)
+
+pct_below_comm_tower_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
+            .y = season_results$sims.list$rate_flight[,2],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              derived <- sum(res <= 244)/10000
+              
+              return(derived)
+            })
+
+plan(sequential)
+
+pct_below_comm_tower_threshold_juv %>% 
+  unlist() %>% 
+  mean() #0.4740009
+
+# pct_below_comm_tower_threshold_juv %>% 
+#   unlist() %>% 
+#   sd() #0.06716926
+
+pct_below_comm_tower_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #0.4283 0.5215
+
+pct_below_comm_tower_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.3396 0.5994
+```
+
+How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
+```{r}
+#fall
+plan(multisession)
+
+pct_below_wind_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
+            .y = season_results$sims.list$rate_flight[,1],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              derived <- sum(res > 32.2 & res <= 163.8)/10000
+              
+              return(derived)
+            })
+
+plan(sequential)
+
+pct_below_wind_threshold_adult %>% 
+  unlist() %>% 
+  mean() #0.2421135
+
+# pct_below_wind_threshold_adult %>% 
+#   unlist() %>% 
+#   sd() #0.04276762
+
+pct_below_wind_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #0.2142 0.2739
+
+pct_below_wind_threshold_adult %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.1503 0.3142
+
+#spring
+plan(multisession)
+
+pct_below_wind_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
+            .y = season_results$sims.list$rate_flight[,2],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rgamma(n = 10000, 
+                          shape = x,
+                          rate = y)
+              
+              res <- res * 2183.475
+              
+              derived <- sum(res > 32.2 & res <= 163.8)/10000
+              
+              return(derived)
+            })
+
+plan(sequential)
+
+pct_below_wind_threshold_juv %>% 
+  unlist() %>% 
+  mean() #0.2722336
+
+# pct_below_wind_threshold_juv %>% 
+#   unlist() %>% 
+#   sd() #0.04033627
+
+pct_below_wind_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.25, .75)) #0.2466 0.3014
+
+pct_below_wind_threshold_juv %>% 
+  unlist() %>% 
+  quantile(probs = c(.025, .975)) #0.1842 0.3409 
+```

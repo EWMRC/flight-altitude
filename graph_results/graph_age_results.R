@@ -34,7 +34,8 @@ plot_mean_basic <- ggplot(mean_altitude, aes(x = samples,
   stat_slab(slab_color = "black",
             fill = NA) +
   stat_pointinterval(position = position_nudge(x = c(-0.03, -0.03, -0.08, -0.08), 
-                                               y = c(-0.03, -0.03, -0.08, -0.08))) +
+                                               y = c(-0.03, -0.03, -0.08, -0.08)),
+                     .width	= c(0.5, 0.95)) +
   theme_bw() +
   labs(x = "Mean", 
        y = "Probability density",
@@ -43,7 +44,8 @@ plot_mean_basic <- ggplot(mean_altitude, aes(x = samples,
   scale_fill_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   scale_color_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   lims(y = c(-0.08, 1), x = c(0,750)) + #add a disclaimer that I cropped this
-  guides(color = "none")
+  guides(color = "none")  +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 plot_mean_basic
 
@@ -71,7 +73,8 @@ plot_sd_basic <- ggplot(sd_altitude, aes(x = samples,
   stat_slab(slab_color = "black",
             fill = NA) +
   stat_pointinterval(position = position_nudge(x = c(-0.03, -0.03, -0.08, -0.08), 
-                                               y = c(-0.03, -0.03, -0.08, -0.08))) +
+                                               y = c(-0.03, -0.03, -0.08, -0.08)), 
+                     .width	= c(0.5, 0.95)) +
   theme_bw() +
   labs(x = "Standard deviation", 
        y = "Probability density",
@@ -80,7 +83,8 @@ plot_sd_basic <- ggplot(sd_altitude, aes(x = samples,
   scale_fill_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   scale_color_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   lims(y = c(-0.08, 1), x = c(0,750)) +
-  guides(color = "none")
+  guides(color = "none") +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 plot_sd_basic
 
@@ -92,7 +96,7 @@ plot_mean_sd <- ggarrange(plot_mean_basic, plot_sd_basic,
 
 ggsave(filename = here("graph_results", "plot_mean_sd_age.png"),
        plot = plot_mean_sd,
-       width = 7/1.5,
+       width = 8/1.5,
        height = 7/1.5)
 
 # graphing shape and rate
@@ -156,7 +160,8 @@ plot_shape_rate_age <- ggplot() +
   stat_lineribbon(data = filter(results_shape_rate_age, age == "Juvenile"),
                   mapping = aes(x = x, y = y, group = age),
                   .width = c(.95, .8, .5), alpha = 0.5) +
-  scale_fill_manual(values = c("#deebf7", "#9ecae1", "#3182bd"))
+  scale_fill_manual(values = c("#deebf7", "#9ecae1", "#3182bd"))  +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 legend_adult <- ggplot() +
   stat_lineribbon(data = filter(results_shape_rate_age, age == "Adult"),
@@ -165,7 +170,8 @@ legend_adult <- ggplot() +
   theme_bw() +
   labs(x = "Flight altitude", y = "Density", fill = "Adult credible intervals") +
   scale_fill_manual(values = c("#fee0d2", "#fc9272", "#de2d26")) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom")  +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 legend_adult <- get_legend(legend_adult)
 
@@ -176,7 +182,8 @@ legend_juv <- ggplot() +
   theme_bw() +
   labs(x = "Flight altitude", y = "Density", fill = "Juvenile credible intervals") +
   scale_fill_manual(values = c("#deebf7", "#9ecae1", "#3182bd")) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 legend_juv <- get_legend(legend_juv)
 

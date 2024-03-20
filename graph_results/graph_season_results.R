@@ -62,7 +62,8 @@ plot_mean_basic <- ggplot(mean_altitude, aes(x = samples,
   stat_slab(slab_color = "black",
             fill = NA) +
   stat_pointinterval(position = position_nudge(x = c(-0.03, -0.03, -0.08, -0.08), 
-                                               y = c(-0.03, -0.03, -0.08, -0.08))) +
+                                               y = c(-0.03, -0.03, -0.08, -0.08)),
+                     .width	= c(0.5, 0.95)) +
   theme_bw() +
   labs(x = "Mean", 
        y = "Probability density",
@@ -71,7 +72,9 @@ plot_mean_basic <- ggplot(mean_altitude, aes(x = samples,
   scale_fill_manual(values = c("Fall" = "#e6550d", "Spring" = "#756bb1")) +
   scale_color_manual(values = c("Fall" = "#e6550d", "Spring" = "#756bb1")) +
   lims(x = c(0,750), y = c(-0.08, 1)) +
-  guides(color = "none")
+  guides(color = "none") +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
+  
 
 plot_mean_basic
 
@@ -105,7 +108,8 @@ plot_sd_basic <- ggplot(sd_altitude, aes(x = samples,
   stat_slab(slab_color = "black",
             fill = NA) +
   stat_pointinterval(position = position_nudge(x = c(-0.03, -0.03, -0.08, -0.08), 
-                                               y = c(-0.03, -0.03, -0.08, -0.08))) +
+                                               y = c(-0.03, -0.03, -0.08, -0.08)),
+                     .width	= c(0.5, 0.95)) +
   theme_bw() +
   labs(x = "Standard deviation", 
        y = "Probability density",
@@ -114,7 +118,8 @@ plot_sd_basic <- ggplot(sd_altitude, aes(x = samples,
   scale_fill_manual(values = c("Fall" = "#e6550d", "Spring" = "#756bb1")) +
   scale_color_manual(values = c("Fall" = "#e6550d", "Spring" = "#756bb1")) +
   lims(x = c(0,750), y = c(-0.08, 1)) +
-  guides(color = "none")
+  guides(color = "none") +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 plot_sd_basic
 
@@ -126,7 +131,7 @@ plot_mean_sd <- ggarrange(plot_mean_basic, plot_sd_basic,
 
 ggsave(filename = here("graph_results", "plot_mean_sd_season.png"),
        plot = plot_mean_sd,
-       width = 7/1.5,
+       width = 8/1.5,
        height = 7/1.5)
 
 # graphing shape and rate
@@ -190,7 +195,8 @@ plot_shape_rate_season <- ggplot() +
   stat_lineribbon(data = filter(results_shape_rate_season, season == "Spring"),
                   mapping = aes(x = x, y = y, group = season),
                   .width = c(.95, .8, .5), alpha = 0.5) +
-  scale_fill_manual(values = c("#efedf5", "#bcbddc", "#756bb1"))
+  scale_fill_manual(values = c("#efedf5", "#bcbddc", "#756bb1")) +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 legend_fall <- ggplot() +
   stat_lineribbon(data = filter(results_shape_rate_season, season == "Fall"),
@@ -199,7 +205,8 @@ legend_fall <- ggplot() +
   theme_bw() +
   labs(x = "Flight altitude", y = "Density", fill = "Fall credible intervals") +
   scale_fill_manual(values = c("#fee6ce", "#fdae6b", "#e6550d")) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 legend_fall <- get_legend(legend_fall)
 
@@ -210,7 +217,8 @@ legend_spring <- ggplot() +
   theme_bw() +
   labs(x = "Flight altitude", y = "Density", fill = "Spring credible intervals") +
   scale_fill_manual(values = c("#efedf5", "#bcbddc", "#756bb1")) +
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom") +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 legend_spring <- get_legend(legend_spring)
 
