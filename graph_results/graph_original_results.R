@@ -5,8 +5,8 @@ library(ggpubr)
 library(here)
 library(ggimage)
 
-original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
-# original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
+original_results <- readRDS(here("bayesian_modeling", "gamma_original_new.rds"))
+original_results_old <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
 
 #examining mean flight altitudes
 # mean is shape/rate
@@ -91,7 +91,7 @@ plot_sd_basic
 # combining mean and sd into a single plot
 plot_mean_sd <- ggarrange(plot_mean_basic, plot_sd_basic) #labels="AUTO"
 
-ggsave(filename = here("graph_results", "plot_mean_sd.png"),
+ggsave(filename = here("graph_results", "plot_mean_sd_new.png"),
        plot = plot_mean_sd,
        width = 7/1.5,
        height = 5/1.5)
@@ -130,7 +130,7 @@ plot_shape_rate <- results_shape_rate %>%
 
 
 ggsave(plot = plot_shape_rate, 
-       filename = here("graph_results", "plot_shape_rate.png"),
+       filename = here("graph_results", "plot_shape_rate_new.png"),
        width = 7/1.5,
        height = 5/1.5)
 

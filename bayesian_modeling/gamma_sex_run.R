@@ -5,19 +5,19 @@ library(here)
 library(jagsUI)
 library(truncnorm)
 
-covariates <- read.csv(here("intermediate_files", "imported_movebank_data.csv"))
+# covariates <- read.csv(here("intermediate_files", "imported_movebank_data.csv"))
 
-raw_data <- st_read(here("intermediate_files", "raw_elevation_values.shp")) %>% 
-  st_drop_geometry() %>% 
-  arrange(Field1) %>% 
-  dplyr::select(t_hae_m)
+raw_data <- read.csv(here("intermediate_files", "raw_elevation_values.csv")) #%>% 
+# st_drop_geometry() %>% 
+# arrange(Field1) %>% 
+# dplyr::select(t_hae_m)
 
-raw_data <- covariates %>% 
-  bind_cols(raw_data)
+# raw_data <- covariates %>% 
+#   bind_cols(raw_data)
 
 #calculate height above terrain and begin filtering to 3D fixes
 raw_data <- raw_data %>% 
-  mutate(height_above_terrain = height_above_wgs84 - t_hae_m) %>% 
+  mutate(height_above_terrain = height_above_wgs84_1 - Terrain) %>% 
   filter(fix == "3D") %>% 
   filter(point_state != "") #filter out empty point states
 
@@ -79,7 +79,7 @@ sex <- altitude_data$sex %>%
 
 # Scale locations between -1 and 1
 altitude_data <- altitude_data %>% 
-  mutate(hat_scaled = height_above_terrain/2183.475)
+  mutate(hat_scaled = height_above_terrain/2218.084)
 
 
 inits <- function(){list(mu_bias = rnorm(1,0,1),
@@ -104,7 +104,7 @@ m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters,
                model.file=here("bayesian_modeling", "gamma_sex_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
 
-saveRDS(m_test, file = here("bayesian_modeling", "gamma_sex.rds"))
+saveRDS(m_test, file = here("bayesian_modeling", "gamma_sex_new.rds"))
 
 print(m_test)
 
