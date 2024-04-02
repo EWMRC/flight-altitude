@@ -20,6 +20,9 @@ cat("model{
    
     shape_flight ~ dnorm(0, 0.04) T(0,) #sd 5
     rate_flight ~ dnorm(0, 0.01) T(0,) #sd 10
+   
+   # derived parameters
+   mean_HAT_index <- mean(HAT_index)
 
 }  
     ")

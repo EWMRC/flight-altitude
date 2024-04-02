@@ -8,6 +8,7 @@ library(tidyverse)
 library(jagsUI)
 library(here)
 library(furrr)
+library(bayestestR)
 ```
 
 ```{r}
@@ -19,12 +20,11 @@ Mode
 # mode (calculated from samples)
 mode_draws <- ((original_results$sims.list$shape_flight - 1)/original_results$sims.list$rate_flight)*2183.475
 
-mean(mode_draws)
-# 35.5557
-sd(mode_draws)
-# 62.18645
-quantile(mode_draws, probs = c(.025, .975))
-# -99.07641 145.68088 
+median(mode_draws)
+#40.9096
+
+hdi(mode_draws, ci = 0.95)
+# 95% HDI: [-95.68, 148.51]
 
 # mode (calculated from mean shape and rate values)
 # ((original_results$mean$shape_flight - 1)/original_results$mean$rate_flight)*2183.475
@@ -52,7 +52,7 @@ plan(sequential)
 
 median_draws %>% 
   unlist() %>% 
-  mean() #262.3743
+  median() #262.4739
 
 # median_draws %>% 
 #   unlist() %>% 
@@ -60,11 +60,11 @@ median_draws %>%
 
 median_draws %>% 
   unlist() %>% 
-  quantile(probs = c(.25, .75)) #
+  hdi(ci = 0.5) #50% HDI: [239.99, 286.13]
 
 median_draws %>% 
   unlist() %>% 
-  quantile(probs = c(.025, .975)) #194.8041 331.5516
+  hdi(ci = 0.95) #95% HDI: [194.30, 331.02]
 ```
 
 Mean
@@ -89,7 +89,7 @@ plan(sequential)
 
 mean_draws %>% 
   unlist() %>% 
-  mean() #363.7003
+  median() #362.9351
 
 # mean_draws %>% 
 #   unlist() %>% 
@@ -97,11 +97,11 @@ mean_draws %>%
 
 mean_draws %>% 
   unlist() %>% 
-  quantile(probs = c(.25, .75)) #
+  hdi(ci = 0.5) #50% HDI: [339.02, 384.70]
 
 mean_draws %>% 
   unlist() %>% 
-  quantile(probs = c(.025, .975)) #299.7807 431.6174 
+  hdi(ci = 0.95) #95% HDI: [298.68, 430.46]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -127,7 +127,7 @@ plan(sequential)
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  mean() #0.325808
+  median() #0.324
 
 # pct_below_radar_threshold %>% 
 #   unlist() %>% 
@@ -135,11 +135,11 @@ pct_below_radar_threshold %>%
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.25, .75)) #
+  hdi(ci = 0.5) #50% HDI: [0.29, 0.36]
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.025, .975)) #0.2251 0.4337
+  hdi(0.95) #95% HDI: [0.22, 0.43]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -166,7 +166,7 @@ plan(sequential)
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  mean() #0.1046778
+  median() #0.1
 
 # pct_below_building_threshold %>% 
 #   unlist() %>% 
@@ -174,14 +174,14 @@ pct_below_building_threshold %>%
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.25, .75)) # 
+  hdi(ci = 0.5) #50% HDI: [0.07, 0.12]
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.025, .975)) #0.0445 0.1897 
+  hdi(ci = 0.95) #95% HDI: [0.04, 0.18]
 ```
 
-How may of these locations are at an altitude where they might collide with a comm tower (0-244m)?
+How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
 ```{r}
 plan(multisession)
 
@@ -196,7 +196,7 @@ pct_below_comm_tower_threshold <- future_map2(.x = original_results$sims.list$sh
               
               res <- res * 2183.475
               
-              derived <- sum(res <= 244)/10000
+              derived <- sum(res <= 305)/10000
               
               return(derived)
             })
@@ -205,7 +205,7 @@ plan(sequential)
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  mean() #0.4733745
+  median() #0.5572
 
 # pct_below_comm_tower_threshold %>% 
 #   unlist() %>% 
@@ -213,11 +213,11 @@ pct_below_comm_tower_threshold %>%
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.25, .75)) #
+  hdi(ci = 0.5) #50% HDI: [0.53, 0.59]
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.025, .975)) #0.3744 0.5711 
+  hdi(ci = 0.95) #95% HDI: [0.47, 0.65]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -244,7 +244,7 @@ plan(sequential)
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  mean() #0.2702086
+  median() #0.2718
 
 # pct_below_wind_threshold %>% 
 #   unlist() %>% 
@@ -252,9 +252,9 @@ pct_below_wind_threshold %>%
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.25, .75)) #
+  hdi(ci = 0.5) #50% HDI: [0.26, 0.29]
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  quantile(probs = c(.025, .975)) #0.2129 0.3174
+  hdi(ci = 0.95) #95% HDI: [0.22, 0.32]
 ```

@@ -82,7 +82,7 @@ inits <- function(){list(mu_bias = rnorm(1,0,1),
                          shape_flight = runif(1,0,5), #
                          rate_flight = runif(1,0,10))}
 
-parameters <- c("mu_bias", "sigma_error", "shape_flight", "rate_flight") #
+parameters <- c("mu_bias", "sigma_error", "shape_flight", "rate_flight", "mean_HAT_index") #
 
 jags_data <- list(HAT = altitude_data$hat_scaled,
                   n_obs = nrow(altitude_data),
@@ -92,13 +92,13 @@ jags_data <- list(HAT = altitude_data$hat_scaled,
 nc <- 4 # number of chains
 ni <- 200000 # number of iterations
 nb <- 10000 # burnin
-nt <- 5 # thin rate (keeps every 5th iteration)
+#nt <- 5 # thin rate (keeps every 5th iteration)
 
 m_test <- jags(data=jags_data, inits=inits, parameters.to.save = parameters, 
                model.file=here("bayesian_modeling", "gamma_model.jags"), n.chains=nc, n.iter=ni, n.burnin=nb,
                parallel=T)
 
-saveRDS(m_test, file = here("bayesian_modeling", "gamma_original.rds"))
+saveRDS(m_test, file = here("bayesian_modeling", "gamma_original_index.rds"))
 
 print(m_test)
 
