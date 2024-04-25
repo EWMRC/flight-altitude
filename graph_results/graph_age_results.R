@@ -92,7 +92,8 @@ plot_sd_basic
 plot_mean_sd <- ggarrange(plot_mean_basic, plot_sd_basic,
                           legend = "bottom",
                           common.legend = TRUE) +
-  bgcolor("white")
+  bgcolor("white") +
+  border("white")
 
 ggsave(filename = here("graph_results", "plot_mean_sd_age.png"),
        plot = plot_mean_sd,

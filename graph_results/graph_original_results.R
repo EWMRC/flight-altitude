@@ -155,12 +155,12 @@ icon_tibble <- tibble(x = 2000, y = c(4.25, 2.75, 1.25),
 
 collision_plot <-  ggplot() +
   geom_rect(aes(xmin = 0, xmax = 47, ymin = -1, ymax = 6), alpha = 0.4, fill = "#cb0824") +
-  geom_rect(aes(xmin = 0, xmax = 244, ymin = -1, ymax = 6), alpha = 0.4, fill = "#fe8211") +
+  geom_rect(aes(xmin = 0, xmax = 305, ymin = -1, ymax = 6), alpha = 0.4, fill = "#fe8211") +
   geom_rect(aes(xmin = 0, xmax = 163.8, ymin = -1, ymax = 6), alpha = 0.4, fill = "#f04122") + #32.2
   stat_lineribbon(data = results_shape_rate, mapping = aes(x = x, y = y), .width = c(.95, .8, .5), 
                   alpha = 0.8) +
   theme_bw() +
-  labs(x = "Flight altitude", y = "Density", fill= "Credible intervals") +
+  labs(x = "Flight altitude", y = "Probability density", fill= "Credible intervals") +
   scale_fill_manual(values = rev(c("#636363", "#bdbdbd", "#f0f0f0"))) +
   #scale_fill_brewer() + 
   theme(legend.position="bottom") +
@@ -168,12 +168,50 @@ collision_plot <-  ggplot() +
   scale_x_continuous(label = scales::label_number(suffix = "m")) +
   geom_image(mapping = aes(x = x, y = y, image = image), 
              data = icon_tibble, 
-             color = c("#ef5a30", "#f87c4c", "#ffb776"),
+             color = c("#ef5a30", "#f87c4c", "#ba5800"),
              size = 0.2) +
   guides(color = "none")
 
 
 ggsave(plot = collision_plot, 
        filename = here("graph_results", "collision_plot.png"),
+       width = 7/1.5,
+       height = 5/1.5)
+
+# smaller version for dissertation defense
+
+# icon_tibble_small <- tibble(x = c(300, 375, 450), y = 4.25, 
+#                       image = c(here("graph_results", "building.png"), 
+#                                 here("graph_results", "wind-turbine.png"),
+#                                 here("graph_results", "signal.png")),
+#                       col = c("#f1724e", "#f9956e", "#ffcda0"))
+
+icon_tibble_small <- tibble(x = c(25, 100, 230), y = 0.5, 
+                            image = c(here("graph_results", "building.png"), 
+                                      here("graph_results", "wind-turbine.png"),
+                                      here("graph_results", "signal.png")),
+                            col = c("#f1724e", "#f9956e", "#ffcda0"))
+
+collision_plot_small <-  ggplot() +
+  geom_rect(aes(xmin = 0, xmax = 47, ymin = -1, ymax = 6), alpha = 0.4, fill = "#cb0824") +
+  geom_rect(aes(xmin = 0, xmax = 305, ymin = -1, ymax = 6), alpha = 0.4, fill = "#fe8211") +
+  geom_rect(aes(xmin = 0, xmax = 163.8, ymin = -1, ymax = 6), alpha = 0.4, fill = "#f04122") + #32.2
+  stat_lineribbon(data = results_shape_rate, mapping = aes(x = x, y = y), .width = c(.95, .8, .5), 
+                  alpha = 0.8) +
+  theme_bw() +
+  labs(x = "Flight altitude", y = "Probability density", fill= "Credible intervals") +
+  scale_fill_manual(values = rev(c("#636363", "#bdbdbd", "#f0f0f0"))) +
+  #scale_fill_brewer() + 
+  theme(legend.position="bottom") +
+  coord_cartesian(ylim=c(0, 5), xlim = c(0,350)) +
+  scale_x_continuous(label = scales::label_number(suffix = "m")) +
+  geom_image(mapping = aes(x = x, y = y, image = image), 
+             data = icon_tibble_small, 
+             color = c("#85250a", "#9c3006", "#ba5800"),
+             size = 0.2) +
+  guides(color = "none")
+
+ggsave(plot = collision_plot_small, 
+       filename = here("graph_results", "collision_plot_small.png"),
        width = 7/1.5,
        height = 5/1.5)
