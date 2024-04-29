@@ -11,3 +11,8 @@ gamma_age_300k.rds
 gamma_original_300k.rds
 gamma_season_300k.rds
 gamma_sex_300k.rds
+
+gamma_age_stan.rds
+gamma_original_stan.rds
+gamma_season_stan.rds
+gamma_sex_stan.rds

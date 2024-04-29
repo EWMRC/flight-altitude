@@ -23,7 +23,7 @@ unknown_ground <- 335 #2500
 shape <- 1.25
 rate <- 7.82
 
-unknown_flight_df <- tibble(HAT = rgamma(unknown_flight, shape = shape, rate = rate), HAT_index = rep(0, unknown_flight))
+unknown_flight_df <- tibble(HAT = rgamma(unknown_flight, shape = shape, rate = rate), HAT_index = rep(1, unknown_flight))
 unknown_flight_df$HAT <- unknown_flight_df$HAT %>%
   map(.f = function(x){ #incorporate measurement error
     rnorm(n = 1, mean = x, sd = measurement_error)
@@ -33,7 +33,7 @@ unknown_flight_df$HAT <- unknown_flight_df$HAT %>%
 unknown_ground_df <- tibble(HAT = rnorm(n=unknown_ground, mean=0, sd=measurement_error), HAT_index = rep(0, unknown_ground))
 unknown_df <- bind_rows(unknown_flight_df, unknown_ground_df)
 
-model_compiled <- stan_model(here("bayesian_modeling", "stan", "stan_attempt_7.stan"))
+model_compiled <- stan_model(here("bayesian_modeling", "stan", "stan_original_sim.stan"))
 
 init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
@@ -45,15 +45,27 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$HAT), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "pState"),
+                pars = c("mu_bias", "sigma_error", "shape", "rate", "sample_size", "p_flight"),
                 iter = 15000, #just bumping up the ESS here- converges on as few as 2000 iter
                 chains = 4)
 
 print(fit)
-launch_shinystan(fit)
+# launch_shinystan(fit) #diagnostics
 
-# fit@sim$samples[[1]][["pState[1]"]] %>%
-#   median()
+# checking how accurately the model predicted flight states
+unknown_df_results <- unknown_df %>% 
+  mutate(row = 1:nrow(unknown_df)) %>% 
+  mutate(param = paste0("p_flight[", row, "]"))
 
-# fit@sim$samples[[1]][["pState[500]"]] %>%
-#   median()
+unknown_df_results$p_flight_median <- unknown_df_results$param %>%
+  map(function(x){
+    median(rstan::extract(fit, x)[[1]])
+  }) %>% 
+  unlist()
+
+unknown_df_results %>% 
+  mutate(HAT_index = factor(HAT_index)) %>% 
+  ggplot(mapping = aes(x = HAT_index, y = p_flight_median)) +
+  geom_boxplot()
+
+# simulation seems to be working- some outliers, but that's unavoidable. Onto the real thing
