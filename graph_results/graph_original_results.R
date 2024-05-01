@@ -5,15 +5,13 @@ library(ggpubr)
 library(here)
 library(ggimage)
 
-original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
 # original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
+original_results <- readRDS(here("bayesian_modeling", "stan", "gamma_original_stan.rds"))
 
 #examining mean flight altitudes
 # mean is shape/rate
-mean_altitude <- (original_results$sims.list$shape_flight/original_results$sims.list$rate_flight)*2183.475
-mean(mean_altitude)
-sd(mean_altitude)
-quantile(mean_altitude, c(.025,.975))
+mean_altitude <- (rstan::extract(original_results, "shape")[[1]]/rstan::extract(original_results, "rate")[[1]])*2183.475
+median(mean_altitude) #361.9766
 
 mean_altitude <- tibble(samples = mean_altitude)
 
@@ -37,35 +35,8 @@ plot_mean_basic <- ggplot(mean_altitude, aes(x = samples)) +
 
 plot_mean_basic
 
-# intervals
-# ggplot(mean_altitude, aes(x = samples)) +
-#   stat_slab(aes(fill = after_stat(level)), .width = c(.66, .95, 1), 
-#             color = "black") +
-#   stat_pointinterval() +
-#   theme_bw() +
-#   lims(y = c(0,1)) +
-#   labs(x = "Mean flight altitude", y = "Probability density") +
-#   scale_fill_manual(values = c("1" = "#deebf7",
-#                                "0.95" = "#9ecae1",
-#                                "0.66" = "#3182bd")) + 
-#   theme(legend.position = "none")
-
-# gradient
-# ggplot(mean_altitude, aes(x = samples)) +
-#   stat_halfeye(aes(slab_alpha = after_stat(f)), fill_type = "gradient",
-#                slab_fill = "#3182bd",
-#                slab_color = "black") +
-#   stat_halfeye(slab_color = "black", fill = NA) +
-#   theme_bw() +
-#   labs(x = "Mean flight altitude", y = "Probability density") + 
-#   theme(legend.position = "none")
-
-# examining sd of flight altitudes
-# sd is (shape/((rate)^2))^0.5
-sd_altitude <- ((original_results$sims.list$shape_flight/((original_results$sims.list$rate_flight)^2))^0.5)*2183.475
-mean(sd_altitude)
-sd(sd_altitude)
-quantile(sd_altitude, c(.025,.975))
+sd_altitude <- ((rstan::extract(original_results, "shape")[[1]]/((rstan::extract(original_results, "rate")[[1]])^2))^0.5)*2183.475
+median(sd_altitude) #339.7391
 
 sd_altitude <- tibble(samples = sd_altitude)
 
@@ -91,7 +62,7 @@ plot_sd_basic
 # combining mean and sd into a single plot
 plot_mean_sd <- ggarrange(plot_mean_basic, plot_sd_basic) #labels="AUTO"
 
-ggsave(filename = here("graph_results", "plot_mean_sd.png"),
+ggsave(filename = here("graph_results", "plot_mean_sd_stan.png"),
        plot = plot_mean_sd,
        width = 7/1.5,
        height = 5/1.5)
@@ -101,14 +72,16 @@ ggsave(filename = here("graph_results", "plot_mean_sd.png"),
 
 # subsample to a reasonable number of draws
 set.seed(8)
-draws_sampled <- sample(1:length(original_results$sims.list$shape_flight), 
-                        size = 10000)
+# draws_sampled <- sample(1:length(original_results$sims.list$shape_flight), 
+#                         size = 10000)
+
+draws_sampled <- 1:length(rstan::extract(original_results, "shape")[[1]])
 
 results_shape_rate <- map(draws_sampled, #
     function(index){
       res <- rgamma(n = 1000, 
-             shape = original_results$sims.list$shape_flight[index],
-             rate = original_results$sims.list$rate_flight[index]) %>% 
+             shape = rstan::extract(original_results, "shape")[[1]][index],
+             rate = rstan::extract(original_results, "rate")[[1]][index]) %>% 
         density(n = 200, from = 0, to = 1)
       
       tibble(x = res$x, y = res$y) %>% 
@@ -130,7 +103,7 @@ plot_shape_rate <- results_shape_rate %>%
 
 
 ggsave(plot = plot_shape_rate, 
-       filename = here("graph_results", "plot_shape_rate.png"),
+       filename = here("graph_results", "plot_shape_rate_stan.png"),
        width = 7/1.5,
        height = 5/1.5)
 
@@ -141,7 +114,7 @@ plot_shape_rate_nexrad <- plot_shape_rate +
            color = "red", size = 2)
 
 ggsave(plot = plot_shape_rate_nexrad, 
-       filename = here("graph_results", "plot_shape_rate_nexrad.png"),
+       filename = here("graph_results", "plot_shape_rate_nexrad_stan.png"),
        width = 7/1.5,
        height = 5/1.5)
 
@@ -174,7 +147,7 @@ collision_plot <-  ggplot() +
 
 
 ggsave(plot = collision_plot, 
-       filename = here("graph_results", "collision_plot.png"),
+       filename = here("graph_results", "collision_plot_stan.png"),
        width = 7/1.5,
        height = 5/1.5)
 
@@ -212,6 +185,6 @@ collision_plot_small <-  ggplot() +
   guides(color = "none")
 
 ggsave(plot = collision_plot_small, 
-       filename = here("graph_results", "collision_plot_small.png"),
+       filename = here("graph_results", "collision_plot_small_stan.png"),
        width = 7/1.5,
        height = 5/1.5)

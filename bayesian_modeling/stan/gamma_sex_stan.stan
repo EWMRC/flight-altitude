@@ -34,7 +34,7 @@ model {
   
   //priors
   for(i in 1:n_obs_unknown){
-    real_alt[i] ~ gamma(shape[sex[i]], sex[sex[i]]);
+    real_alt[i] ~ gamma(shape[sex[i]], rate[sex[i]]);
   }
   
   mu_bias ~ normal(0, 1); //can be negative

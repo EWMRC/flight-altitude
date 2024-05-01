@@ -5,58 +5,26 @@ library(ggpubr)
 library(here)
 library(ggnewscale)
 
-season_results <- readRDS(here("bayesian_modeling", "gamma_season.rds"))
 # season_results <- readRDS(here("bayesian_modeling", "gamma_season.rds"))
+season_results <- readRDS(here("bayesian_modeling", "stan", "gamma_season_stan.rds"))
 
 #examining mean flight altitudes
 # mean is shape/rate
-mean_altitude_fall <- (season_results$sims.list$shape_flight[, 1]/season_results$sims.list$rate_flight[,1])*2183.475
-mean(mean_altitude_fall)
-sd(mean_altitude_fall)
-quantile(mean_altitude_fall, c(.025,.975))
+mean_altitude_fall <- (rstan::extract(season_results, "shape")[[1]][,1]/rstan::extract(season_results, "rate")[[1]][,1])*2183.475
+median(mean_altitude_fall)
 
-mean_altitude_spring <- (season_results$sims.list$shape_flight[, 2]/season_results$sims.list$rate_flight[,2])*2183.475
-mean(mean_altitude_spring)
-sd(mean_altitude_spring)
-quantile(mean_altitude_spring, c(.025,.975))
+mean_altitude_spring <- (rstan::extract(season_results, "shape")[[1]][,2]/rstan::extract(season_results, "rate")[[1]][,2])*2183.475
+median(mean_altitude_spring)
 
 mean_altitude_fall <- tibble(season = "Fall", samples = mean_altitude_fall)
 mean_altitude_spring <- tibble(season = "Spring", samples = mean_altitude_spring)
 mean_altitude <- bind_rows(mean_altitude_fall, mean_altitude_spring)
-
-# plot options: (going with basic for now)
-# basic
-# plot_mean_basic <- ggplot(mean_altitude, aes(x = samples, 
-#                                              group = season,
-#                                              color = season)) +
-#   stat_halfeye(aes(fill = season),
-#                slab_alpha = 0.5,
-#                #slab_fill = "#3182bd",
-#                slab_color = "black") +
-#   stat_halfeye(slab_color = "black", 
-#                fill = NA) +
-#   theme_bw() +
-#   labs(x = "Mean", 
-#        y = "Probability density",
-#        title  = "A") + 
-#   theme(legend.position = "none") +
-#   facet_wrap(vars(season),
-#              nrow = 2,
-#              ncol = 1) +
-#   scale_fill_manual(values = c("Fall" = "#A82203FF", "Spring" = "#003967FF")) +
-#   scale_color_manual(values = c("Fall" = "#A82203FF", "Spring" = "#003967FF"))
 
 # overlap version
 # note that plot uses median and highest density interval
 plot_mean_basic <- ggplot(mean_altitude, aes(x = samples, 
                                              group = season,
                                              color = season)) +
-  # stat_halfeye(aes(fill = season),
-  #              slab_alpha = 0.5,
-  #              #slab_fill = "#3182bd",
-  #              slab_color = "black") +
-  # stat_halfeye(slab_color = "black", 
-  #              fill = NA) +
   stat_slab(aes(fill = season),
             slab_alpha = 0.5, slab_color = "black") +
   stat_slab(slab_color = "black",
@@ -80,15 +48,11 @@ plot_mean_basic
 
 # examining sd of flight altitudes
 # sd is (shape/((rate)^2))^0.5
-sd_altitude_fall <- ((season_results$sims.list$shape_flight[, 1]/((season_results$sims.list$rate_flight[, 1])^2))^0.5)*2183.475
-mean(sd_altitude_fall)
-sd(sd_altitude_fall)
-quantile(sd_altitude_fall, c(.025,.975))
+sd_altitude_fall <- ((rstan::extract(season_results, "shape")[[1]][,1]/((rstan::extract(season_results, "rate")[[1]][,1])^2))^0.5)*2183.475
+median(sd_altitude_fall)
 
-sd_altitude_spring <- ((season_results$sims.list$shape_flight[, 2]/((season_results$sims.list$rate_flight[, 2])^2))^0.5)*2183.475
-mean(sd_altitude_spring)
-sd(sd_altitude_spring)
-quantile(sd_altitude_spring, c(.025,.975))
+sd_altitude_spring <- ((rstan::extract(season_results, "shape")[[1]][,2]/((rstan::extract(season_results, "rate")[[1]][,2])^2))^0.5)*2183.475
+median(sd_altitude_spring)
 
 sd_altitude_fall <- tibble(season = "Fall", samples = sd_altitude_fall)
 sd_altitude_spring <- tibble(season = "Spring", samples = sd_altitude_spring)
@@ -130,7 +94,7 @@ plot_mean_sd <- ggarrange(plot_mean_basic, plot_sd_basic,
   bgcolor("white") +
   border("white")
 
-ggsave(filename = here("graph_results", "plot_mean_sd_season.png"),
+ggsave(filename = here("graph_results", "plot_mean_sd_season_stan.png"),
        plot = plot_mean_sd,
        width = 8/1.5,
        height = 7/1.5)
@@ -140,14 +104,13 @@ ggsave(filename = here("graph_results", "plot_mean_sd_season.png"),
 
 # subsample to a reasonable number of draws
 set.seed(8)
-draws_sampled_fall <- sample(1:length(season_results$sims.list$shape_flight[,1]), 
-                        size = 10000)
+draws_sampled_fall <- 1:length(rstan::extract(season_results, "shape")[[1]][,1])
 
 results_shape_rate_fall <- map(draws_sampled_fall, #
     function(index){
       res <- rgamma(n = 1000, 
-             shape = season_results$sims.list$shape_flight[index,1],
-             rate = season_results$sims.list$rate_flight[index,1]) %>% 
+             shape = rstan::extract(season_results, "shape")[[1]][index,1],
+             rate = rstan::extract(season_results, "rate")[[1]][index,1]) %>% 
         density(n = 200, from = 0, to = 1)
       
       tibble(x = res$x, y = res$y) %>% 
@@ -158,14 +121,13 @@ results_shape_rate_fall <- map(draws_sampled_fall, #
 results_shape_rate_fall$x <- results_shape_rate_fall$x*2183.475
 
 set.seed(8)
-draws_sampled_spring <- sample(1:length(season_results$sims.list$shape_flight[,2]), 
-                             size = 10000)
+draws_sampled_spring <- 1:length(rstan::extract(season_results, "shape")[[1]][,2])
 
 results_shape_rate_spring <- map(draws_sampled_spring, #
                                function(index){
                                  res <- rgamma(n = 1000, 
-                                               shape = season_results$sims.list$shape_flight[index,2],
-                                               rate = season_results$sims.list$rate_flight[index,2]) %>% 
+                                               shape = rstan::extract(season_results, "shape")[[1]][index,2],
+                                               rate = rstan::extract(season_results, "rate")[[1]][index,2]) %>% 
                                    density(n = 200, from = 0, to = 1)
                                  
                                  tibble(x = res$x, y = res$y) %>% 
@@ -232,6 +194,6 @@ plot_shape_rate_season_combined <- ggarrange(plot_shape_rate_season,
   bgcolor("white")
 
 ggsave(plot = plot_shape_rate_season_combined, 
-       filename = here("graph_results", "plot_shape_rate_season.png"),
+       filename = here("graph_results", "plot_shape_rate_season_stan.png"),
        width = 7/1.5,
        height = 6/1.5)
