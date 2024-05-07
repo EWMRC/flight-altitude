@@ -9,11 +9,11 @@ sex_results <- readRDS(here("bayesian_modeling", "stan", "gamma_sex_stan.rds"))
 
 #examining mean flight altitudes
 # mean is shape/rate
-mean_altitude_female <- (rstan::extract(sex_results, "shape")[[1]][,1]/rstan::extract(sex_results, "rate")[[1]][,1])*2183.475
-median(mean_altitude_female)
+mean_altitude_female <- (rstan::extract(sex_results, "shape_female")[[1]]/rstan::extract(sex_results, "rate_female")[[1]])*2183.475
+median(mean_altitude_female) #333.6355
 
-mean_altitude_male <- (rstan::extract(sex_results, "shape")[[1]][,2]/rstan::extract(sex_results, "rate")[[1]][,2])*2183.475
-median(mean_altitude_male)
+mean_altitude_male <- (rstan::extract(sex_results, "shape_male")[[1]]/rstan::extract(sex_results, "rate_male")[[1]])*2183.475
+median(mean_altitude_male) #392.312
 
 mean_altitude_female <- tibble(sex = "Female", samples = mean_altitude_female)
 mean_altitude_male <- tibble(sex = "Male", samples = mean_altitude_male)
@@ -47,11 +47,11 @@ plot_mean_basic
 
 # examining sd of flight altitudes
 # sd is (shape/((rate)^2))^0.5
-sd_altitude_female <- ((rstan::extract(sex_results, "shape")[[1]][,1]/((rstan::extract(sex_results, "rate")[[1]][,1])^2))^0.5)*2183.475
-median(sd_altitude_female)
+sd_altitude_female <- ((rstan::extract(sex_results, "shape_female")[[1]]/((rstan::extract(sex_results, "rate_female")[[1]])^2))^0.5)*2183.475
+median(sd_altitude_female) #288.9426
 
-sd_altitude_male <- ((rstan::extract(sex_results, "shape")[[1]][,2]/((rstan::extract(sex_results, "rate")[[1]][,2])^2))^0.5)*2183.475
-median(sd_altitude_male)
+sd_altitude_male <- ((rstan::extract(sex_results, "shape_male")[[1]]/((rstan::extract(sex_results, "rate_male")[[1]])^2))^0.5)*2183.475
+median(sd_altitude_male) #359.6968
 
 sd_altitude_female <- tibble(sex = "Female", samples = sd_altitude_female)
 sd_altitude_male <- tibble(sex = "Male", samples = sd_altitude_male)
@@ -103,13 +103,13 @@ ggsave(filename = here("graph_results", "plot_mean_sd_sex_stan.png"),
 
 # subsample to a reasonable number of draws
 set.seed(8)
-draws_sampled_female <- 1:length(rstan::extract(sex_results, "shape")[[1]][,1])
+draws_sampled_female <- 1:length(rstan::extract(sex_results, "shape_female")[[1]])
 
 results_shape_rate_female <- map(draws_sampled_female, #
     function(index){
       res <- rgamma(n = 1000, 
-             shape = rstan::extract(sex_results, "shape")[[1]][index,1],
-             rate = rstan::extract(sex_results, "rate")[[1]][index,1]) %>% 
+             shape = rstan::extract(sex_results, "shape_female")[[1]][index],
+             rate = rstan::extract(sex_results, "rate_female")[[1]][index]) %>% 
         density(n = 200, from = 0, to = 1)
       
       tibble(x = res$x, y = res$y) %>% 
@@ -120,13 +120,13 @@ results_shape_rate_female <- map(draws_sampled_female, #
 results_shape_rate_female$x <- results_shape_rate_female$x*2183.475
 
 set.seed(8)
-draws_sampled_male <- 1:length(rstan::extract(sex_results, "shape")[[1]][,2])
+draws_sampled_male <- 1:length(rstan::extract(sex_results, "shape_male")[[1]])
 
 results_shape_rate_male <- map(draws_sampled_male, #
                                function(index){
                                  res <- rgamma(n = 1000, 
-                                               shape = rstan::extract(sex_results, "shape")[[1]][index,2],
-                                               rate = rstan::extract(sex_results, "rate")[[1]][index,2]) %>% 
+                                               shape = rstan::extract(sex_results, "shape_male")[[1]][index],
+                                               rate = rstan::extract(sex_results, "rate_male")[[1]][index]) %>% 
                                    density(n = 200, from = 0, to = 1)
                                  
                                  tibble(x = res$x, y = res$y) %>% 

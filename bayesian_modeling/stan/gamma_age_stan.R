@@ -130,25 +130,43 @@ known_ground_df <- altitude_data %>%
 unknown_df <- altitude_data %>% 
   filter(is.na(HAT_index))
 
+unknown_df_adult <- unknown_df %>% 
+  filter(age_num == 1)
+
+unknown_df_juv <- unknown_df %>% 
+  filter(age_num == 2)
+
 init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
-                        shape = runif(2,3,5),
-                        rate = runif(2,5,10))}
+                        shape_adult = runif(1,3,5),
+                        rate_adult = runif(1,5,10),
+                        shape_juv = runif(1,3,5),
+                        rate_juv = runif(1,5,10))}
 
 model_compiled <- stan_model(here("bayesian_modeling", "stan", "gamma_age_stan.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_known = known_ground_df$hat_scaled,
-                                            n_obs_unknown = nrow(unknown_df),
-                                            HAT_unknown = unknown_df$hat_scaled,
-                                            age = unknown_df$age_num), 
+                                            n_obs_unknown_adult = nrow(unknown_df_adult),
+                                            n_obs_unknown_juv = nrow(unknown_df_juv),
+                                            HAT_unknown_adult = unknown_df_adult$hat_scaled,
+                                            HAT_unknown_juv = unknown_df_juv$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "sample_size", "p_flight"),
-                iter = 15000, #just bumping up the ESS here- converges on as few as 2000 iter
+                pars = c("mu_bias", "sigma_error", "shape_adult", "rate_adult", 
+                         "shape_juv", "rate_juv", "sample_size_adult",
+                         "sample_size_juv", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_adult_gte", "HAT_unknown_sd_adult_gte", 
+                         "HAT_unknown_mean_juv_gte", "HAT_unknown_sd_juv_gte", "p_flight_adult", 
+                         "p_flight_juv"),
+                iter = 15000, #keep down to 5000 for graphical ppc. Extra parameters: "HAT_known_ppc", "HAT_unknown_adult_ppc", "HAT_unknown_juv_ppc"
                 chains = 4)
 
 print(fit)
 
-launch_shinystan(fit) #diagnostics
-
 saveRDS(fit, file = here("bayesian_modeling", "stan", "gamma_age_stan.rds"))
+
+## additional variables for graphical ppc
+# pp_known <- known_ground_df$hat_scaled
+# pp_unknown_adult <- unknown_df_adult$hat_scaled
+# pp_unknown_juv <- unknown_df_juv$hat_scaled
+
+launch_shinystan(fit) #diagnostics

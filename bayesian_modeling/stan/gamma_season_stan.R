@@ -91,25 +91,45 @@ unknown_df <- altitude_data %>%
 unknown_df <- unknown_df %>% 
   mutate(season = as.numeric(as.factor(point_state)))
 
+unknown_df_fall <- unknown_df %>% 
+  filter(season == 1)
+
+unknown_df_spring <- unknown_df %>% 
+  filter(season == 2)
+
 init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
-                        shape = runif(2,3,5),
-                        rate = runif(2,5,10))}
+                        shape_fall = runif(1,3,5),
+                        rate_fall = runif(1,5,10),
+                        shape_spring = runif(1,3,5),
+                        rate_spring = runif(1,5,10)
+                        )}
 
 model_compiled <- stan_model(here("bayesian_modeling", "stan", "gamma_season_stan.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_known = known_ground_df$hat_scaled,
-                                            n_obs_unknown = nrow(unknown_df),
-                                            HAT_unknown = unknown_df$hat_scaled,
-                                            season = unknown_df$season), 
+                                            n_obs_unknown_fall = nrow(unknown_df_fall),
+                                            n_obs_unknown_spring = nrow(unknown_df_spring),
+                                            HAT_unknown_fall = unknown_df_fall$hat_scaled,
+                                            HAT_unknown_spring = unknown_df_spring$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "sample_size", "p_flight"),
-                iter = 15000, #just bumping up the ESS here- converges on as few as 2000 iter
+                pars = c("mu_bias", "sigma_error", "shape_fall", "rate_fall", 
+                         "shape_spring", "rate_spring", "sample_size_fall",
+                         "sample_size_spring", "HAT_known_mean_gte", "HAT_known_sd_gte", 
+                         "HAT_unknown_mean_fall_gte", "HAT_unknown_sd_fall_gte", 
+                         "HAT_unknown_mean_spring_gte", "HAT_unknown_sd_spring_gte", "p_flight_fall", 
+                         "p_flight_spring"),
+                iter = 15000, #keep down to 5000 for graphical ppc. Extra parameters: "HAT_known_ppc", "HAT_unknown_fall_ppc", "HAT_unknown_spring_ppc"
                 chains = 4)
 
 print(fit)
 
-launch_shinystan(fit) #diagnostics
-
 saveRDS(fit, file = here("bayesian_modeling", "stan", "gamma_season_stan.rds"))
+
+## additional variables for graphical ppc
+# pp_known <- known_ground_df$hat_scaled
+# pp_unknown_fall <- unknown_df_fall$hat_scaled
+# pp_unknown_spring <- unknown_df_spring$hat_scaled
+
+launch_shinystan(fit) #diagnostics

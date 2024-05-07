@@ -10,11 +10,11 @@ age_results <- readRDS(here("bayesian_modeling", "stan", "gamma_age_stan.rds"))
 
 #examining mean flight altitudes
 # mean is shape/rate
-mean_altitude_adult <- (rstan::extract(age_results, "shape")[[1]][,1]/rstan::extract(age_results, "rate")[[1]][,1])*2183.475
-median(mean_altitude_adult)
+mean_altitude_adult <- (rstan::extract(age_results, "shape_adult")[[1]]/rstan::extract(age_results, "rate_adult")[[1]])*2183.475
+median(mean_altitude_adult) #397.6309
 
-mean_altitude_juv <- (rstan::extract(age_results, "shape")[[1]][,2]/rstan::extract(age_results, "rate")[[1]][,2])*2183.475
-median(mean_altitude_juv)
+mean_altitude_juv <- (rstan::extract(age_results, "shape_juv")[[1]]/rstan::extract(age_results, "rate_juv")[[1]])*2183.475
+median(mean_altitude_juv) #342.4547
 
 mean_altitude_adult <- tibble(age = "Adult", samples = mean_altitude_adult)
 mean_altitude_juv <- tibble(age = "Juvenile", samples = mean_altitude_juv)
@@ -47,11 +47,11 @@ plot_mean_basic
 
 # examining sd of flight altitudes
 # sd is (shape/((rate)^2))^0.5
-sd_altitude_adult <- ((rstan::extract(age_results, "shape")[[1]][,1]/((rstan::extract(age_results, "rate")[[1]][,1])^2))^0.5)*2183.475
-median(sd_altitude_adult)
+sd_altitude_adult <- ((rstan::extract(age_results, "shape_adult")[[1]]/((rstan::extract(age_results, "rate_adult")[[1]])^2))^0.5)*2183.475
+median(sd_altitude_adult) #359.4154
 
-sd_altitude_juv <- ((rstan::extract(age_results, "shape")[[1]][,2]/((rstan::extract(age_results, "rate")[[1]][,2])^2))^0.5)*2183.475
-median(sd_altitude_juv)
+sd_altitude_juv <- ((rstan::extract(age_results, "shape_juv")[[1]]/((rstan::extract(age_results, "rate_juv")[[1]])^2))^0.5)*2183.475
+median(sd_altitude_juv) #299.9753
 
 sd_altitude_adult <- tibble(age = "Adult", samples = sd_altitude_adult)
 sd_altitude_juv <- tibble(age = "Juvenile", samples = sd_altitude_juv)
@@ -97,13 +97,13 @@ ggsave(filename = here("graph_results", "plot_mean_sd_age_stan.png"),
 
 # subsample to a reasonable number of draws
 set.seed(8)
-draws_sampled_adult <- 1:length(rstan::extract(age_results, "shape")[[1]][,1])
+draws_sampled_adult <- 1:length(rstan::extract(age_results, "shape_adult")[[1]])
 
 results_shape_rate_adult <- map(draws_sampled_adult, #
                                function(index){
                                  res <- rgamma(n = 1000, 
-                                               shape = rstan::extract(age_results, "shape")[[1]][index,1],
-                                               rate = rstan::extract(age_results, "rate")[[1]][index,1]) %>% 
+                                               shape = rstan::extract(age_results, "shape_adult")[[1]][index],
+                                               rate = rstan::extract(age_results, "rate_adult")[[1]][index]) %>% 
                                    density(n = 200, from = 0, to = 1)
                                  
                                  tibble(x = res$x, y = res$y) %>% 
@@ -114,13 +114,13 @@ results_shape_rate_adult <- map(draws_sampled_adult, #
 results_shape_rate_adult$x <- results_shape_rate_adult$x*2183.475
 
 set.seed(8)
-draws_sampled_juv <- 1:length(rstan::extract(age_results, "shape")[[1]][,2])
+draws_sampled_juv <- 1:length(rstan::extract(age_results, "shape_juv")[[1]])
 
 results_shape_rate_juv <- map(draws_sampled_juv, #
                                  function(index){
                                    res <- rgamma(n = 1000, 
-                                                 shape = rstan::extract(age_results, "shape")[[1]][index,2],
-                                                 rate = rstan::extract(age_results, "rate")[[1]][index,2]) %>% 
+                                                 shape = rstan::extract(age_results, "shape_juv")[[1]][index],
+                                                 rate = rstan::extract(age_results, "rate_juv")[[1]][index]) %>% 
                                      density(n = 200, from = 0, to = 1)
                                    
                                    tibble(x = res$x, y = res$y) %>% 

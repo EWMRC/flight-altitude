@@ -81,25 +81,44 @@ known_ground_df <- altitude_data %>%
 unknown_df <- altitude_data %>% 
   filter(is.na(HAT_index))
 
+unknown_df_female <- unknown_df %>% 
+  filter(sex_num == 1)
+
+unknown_df_male <- unknown_df %>% 
+  filter(sex_num == 2)
+
 init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
-                        shape = runif(2,3,5),
-                        rate = runif(2,5,10))}
+                        shape_male = runif(1,3,5),
+                        rate_male = runif(1,5,10),
+                        shape_female = runif(1,3,5),
+                        rate_female = runif(1,5,10))}
 
 model_compiled <- stan_model(here("bayesian_modeling", "stan", "gamma_sex_stan.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_known = known_ground_df$hat_scaled,
-                                            n_obs_unknown = nrow(unknown_df),
-                                            HAT_unknown = unknown_df$hat_scaled,
-                                            sex = unknown_df$sex_num), 
+                                            n_obs_unknown_male = nrow(unknown_df_male),
+                                            HAT_unknown_male = unknown_df_male$hat_scaled,
+                                            n_obs_unknown_female = nrow(unknown_df_female),
+                                            HAT_unknown_female = unknown_df_female$hat_scaled
+                                            ), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "sample_size", "p_flight"),
-                iter = 15000, #just bumping up the ESS here- converges on as few as 2000 iter
+                pars = c("mu_bias", "sigma_error", "shape_male", "rate_male", 
+                         "shape_female", "rate_female", "sample_size_male",
+                         "sample_size_female", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_male_gte", "HAT_unknown_sd_male_gte", 
+                         "HAT_unknown_mean_female_gte", "HAT_unknown_sd_female_gte", "p_flight_male", 
+                         "p_flight_female"),
+                iter = 15000, #keep down to 5000 for graphical ppc. Extra parameters: "HAT_known_ppc", "HAT_unknown_male_ppc", "HAT_unknown_female_ppc"
                 chains = 4)
 
 print(fit)
 
-launch_shinystan(fit) #diagnostics
-
 saveRDS(fit, file = here("bayesian_modeling", "stan", "gamma_sex_stan.rds"))
+
+## additional variables for graphical ppc
+# pp_known <- known_ground_df$hat_scaled
+# pp_unknown_male <- unknown_df_male$hat_scaled
+# pp_unknown_female <- unknown_df_female$hat_scaled
+
+launch_shinystan(fit) #diagnostics

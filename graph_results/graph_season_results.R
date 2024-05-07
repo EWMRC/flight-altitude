@@ -10,11 +10,11 @@ season_results <- readRDS(here("bayesian_modeling", "stan", "gamma_season_stan.r
 
 #examining mean flight altitudes
 # mean is shape/rate
-mean_altitude_fall <- (rstan::extract(season_results, "shape")[[1]][,1]/rstan::extract(season_results, "rate")[[1]][,1])*2183.475
-median(mean_altitude_fall)
+mean_altitude_fall <- (rstan::extract(season_results, "shape_fall")[[1]]/rstan::extract(season_results, "rate_fall")[[1]])*2183.475
+median(mean_altitude_fall) #309.7749
 
-mean_altitude_spring <- (rstan::extract(season_results, "shape")[[1]][,2]/rstan::extract(season_results, "rate")[[1]][,2])*2183.475
-median(mean_altitude_spring)
+mean_altitude_spring <- (rstan::extract(season_results, "shape_spring")[[1]]/rstan::extract(season_results, "rate_spring")[[1]])*2183.475
+median(mean_altitude_spring) #427.3196
 
 mean_altitude_fall <- tibble(season = "Fall", samples = mean_altitude_fall)
 mean_altitude_spring <- tibble(season = "Spring", samples = mean_altitude_spring)
@@ -48,11 +48,11 @@ plot_mean_basic
 
 # examining sd of flight altitudes
 # sd is (shape/((rate)^2))^0.5
-sd_altitude_fall <- ((rstan::extract(season_results, "shape")[[1]][,1]/((rstan::extract(season_results, "rate")[[1]][,1])^2))^0.5)*2183.475
-median(sd_altitude_fall)
+sd_altitude_fall <- ((rstan::extract(season_results, "shape_fall")[[1]]/((rstan::extract(season_results, "rate_fall")[[1]])^2))^0.5)*2183.475
+median(sd_altitude_fall) #289.6726
 
-sd_altitude_spring <- ((rstan::extract(season_results, "shape")[[1]][,2]/((rstan::extract(season_results, "rate")[[1]][,2])^2))^0.5)*2183.475
-median(sd_altitude_spring)
+sd_altitude_spring <- ((rstan::extract(season_results, "shape_spring")[[1]]/((rstan::extract(season_results, "rate_spring")[[1]])^2))^0.5)*2183.475
+median(sd_altitude_spring) #380.5876
 
 sd_altitude_fall <- tibble(season = "Fall", samples = sd_altitude_fall)
 sd_altitude_spring <- tibble(season = "Spring", samples = sd_altitude_spring)
@@ -104,13 +104,13 @@ ggsave(filename = here("graph_results", "plot_mean_sd_season_stan.png"),
 
 # subsample to a reasonable number of draws
 set.seed(8)
-draws_sampled_fall <- 1:length(rstan::extract(season_results, "shape")[[1]][,1])
+draws_sampled_fall <- 1:length(rstan::extract(season_results, "shape_fall")[[1]])
 
 results_shape_rate_fall <- map(draws_sampled_fall, #
     function(index){
       res <- rgamma(n = 1000, 
-             shape = rstan::extract(season_results, "shape")[[1]][index,1],
-             rate = rstan::extract(season_results, "rate")[[1]][index,1]) %>% 
+             shape = rstan::extract(season_results, "shape_fall")[[1]][index],
+             rate = rstan::extract(season_results, "rate_fall")[[1]][index]) %>% 
         density(n = 200, from = 0, to = 1)
       
       tibble(x = res$x, y = res$y) %>% 
@@ -121,13 +121,13 @@ results_shape_rate_fall <- map(draws_sampled_fall, #
 results_shape_rate_fall$x <- results_shape_rate_fall$x*2183.475
 
 set.seed(8)
-draws_sampled_spring <- 1:length(rstan::extract(season_results, "shape")[[1]][,2])
+draws_sampled_spring <- 1:length(rstan::extract(season_results, "shape_spring")[[1]])
 
 results_shape_rate_spring <- map(draws_sampled_spring, #
                                function(index){
                                  res <- rgamma(n = 1000, 
-                                               shape = rstan::extract(season_results, "shape")[[1]][index,2],
-                                               rate = rstan::extract(season_results, "rate")[[1]][index,2]) %>% 
+                                               shape = rstan::extract(season_results, "shape_spring")[[1]][index],
+                                               rate = rstan::extract(season_results, "rate_spring")[[1]][index]) %>% 
                                    density(n = 200, from = 0, to = 1)
                                  
                                  tibble(x = res$x, y = res$y) %>% 
