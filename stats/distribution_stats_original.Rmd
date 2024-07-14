@@ -12,30 +12,27 @@ library(bayestestR)
 ```
 
 ```{r}
-original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
+original_results <- readRDS(here("bayesian_modeling", "gamma_original_stans.rds"))
 ```
 
 Mode
 ```{r}
 # mode (calculated from samples)
-mode_draws <- ((original_results$sims.list$shape_flight - 1)/original_results$sims.list$rate_flight)*2183.475
+mode_draws <- ((rstan::extract(original_results, pars = c("shape"))[[1]] - 1)/rstan::extract(original_results, pars = c("rate"))[[1]])*2183.475
 
 median(mode_draws)
-#40.9096
+#38.98425
 
 hdi(mode_draws, ci = 0.95)
-# 95% HDI: [-95.68, 148.51]
-
-# mode (calculated from mean shape and rate values)
-# ((original_results$mean$shape_flight - 1)/original_results$mean$rate_flight)*2183.475
+# 95% HDI: [-88.32, 156.58]
 ```
 
 Median
 ```{r}
 plan(multisession)
 
-median_draws <- future_map2(.x = original_results$sims.list$shape_flight, 
-            .y = original_results$sims.list$rate_flight,
+median_draws <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -52,27 +49,23 @@ plan(sequential)
 
 median_draws %>% 
   unlist() %>% 
-  median() #262.4739
-
-# median_draws %>% 
-#   unlist() %>% 
-#   sd() #34.59358
+  median() #261.6436
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [239.99, 286.13]
+  hdi(ci = 0.5) #50% HDI: [236.42, 283.97]
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [194.30, 331.02]
+  hdi(ci = 0.95) #95% HDI: [193.53, 330.54]
 ```
 
 Mean
 ```{r}
 plan(multisession)
 
-mean_draws <- future_map2(.x = original_results$sims.list$shape_flight, 
-            .y = original_results$sims.list$rate_flight,
+mean_draws <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -89,19 +82,15 @@ plan(sequential)
 
 mean_draws %>% 
   unlist() %>% 
-  median() #362.9351
-
-# mean_draws %>% 
-#   unlist() %>% 
-#   sd() #33.79488
+  median() #361.9758
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [339.02, 384.70]
+  hdi(ci = 0.5) #50% HDI: [338.23, 383.89]
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [298.68, 430.46]
+  hdi(ci = 0.95) #95% HDI: [298.66, 433.16]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -109,8 +98,8 @@ Calculate the percentage of these locations that fall below the minimum	threshol
 ```{r}
 plan(multisession)
 
-pct_below_radar_threshold <- future_map2(.x = original_results$sims.list$shape_flight, 
-            .y = original_results$sims.list$rate_flight,
+pct_below_radar_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -127,11 +116,7 @@ plan(sequential)
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  median() #0.324
-
-# pct_below_radar_threshold %>% 
-#   unlist() %>% 
-#   sd() #0.05297934
+  median() #0.3253
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
@@ -146,8 +131,8 @@ How may of these locations are at an altitude where they might collide with a bu
 ```{r}
 plan(multisession)
 
-pct_below_building_threshold <- future_map2(.x = original_results$sims.list$shape_flight, 
-            .y = original_results$sims.list$rate_flight,
+pct_below_building_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -166,11 +151,7 @@ plan(sequential)
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  median() #0.1
-
-# pct_below_building_threshold %>% 
-#   unlist() %>% 
-#   sd() #0.03712942
+  median() #0.101
 
 pct_below_building_threshold %>% 
   unlist() %>% 
@@ -185,8 +166,8 @@ How may of these locations are at an altitude where they might collide with a co
 ```{r}
 plan(multisession)
 
-pct_below_comm_tower_threshold <- future_map2(.x = original_results$sims.list$shape_flight, 
-            .y = original_results$sims.list$rate_flight,
+pct_below_comm_tower_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -205,11 +186,7 @@ plan(sequential)
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  median() #0.5572
-
-# pct_below_comm_tower_threshold %>% 
-#   unlist() %>% 
-#   sd() #0.05003813
+  median() #.5584
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
@@ -217,15 +194,15 @@ pct_below_comm_tower_threshold %>%
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.47, 0.65]
+  hdi(ci = 0.95) #95% HDI: [0.46, 0.64]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
 ```{r}
 plan(multisession)
 
-pct_below_wind_threshold <- future_map2(.x = original_results$sims.list$shape_flight, 
-            .y = original_results$sims.list$rate_flight,
+pct_below_wind_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -244,11 +221,7 @@ plan(sequential)
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  median() #0.2718
-
-# pct_below_wind_threshold %>% 
-#   unlist() %>% 
-#   sd() #0.02655657
+  median() #0.2723
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
@@ -256,5 +229,5 @@ pct_below_wind_threshold %>%
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.22, 0.32]
+  hdi(ci = 0.95) #95% HDI: [0.21, 0.32]
 ```

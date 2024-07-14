@@ -14,29 +14,29 @@ library(bayestestR)
 Fall is index 1, spring 2
 
 ```{r}
-season_results <- readRDS(here("bayesian_modeling", "gamma_season.rds"))
+season_results <- readRDS(here("bayesian_modeling", "gamma_season_stan.rds"))
 ```
 
 Mode
 ```{r}
 # mode (calculated from samples)
 # fall
-mode_draws_fall <- ((season_results$sims.list$shape_flight[,1] - 1)/season_results$sims.list$rate_flight[,1])*2183.475
+mode_draws_fall <- ((rstan::extract(season_results, "shape_fall")[[1]] - 1)/rstan::extract(season_results, "rate_fall")[[1]])*2183.475
 
 median(mode_draws_fall)
-#33.08025
+#32.2696
 
 hdi(mode_draws_fall, ci = 0.95)
-#95% HDI: [-117.43, 168.46]
+#5% HDI: [-115.25, 172.58]
 
 #spring
-mode_draws_spring <- ((season_results$sims.list$shape_flight[,2] - 1)/season_results$sims.list$rate_flight[,2])*2183.475
+mode_draws_spring <- ((rstan::extract(season_results, "shape_spring")[[1]] - 1)/rstan::extract(season_results, "rate_spring")[[1]])*2183.475
 
 median(mode_draws_spring)
-#87.06981
+#83.63531
 
 hdi(mode_draws_spring, ci = 0.95)
-#95% HDI: [-105.58, 252.48]
+#95% HDI: [-112.63, 251.79]
 ```
 
 Median
@@ -44,8 +44,8 @@ Median
 #fall
 plan(multisession)
 
-median_draws_fall <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+median_draws_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
+            .y = rstan::extract(season_results, "rate_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -62,21 +62,21 @@ plan(sequential)
 
 median_draws_fall %>% 
   unlist() %>% 
-  median() # 223.8051
+  median() # 223.2481
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) # 50% HDI: [192.93, 248.95]
+  hdi(ci = 0.5) # 50% HDI: [191.85, 247.62]
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) # 95% HDI: [144.60, 307.80]
+  hdi(ci = 0.95) # 95% HDI: [143.58, 304.50]
 
 # spring
 plan(multisession)
 
-median_draws_spring <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+median_draws_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
+            .y = rstan::extract(season_results, "rate_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -93,15 +93,15 @@ plan(sequential)
 
 median_draws_spring %>% 
   unlist() %>% 
-  median() #319.5573
+  median() #319.1291
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [282.82, 355.78]
+  hdi(ci = 0.5) #50% HDI: [281.92, 356.19]
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [215.01, 425.94]
+  hdi(ci = 0.95) #95% HDI: [212.97, 429.43]
 ```
 
 Mean
@@ -109,8 +109,8 @@ Mean
 #fall
 plan(multisession)
 
-mean_draws_fall <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+mean_draws_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
+            .y = rstan::extract(season_results, "rate_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -127,21 +127,21 @@ plan(sequential)
 
 mean_draws_fall %>% 
   unlist() %>% 
-  median() #310.0161
+  median() #309.7425
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [279.42, 333.61]
+  hdi(ci = 0.5) #50% HDI: [277.12, 330.85]
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [234.80, 393.42]
+  hdi(ci = 0.95) #95% HDI: [235.24, 391.52]
 
 #spring
 plan(multisession)
 
-mean_draws_spring <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+mean_draws_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
+            .y = rstan::extract(season_results, "rate_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -158,15 +158,15 @@ plan(sequential)
 
 mean_draws_spring %>% 
   unlist() %>% 
-  median() #426.9676
+  median() #427.2789
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [391.84, 462.87]
+  hdi(ci = 0.5) #50% HDI: [386.09, 458.83]
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [323.71, 536.31]
+  hdi(ci = 0.95) #5% HDI: [325.84, 543.71]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -175,8 +175,8 @@ Calculate the percentage of these locations that fall below the minimum	threshol
 #fall
 plan(multisession)
 
-pct_below_radar_threshold_fall <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_radar_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
+            .y = rstan::extract(season_results, "rate_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -193,21 +193,21 @@ plan(sequential)
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  median() #0.3728
+  median() #0.3737
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) # 50% HDI: [0.32, 0.42]
+  hdi(ci = 0.5) # 50% HDI: [0.33, 0.43]
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.23, 0.51]
+  hdi(ci = 0.95) #95% HDI: [0.23, 0.52]
 
 #spring
 plan(multisession)
 
-pct_below_radar_threshold_spring <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_radar_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
+            .y = rstan::extract(season_results, "rate_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -224,7 +224,7 @@ plan(sequential)
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2569
+  median() #0.2586
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
@@ -240,8 +240,8 @@ How may of these locations are at an altitude where they might collide with a bu
 #fall
 plan(multisession)
 
-pct_below_building_threshold_fall <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_building_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
+            .y = rstan::extract(season_results, "rate_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -260,11 +260,11 @@ plan(sequential)
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  median() #0.1191
+  median() #0.1198
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.07, 0.15]
+  hdi(ci = 0.5) #50% HDI: [0.07, 0.14]
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
@@ -273,8 +273,8 @@ pct_below_building_threshold_fall %>%
 #spring
 plan(multisession)
 
-pct_below_building_threshold_spring <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_building_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
+            .y = rstan::extract(season_results, "rate_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -293,7 +293,7 @@ plan(sequential)
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  median() #0.0678
+  median() #0.069
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
@@ -309,8 +309,8 @@ How may of these locations are at an altitude where they might collide with a co
 #fall
 plan(multisession)
 
-pct_below_comm_tower_threshold_fall <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_comm_tower_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
+            .y = rstan::extract(season_results, "rate_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -329,11 +329,11 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  median() #0.6194
+  median() #0.6204
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.58, 0.66]
+  hdi(ci = 0.5) #50% HDI: [0.59, 0.67]
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
@@ -342,8 +342,8 @@ pct_below_comm_tower_threshold_fall %>%
 #spring
 plan(multisession)
 
-pct_below_comm_tower_threshold_spring <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_comm_tower_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
+            .y = rstan::extract(season_results, "rate_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -362,7 +362,7 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  median() #0.4815
+  median() #0.4819
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
@@ -370,7 +370,7 @@ pct_below_comm_tower_threshold_spring %>%
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.35, 0.62]
+  hdi(ci = 0.95) #95% HDI: [0.35, 0.61]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -378,8 +378,8 @@ How may of these locations are at an altitude where they might collide with a wi
 #fall
 plan(multisession)
 
-pct_below_wind_threshold_fall <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_wind_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
+            .y = rstan::extract(season_results, "rate_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -398,11 +398,11 @@ plan(sequential)
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  median() #0.3064
+  median() #0.3067
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.29, 0.33]
+  hdi(ci = 0.5) #50% HDI: [0.29, 0.34]
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
@@ -411,8 +411,8 @@ pct_below_wind_threshold_fall %>%
 #spring
 plan(multisession)
 
-pct_below_wind_threshold_spring <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_wind_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
+            .y = rstan::extract(season_results, "rate_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -431,21 +431,21 @@ plan(sequential)
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2271
+  median() #0.2276
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.20, 0.26]
+  hdi(ci = 0.5) #50% HDI: [0.21, 0.26]
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.15, 0.30]
+  hdi(ci = 0.95) #95% HDI: [0.14, 0.30]
 ```
 
 Quantify the likelihood that one seasonal mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_spring) > unlist(mean_draws_fall))*100/length(unlist(mean_draws_spring))
-#95.60882% probability that the spring mean is higher than the fall mean
+#95.91667% probability that the spring mean is higher than the fall mean
 ```
 

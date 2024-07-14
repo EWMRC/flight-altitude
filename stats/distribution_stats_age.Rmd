@@ -13,37 +13,37 @@ library(bayestestR)
 
 Adult is index 1, Juvenile 2
 ```{r}
-season_results <- readRDS(here("bayesian_modeling", "gamma_age.rds"))
+age_results <- readRDS(here("bayesian_modeling", "gamma_age_stan.rds"))
 ```
 
 Mode
 ```{r}
 # mode (calculated from samples)
-# fall
-mode_draws_adult <- ((season_results$sims.list$shape_flight[,1] - 1)/season_results$sims.list$rate_flight[,1])*2183.475
+# adult
+mode_draws_adult <- ((rstan::extract(age_results, "shape_adult")[[1]] - 1)/rstan::extract(age_results, "rate_adult")[[1]])*2183.475
 
 median(mode_draws_adult)
-#67.95292
+#66.28403
 hdi(mode_draws_adult, ci = 0.95) 
-#95% HDI: [-148.09, 237.04]
+#95% HDI: [-134.84, 235.49]
 
-#spring
-mode_draws_juv <- ((season_results$sims.list$shape_flight[,2] - 1)/season_results$sims.list$rate_flight[,2])*2183.475
+# juv
+mode_draws_juv <- ((rstan::extract(age_results, "shape_juv")[[1]] - 1)/rstan::extract(age_results, "rate_juv")[[1]])*2183.475
 
 median(mode_draws_juv)
-#78.28309
+#74.72909
 
 hdi(mode_draws_juv, ci = 0.95) 
-#95% HDI: [-67.10, 208.14]
+#95% HDI: [-72.11, 205.35]
 ```
 
 Median
 ```{r}
-#fall
+# adult
 plan(multisession)
 
-median_draws_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+median_draws_adult <- future_map2(.x = rstan::extract(age_results, "shape_adult")[[1]], 
+            .y = rstan::extract(age_results, "rate_adult")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -60,21 +60,21 @@ plan(sequential)
 
 median_draws_adult %>% 
   unlist() %>% 
-  median() # 294.4034
+  median() # 293.2462
 
 median_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [256.21, 334.35]
+  hdi(ci = 0.5) #50% HDI: [253.50, 327.98]
 
 median_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [180.84, 402.95]
+  hdi(ci = 0.95) #95% HDI: [186.31, 403.19]
 
-# spring
+# juv
 plan(multisession)
 
-median_draws_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+median_draws_juv <- future_map2(.x = rstan::extract(age_results, "shape_juv")[[1]], 
+            .y = rstan::extract(age_results, "rate_juv")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -91,28 +91,24 @@ plan(sequential)
 
 median_draws_juv %>% 
   unlist() %>% 
-  median() #259.5714
-
-# median_draws_juv %>% 
-#   unlist() %>% 
-#   sd() #42.31298
+  median() #257.9696
 
 median_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [228.68, 286.59]
+  hdi(ci = 0.5) #50% HDI: [228.51, 285.64]
 
 median_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [178.69, 341.86]
+  hdi(ci = 0.95) #95% HDI: [176.60, 341.57]
 ```
 
 Mean
 ```{r}
-#fall
+# adult
 plan(multisession)
 
-mean_draws_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+mean_draws_adult <- future_map2(.x = rstan::extract(age_results, "shape_adult")[[1]], 
+            .y = rstan::extract(age_results, "rate_adult")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -129,25 +125,21 @@ plan(sequential)
 
 mean_draws_adult %>% 
   unlist() %>% 
-  median() # 397.1969
-
-# mean_draws_adult %>% 
-#   unlist() %>% 
-#   sd() #56.15242
+  median() # 397.6275
 
 mean_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [354.76, 430.97]
+  hdi(ci = 0.5) #50% HDI: [359.05, 432.91]
 
 mean_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [295.41, 508.93]
+  hdi(ci = 0.95) #95% HDI: [293.12, 511.15]
 
-#spring
+# juv
 plan(multisession)
 
-mean_draws_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+mean_draws_juv <- future_map2(.x = rstan::extract(age_results, "shape_juv")[[1]], 
+            .y = rstan::extract(age_results, "rate_juv")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -164,25 +156,25 @@ plan(sequential)
 
 mean_draws_juv %>% 
   unlist() %>% 
-  median() #342.6243
+  median() #342.3979
 
 mean_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [313.26, 367.00]
+  hdi(ci = 0.5) #50% HDI: [313.68, 368.45]
 
 mean_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [265.66, 425.24]
+  hdi(ci = 0.95) #5% HDI: [265.92, 426.39]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
 Calculate the percentage of these locations that fall below the minimum	threshold in Horton et al. 2016 (155m)
 ```{r}
-#fall
+# adult
 plan(multisession)
 
-pct_below_radar_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_radar_threshold_adult <- future_map2(.x = rstan::extract(age_results, "shape_adult")[[1]], 
+            .y = rstan::extract(age_results, "rate_adult")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -199,25 +191,21 @@ plan(sequential)
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  median() #0.2836
-
-# pct_below_radar_threshold_adult %>% 
-#   unlist() %>% 
-#   sd() #0.07868222
+  median() #0.28595
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.22, 0.33]
+  hdi(ci = 0.5) #50% HDI: [0.23, 0.34]
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.14, 0.45]
+  hdi(ci = 0.95) #95% HDI: [0.15, 0.44]
 
-#spring
+# juv
 plan(multisession)
 
-pct_below_radar_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_radar_threshold_juv <- future_map2(.x = rstan::extract(age_results, "shape_juv")[[1]], 
+            .y = rstan::extract(age_results, "rate_juv")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -234,15 +222,11 @@ plan(sequential)
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  median() #0.3126
-
-# pct_below_radar_threshold_juv %>% 
-#   unlist() %>% 
-#   sd() #0.0705226
+  median() #0.316
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.26, 0.36]
+  hdi(ci = 0.5) #50% HDI: [0.27, 0.36]
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
@@ -251,11 +235,11 @@ pct_below_radar_threshold_juv %>%
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
 ```{r}
-#fall
+# adult
 plan(multisession)
 
-pct_below_building_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_building_threshold_adult <- future_map2(.x = rstan::extract(age_results, "shape_adult")[[1]], 
+            .y = rstan::extract(age_results, "rate_adult")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -274,11 +258,7 @@ plan(sequential)
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
-  median() #0.0796
-
-# pct_below_building_threshold_adult %>% 
-#   unlist() %>% 
-#   sd() #0.05163886
+  median() #0.0808
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
@@ -286,13 +266,13 @@ pct_below_building_threshold_adult %>%
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.01, 0.20]
+  hdi(ci = 0.95) #95% HDI: [0.01, 0.19]
 
-#spring
+# juv
 plan(multisession)
 
-pct_below_building_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_building_threshold_juv <- future_map2(.x = rstan::extract(age_results, "shape_juv")[[1]], 
+            .y = rstan::extract(age_results, "rate_juv")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -311,11 +291,7 @@ plan(sequential)
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
-  median() #0.0827
-
-# pct_below_building_threshold_juv %>% 
-#   unlist() %>% 
-#   sd() #0.04471384
+  median() #0.085
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
@@ -328,11 +304,11 @@ pct_below_building_threshold_juv %>%
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
 ```{r}
-#fall
+# adult
 plan(multisession)
 
-pct_below_comm_tower_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_comm_tower_threshold_adult <- future_map2(.x = rstan::extract(age_results, "shape_adult")[[1]], 
+            .y = rstan::extract(age_results, "rate_adult")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -351,25 +327,21 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  median() # 0.514
-
-# pct_below_comm_tower_threshold_adult %>% 
-#   unlist() %>% 
-#   sd() #0.07755391
+  median() # 0.5152
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.46, 0.56]
+  hdi(ci = 0.5) #50% HDI: [0.47, 0.57]
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.38, 0.66]
+  hdi(ci = 0.95) #95% HDI: [0.37, 0.65]
 
-#spring
+# juv
 plan(multisession)
 
-pct_below_comm_tower_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_comm_tower_threshold_juv <- future_map2(.x = rstan::extract(age_results, "shape_juv")[[1]], 
+            .y = rstan::extract(age_results, "rate_juv")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -388,11 +360,7 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  median() #0.5675
-
-# pct_below_comm_tower_threshold_juv %>% 
-#   unlist() %>% 
-#   sd() #0.06716926
+  median() #0.5693
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
@@ -400,16 +368,16 @@ pct_below_comm_tower_threshold_juv %>%
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.45, 0.68]
+  hdi(ci = 0.95) #95% HDI: [0.45, 0.69]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
 ```{r}
-#fall
+# adult
 plan(multisession)
 
-pct_below_wind_threshold_adult <- future_map2(.x = season_results$sims.list$shape_flight[,1], 
-            .y = season_results$sims.list$rate_flight[,1],
+pct_below_wind_threshold_adult <- future_map2(.x = rstan::extract(age_results, "shape_adult")[[1]], 
+            .y = rstan::extract(age_results, "rate_adult")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -428,25 +396,21 @@ plan(sequential)
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
-  median() #0.2456
-
-# pct_below_wind_threshold_adult %>% 
-#   unlist() %>% 
-#   sd() #0.04276762
+  median() #0.2464
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.23, 0.28]
+  hdi(ci = 0.5) #50% HDI: [0.22, 0.28]
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
   hdi(ci = 0.95) #95% HDI: [0.16, 0.32]
 
-#spring
+# juv
 plan(multisession)
 
-pct_below_wind_threshold_juv <- future_map2(.x = season_results$sims.list$shape_flight[,2], 
-            .y = season_results$sims.list$rate_flight[,2],
+pct_below_wind_threshold_juv <- future_map2(.x = rstan::extract(age_results, "shape_juv")[[1]], 
+            .y = rstan::extract(age_results, "rate_juv")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
@@ -465,7 +429,7 @@ plan(sequential)
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
-  median() #0.2759
+  median() #0.2772
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
@@ -480,5 +444,5 @@ Quantify the likelihood that one age mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_adult) > unlist(mean_draws_juv))*100/length(unlist(mean_draws_adult))
-#78.67316% probability that the adult mean is higher than the juvenile mean
+#79.25667% probability that the adult mean is higher than the juvenile mean
 ```

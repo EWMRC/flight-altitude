@@ -1,6 +1,0 @@
-ssh grtx-1
-module load singularity
-cd /home/lberigan/altitude/
-export TMPDIR=$XDG_RUNTIME_DIR
-singularity build --fakeroot altitude_container.simg *.def
-
