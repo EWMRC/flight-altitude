@@ -5,7 +5,6 @@ library(ggpubr)
 library(here)
 library(ggnewscale)
 
-# age_results <- readRDS(here("bayesian_modeling", "gamma_age.rds"))
 age_results <- readRDS(here("bayesian_modeling", "stan", "gamma_age_stan.rds"))
 
 #examining mean flight altitudes

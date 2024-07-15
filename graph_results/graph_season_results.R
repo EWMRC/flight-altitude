@@ -5,7 +5,6 @@ library(ggpubr)
 library(here)
 library(ggnewscale)
 
-# season_results <- readRDS(here("bayesian_modeling", "gamma_season.rds"))
 season_results <- readRDS(here("bayesian_modeling", "stan", "gamma_season_stan.rds"))
 
 #examining mean flight altitudes
