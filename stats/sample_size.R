@@ -1,78 +1,94 @@
 library(tidyverse)
-library(jagsUI)
+library(rstan)
 library(bayestestR)
 library(here)
 
-original_test <- readRDS(here("bayesian_modeling", "gamma_original_index.rds"))
+original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds"))
 
-original_index <- (original_test$sims.list$mean_HAT_index - 1) * 12558
+sample_size_original <- rstan::extract(original_results, "sample_size")[[1]]
 
 # presumed # of flight locations
-median(original_index) #144
+median(sample_size_original) #144
 
 # using 95, but take note:
 # "as the 89% level gives more stable results (Kruschke, 2014) and reminds us about the arbitrariness of such conventions (McElreath, 2018)."
-hdi(original_index, ci = 0.50) #140, 150
-hdi(original_index, ci = 0.95) #131, 161
+hdi(sample_size_original, ci = 0.50) #50% HDI: [139.72, 148.42]
+hdi(sample_size_original, ci = 0.95) #95% HDI: [131.84, 156.88]
 
 ## season
+season_results <- readRDS(here("bayesian_modeling", "gamma_season_stan.rds"))
 
-season_test <- readRDS(file = here("bayesian_modeling", "gamma_season_index.rds"))
+sample_size_season_fall <- rstan::extract(season_results, "sample_size_fall")[[1]]
+sample_size_season_spring <- rstan::extract(season_results, "sample_size_spring")[[1]]
 
-season_index <- (season_test$sims.list$mean_HAT_index - 1) * 12558
+sample_size_season <- sample_size_season_fall + sample_size_season_spring
 
-# presumed # of flight locations
-median(season_index) #144
+# total
+median(sample_size_season) #144.0806
 
-hdi(season_index, ci = 0.50) #140.00, 150.00
-hdi(season_index, ci = 0.95) #129.00, 158.00
+hdi(sample_size_season, ci = 0.50) #50% HDI: [139.85, 148.16]
+hdi(sample_size_season, ci = 0.95) #95% HDI: [132.42, 155.93]
 
-# season-specific
 # fall
-season_test$sims.list$season_1_ss %>% 
-  median() #fall 78
+median(sample_size_season_fall) #78.23179
 
-season_test$sims.list$season_1_ss %>% 
-  hdi(ci = 0.50) #76.00, 84.00
+hdi(sample_size_season_fall, ci = 0.50) #50% HDI: [75.11, 81.86]
+hdi(sample_size_season_fall, ci = 0.95) #95% HDI: [68.67, 87.74]
 
-season_test$sims.list$season_1_ss %>% 
-  hdi(ci = 0.95) #67.00, 90.00
+# spring
+median(sample_size_season_spring) #65.63828
 
-#spring
-season_test$sims.list$season_2_ss %>% 
-  median() #spring 65
-
-season_test$sims.list$season_2_ss %>% 
-  hdi(ci = 0.50) #63.00, 68.00
-
-season_test$sims.list$season_2_ss %>% 
-  hdi(ci = 0.95) #58.00, 74.00
+hdi(sample_size_season_spring, ci = 0.50) #50% HDI: [62.92, 67.78]
+hdi(sample_size_season_spring, ci = 0.95) #95% HDI: [58.85, 72.86]
 
 ## age
-age_test <- readRDS(file = here("bayesian_modeling", "gamma_age_index.rds"))
+age_results <- readRDS(here("bayesian_modeling", "gamma_age_stan.rds"))
 
-age_index <- (age_test$sims.list$mean_HAT_index - 1) * 12558
+sample_size_age_adult <- rstan::extract(age_results, "sample_size_adult")[[1]]
+sample_size_age_juv <- rstan::extract(age_results, "sample_size_juv")[[1]]
 
-# presumed # of flight locations
-median(age_index) #147.2766
+sample_size_age <- sample_size_age_adult + sample_size_age_juv
 
-# age-specific
-#Adult
-age_test$sims.list$age_1_ss %>% 
-  median() # Adult 58
+# total
+median(sample_size_age) #138.7966
 
-age_test$sims.list$age_1_ss %>% 
-  hdi(ci = 0.50) # 50% HDI: [55.00, 60.00]
+hdi(sample_size_age, ci = 0.50) #50% HDI: [134.42, 142.25]
+hdi(sample_size_age, ci = 0.95) #95% HDI: [127.67, 150.25]
 
-age_test$sims.list$age_1_ss %>% 
-  hdi(ci = 0.95) # 95% HDI: [51.00, 67.00]
+# adult
+median(sample_size_age_adult) #58.18246
 
-#Juvenile
-age_test$sims.list$age_2_ss %>% 
-  median() # 80
+hdi(sample_size_age_adult, ci = 0.50) #50% HDI: [55.67, 60.39]
+hdi(sample_size_age_adult, ci = 0.95) #95% HDI: [51.84, 65.37]
 
-age_test$sims.list$age_2_ss %>% 
-  hdi(ci = 0.50) # 50% HDI: [77.00, 84.00]
+# juv
+median(sample_size_age_juv) #80.42849
 
-age_test$sims.list$age_2_ss %>% 
-  hdi(ci = 0.95) # 95% HDI: [71.00, 93.00]
+hdi(sample_size_age_juv, ci = 0.50) #50% HDI: [77.16, 83.53]
+hdi(sample_size_age_juv, ci = 0.95) #95% HDI: [71.96, 90.14]
+
+## sex
+sex_results <- readRDS(here("bayesian_modeling", "gamma_sex_stan.rds"))
+
+sample_size_sex_male <- rstan::extract(sex_results, "sample_size_male")[[1]]
+sample_size_sex_female <- rstan::extract(sex_results, "sample_size_female")[[1]]
+
+sample_size_sex <- sample_size_sex_male + sample_size_sex_female
+
+# total
+median(sample_size_sex) #139.4651
+
+hdi(sample_size_sex, ci = 0.50) #50% HDI: [135.21, 143.42]
+hdi(sample_size_sex, ci = 0.95) #95% HDI: [128.02, 151.57]
+
+# male
+median(sample_size_sex_male) #72.81798
+
+hdi(sample_size_sex_male, ci = 0.50) #50% HDI: [69.15, 75.68]
+hdi(sample_size_sex_male, ci = 0.95) #95% HDI: [64.32, 82.88]
+
+# female
+median(sample_size_sex_female) #66.45771
+
+hdi(sample_size_sex_female, ci = 0.50) #50% HDI: [63.87, 68.83]
+hdi(sample_size_sex_female, ci = 0.95) #95% HDI: [59.91, 74.19]
