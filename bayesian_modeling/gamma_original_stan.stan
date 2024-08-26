@@ -1,4 +1,5 @@
 functions {
+  // function to convert real to int
   int bin_search(real x, int min_val, int max_val){ //https://discourse.mc-stan.org/t/real-to-integer-conversion/5622/7
   // This assumes that min_val >= 0 is the minimum integer in range,
   //  max_val > min_val,
@@ -51,7 +52,9 @@ parameters {
 transformed parameters {
   real unknown_q[n_obs_unknown, 2];
   
-  for(i in 1:n_obs_unknown){
+  for(i in 1:n_obs_unknown){ 
+    // Marginalized discrete parameter (https://mc-stan.org/docs/stan-users-guide/latent-discrete.html)
+    // Measuring the likelihood that a given location is in a ground or flight state
     unknown_q[i, 1] = normal_lpdf(HAT_unknown[i]| mu_bias, sigma_error) + log(0.67);
     unknown_q[i, 2] = normal_lpdf(HAT_unknown[i]| real_alt[i] + mu_bias, sigma_error) + log(0.33);
   }
@@ -67,19 +70,15 @@ model {
   }
   
   //priors
-  // for(i in 1:n_obs_unknown){
-    //   real_alt[i] ~ gamma(shape, rate);
-    // }
-    
-    real_alt ~ gamma(shape, rate);
-    
-    mu_bias ~ normal(0, 1); //can be negative
-    sigma_error ~ uniform(0, 1); //cannot be negative
-    shape ~ normal(0, 5) T[0,];
-    rate ~ normal(0, 10) T[0,];
+  real_alt ~ gamma(shape, rate);
+  mu_bias ~ normal(0, 1); //can be negative
+  sigma_error ~ uniform(0, 1); //cannot be negative
+  shape ~ normal(0, 5) T[0,];
+  rate ~ normal(0, 10) T[0,];
 }
 
 generated quantities {
+  //calculating probability that any given (unknown) location was recorded in flight, and total # of flight locations
   real p_flight[n_obs_unknown];
   real sample_size;
   
@@ -108,16 +107,13 @@ generated quantities {
   HAT_known_sd_gte = (HAT_known_sd_ppc >= HAT_known_sd);
   
   //unknown
-  //vector[n_obs_unknown-145] HAT_unknown_ground_ppc; //using an estimated sample size from earlier versions of the model
   real<lower=0> real_alt_ppc[n_obs_unknown];
-  // vector[145] HAT_unknown_flight_ppc;
   vector[n_obs_unknown] HAT_unknown_ppc;
   real HAT_unknown_mean_ppc;
   real HAT_unknown_sd_ppc;
   int<lower=0, upper=1> HAT_unknown_mean_gte;
   int<lower=0, upper=1> HAT_unknown_sd_gte;
   int sample_size_int = bin_search(round(sample_size), 0, n_obs_unknown); //integer version of flight sample size
-  // int sample_size_int = 145; //integer version of flight sample size
   
   //generate potential vales of real_alt at random
   for(f in 1:n_obs_unknown){
@@ -135,9 +131,7 @@ generated quantities {
     HAT_unknown_ppc[h] = normal_rng(mu_bias, sigma_error);
   }
   
-  //combined unknown
-  // HAT_unknown_ppc = append_row(HAT_unknown_ground_ppc, HAT_unknown_flight_ppc);
-  
+  //ppc stats
   HAT_unknown_mean_ppc = mean(HAT_unknown_ppc);
   HAT_unknown_sd_ppc = sd(HAT_unknown_ppc);
   
