@@ -1,26 +1,26 @@
-// functions {
-//   // function to convert real to int
-//   int bin_search(real x, int min_val, int max_val){ //https://discourse.mc-stan.org/t/real-to-integer-conversion/5622/7
-//   // This assumes that min_val >= 0 is the minimum integer in range,
-//   //  max_val > min_val,
-//   // and that x has already been rounded.
-//   //  It should find the integer equivalent to x.
-//   int range = (max_val - min_val+1)/2; // We add 1 to make sure that truncation doesn't exclude a number
-//   int mid_pt = min_val + range;
-//   int out;
-//   while(range > 0) {
-//     if(x == mid_pt){
-//       out = mid_pt;
-//       range = 0;
-//     } else {
-//       // figure out if range == 1
-//       range =  (range+1)/2;
-//       mid_pt = x > mid_pt ? mid_pt + range: mid_pt - range;
-//     }
-//   }
-//   return out;
-//   }
-// }
+functions {
+  // function to convert real to int
+  int bin_search(real x, int min_val, int max_val){ //https://discourse.mc-stan.org/t/real-to-integer-conversion/5622/7
+  // This assumes that min_val >= 0 is the minimum integer in range,
+  //  max_val > min_val,
+  // and that x has already been rounded.
+  //  It should find the integer equivalent to x.
+  int range = (max_val - min_val+1)/2; // We add 1 to make sure that truncation doesn't exclude a number
+  int mid_pt = min_val + range;
+  int out;
+  while(range > 0) {
+    if(x == mid_pt){
+      out = mid_pt;
+      range = 0;
+    } else {
+      // figure out if range == 1
+      range =  (range+1)/2;
+      mid_pt = x > mid_pt ? mid_pt + range: mid_pt - range;
+    }
+  }
+  return out;
+  }
+}
 
 data {
   int<lower=0> n_obs_known;
@@ -45,16 +45,13 @@ parameters {
   real mu_bias;
   real<lower=0, upper=1> flight_prior;
   real<lower=0> sigma_error;
+  real<lower=0> shape;
+  real<lower=0> rate;
   real<lower=0> real_alt[n_obs_unknown];
-  real<lower=0> mu_flight;
-  real<lower=0> sigma_flight;
-  
 }
 
 transformed parameters {
   real unknown_q[n_obs_unknown, 2];
-  real<lower=0> alpha;
-  real<lower=0> beta;
   
   for(i in 1:n_obs_unknown){ 
     // Marginalized discrete parameter (https://mc-stan.org/docs/stan-users-guide/latent-discrete.html)
@@ -62,11 +59,6 @@ transformed parameters {
     unknown_q[i, 1] = normal_lpdf(HAT_unknown[i]| mu_bias, sigma_error) + log(1 - flight_prior);//+ log(0.67);
     unknown_q[i, 2] = normal_lpdf(HAT_unknown[i]| real_alt[i] + mu_bias, sigma_error) + log(flight_prior);//+ log(0.33);
   }
-  
-  // parameterizing the gamma
-  alpha = (mu_flight / sigma_flight) ^ 2;
-  // beta = (sigma_flight ^ 2) / mu_flight;
-  beta = mu_flight / (sigma_flight^2);
 }
 
 model {
@@ -78,17 +70,13 @@ model {
     target += log_sum_exp(unknown_q[i, 1], unknown_q[i, 2]);
   }
   
-  // parameterizing the gamma
-  real_alt ~ gamma(alpha, beta);
-  
   //priors
+  real_alt ~ gamma(shape, rate);
   mu_bias ~ normal(0, 1); //can be negative
   sigma_error ~ uniform(0, 1); //cannot be negative
-  flight_prior ~ uniform(0, 1); //normal(0.33, 0.33) T[0,1];
-  //shape ~ normal(0, 5) T[0,];
-  //rate ~ normal(0, 10) T[0,];
-  mu_flight ~ normal(450/2183.475, 450/2183.475) T[0,]; //uniform(0, 1);
-  sigma_flight ~ uniform(0, 1);
+  flight_prior ~ normal(0.33, 0.025) T[0,1];
+  shape ~ normal(0, 5) T[0,];
+  rate ~ normal(0, 10) T[0,];
 }
 
 // generated quantities {
