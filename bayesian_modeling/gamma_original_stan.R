@@ -99,25 +99,22 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior"),#, "sample_size", 
-                         #"HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"),#, 
+                pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"), 
                          #"p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
-                iter = 30000, #keep down to 5000 for graphical ppc
-                # control = list(adapt_delta = 0.99),
+                iter = 10000, #keep down to 5000 for graphical ppc
+                #control = list(adapt_delta = 0.99), #, max_treedepth = 20
                 chains = 4)
 
 print(fit)
 traceplot(fit, pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"))
-launch_shinystan(fit)
 
 saveRDS(fit, file = here("bayesian_modeling", "gamma_original_stan.rds"))
 
 ## additional variables for graphical ppc
-# pp_known <- known_ground_df$hat_scaled
-# pp_unknown <- unknown_df$hat_scaled
-# 
-# launch_shinystan(fit) #diagnostics
+pp_known <- known_ground_df$hat_scaled
+pp_unknown <- unknown_df$hat_scaled
 
+launch_shinystan(fit) #diagnostics
 
 ## extract altitude and p_flight data for each point
 unknown_df_results <- unknown_df %>% 

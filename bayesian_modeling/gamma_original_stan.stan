@@ -30,15 +30,15 @@ data {
 }
 
 transformed data { // exclusively for posterior predictive checks
-  real HAT_known_mean;
-  real HAT_known_sd;
-  real HAT_unknown_mean;
-  real HAT_unknown_sd;
+real HAT_known_mean;
+real HAT_known_sd;
+real HAT_unknown_mean;
+real HAT_unknown_sd;
 
-  HAT_known_mean = mean(HAT_known);
-  HAT_known_sd = sd(HAT_known);
-  HAT_unknown_mean = mean(HAT_unknown);
-  HAT_unknown_sd = sd(HAT_unknown);
+HAT_known_mean = mean(HAT_known);
+HAT_known_sd = sd(HAT_known);
+HAT_unknown_mean = mean(HAT_unknown);
+HAT_unknown_sd = sd(HAT_unknown);
 }
 
 parameters {
@@ -71,73 +71,74 @@ model {
   }
   
   //priors
-  real_alt ~ gamma(shape, rate);
+  //real_alt ~ gamma(shape, rate);
+  real_alt ~ inv_gamma(shape, 1/rate);
   mu_bias ~ normal(0, 1); //can be negative
   sigma_error ~ uniform(0, 1); //cannot be negative
-  flight_prior ~ normal(0.33, 0.025) T[0,1];
+  flight_prior ~ uniform(0, 1); 
   shape ~ normal(0, 5) T[0,];
   rate ~ normal(0, 10) T[0,];
 }
 
-// generated quantities {
-//   //calculating probability that any given (unknown) location was recorded in flight, and total # of flight locations
-//   real p_flight[n_obs_unknown];
-//   real sample_size;
-//   
-//   for (i in 1:n_obs_unknown){ //probability of state 2 (flight state)
-//   p_flight[i] = exp(unknown_q[i, 2] - log_sum_exp(unknown_q[i, 1], unknown_q[i, 2]));
-//   }
-//   
-//   sample_size = sum(p_flight);
-//   
-//   // posterior predictive checks following Meng 1994
-//   real HAT_known_ppc[n_obs_known];
-//   real HAT_known_mean_ppc;
-//   real HAT_known_sd_ppc;
-//   int<lower=0, upper=1> HAT_known_mean_gte;
-//   int<lower=0, upper=1> HAT_known_sd_gte;
-//   
-//   // known ground
-//   for(k in 1:n_obs_known){
-//     HAT_known_ppc[k] = normal_rng(mu_bias, sigma_error);
-//   }
-//   
-//   HAT_known_mean_ppc = mean(HAT_known_ppc);
-//   HAT_known_sd_ppc = sd(HAT_known_ppc);
-//   
-//   HAT_known_mean_gte = (HAT_known_mean_ppc >= HAT_known_mean);
-//   HAT_known_sd_gte = (HAT_known_sd_ppc >= HAT_known_sd);
-//   
-//   //unknown
-//   real<lower=0> real_alt_ppc[n_obs_unknown];
-//   vector[n_obs_unknown] HAT_unknown_ppc;
-//   real HAT_unknown_mean_ppc;
-//   real HAT_unknown_sd_ppc;
-//   int<lower=0, upper=1> HAT_unknown_mean_gte;
-//   int<lower=0, upper=1> HAT_unknown_sd_gte;
-//   int sample_size_int = bin_search(round(sample_size), 0, n_obs_unknown); //integer version of flight sample size
-//   
-//   //generate potential vales of real_alt at random
-//   for(f in 1:n_obs_unknown){
-//     real_alt_ppc[f] = gamma_rng(shape, rate);
-//   }
-//   
-//   //unknown flight
-//   for(g in 1:sample_size_int){ // number of presumed flight locations
-//   // real_alt_ppc[g] = gamma_rng(shape, rate);
-//   HAT_unknown_ppc[g] = normal_rng(real_alt_ppc[g] + mu_bias, sigma_error);
-//   }
-//   
-//   //unknown ground
-//   for(h in (sample_size_int + 1):n_obs_unknown){
-//     HAT_unknown_ppc[h] = normal_rng(mu_bias, sigma_error);
-//   }
-//   
-//   //ppc stats
-//   HAT_unknown_mean_ppc = mean(HAT_unknown_ppc);
-//   HAT_unknown_sd_ppc = sd(HAT_unknown_ppc);
-//   
-//   HAT_unknown_mean_gte = (HAT_unknown_mean_ppc >= HAT_unknown_mean);
-//   HAT_unknown_sd_gte= (HAT_unknown_sd_ppc >= HAT_unknown_sd);
-//   
-// }
+generated quantities {
+  //calculating probability that any given (unknown) location was recorded in flight, and total num of flight locations
+  real p_flight[n_obs_unknown];
+  real sample_size;
+  
+  for (i in 1:n_obs_unknown){ //probability of state 2 (flight state)
+  p_flight[i] = exp(unknown_q[i, 2] - log_sum_exp(unknown_q[i, 1], unknown_q[i, 2]));
+  }
+  
+  sample_size = sum(p_flight);
+  
+  // posterior predictive checks following Meng 1994
+  real HAT_known_ppc[n_obs_known];
+  real HAT_known_mean_ppc;
+  real HAT_known_sd_ppc;
+  int<lower=0, upper=1> HAT_known_mean_gte;
+  int<lower=0, upper=1> HAT_known_sd_gte;
+  
+  // known ground
+  for(k in 1:n_obs_known){
+    HAT_known_ppc[k] = normal_rng(mu_bias, sigma_error);
+  }
+  
+  HAT_known_mean_ppc = mean(HAT_known_ppc);
+  HAT_known_sd_ppc = sd(HAT_known_ppc);
+  
+  HAT_known_mean_gte = (HAT_known_mean_ppc >= HAT_known_mean);
+  HAT_known_sd_gte = (HAT_known_sd_ppc >= HAT_known_sd);
+  
+  //unknown
+  real<lower=0> real_alt_ppc[n_obs_unknown];
+  vector[n_obs_unknown] HAT_unknown_ppc;
+  real HAT_unknown_mean_ppc;
+  real HAT_unknown_sd_ppc;
+  int<lower=0, upper=1> HAT_unknown_mean_gte;
+  int<lower=0, upper=1> HAT_unknown_sd_gte;
+  int sample_size_int = bin_search(round(sample_size), 0, n_obs_unknown); //integer version of flight sample size
+  
+  //generate potential vales of real_alt at random
+  for(f in 1:n_obs_unknown){
+    real_alt_ppc[f] = inv_gamma_rng(shape, 1/rate);
+  }
+  
+  //unknown flight
+  for(g in 1:sample_size_int){ // number of presumed flight locations
+  // real_alt_ppc[g] = gamma_rng(shape, rate);
+  HAT_unknown_ppc[g] = normal_rng(real_alt_ppc[g] + mu_bias, sigma_error);
+  }
+  
+  //unknown ground
+  for(h in (sample_size_int + 1):n_obs_unknown){
+    HAT_unknown_ppc[h] = normal_rng(mu_bias, sigma_error);
+  }
+  
+  //ppc stats
+  HAT_unknown_mean_ppc = mean(HAT_unknown_ppc);
+  HAT_unknown_sd_ppc = sd(HAT_unknown_ppc);
+  
+  HAT_unknown_mean_gte = (HAT_unknown_mean_ppc >= HAT_unknown_mean);
+  HAT_unknown_sd_gte= (HAT_unknown_sd_ppc >= HAT_unknown_sd);
+  
+}
