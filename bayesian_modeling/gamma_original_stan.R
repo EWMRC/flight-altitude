@@ -99,10 +99,10 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior"),#, "sample_size", 
+                pars = c("mu_bias", "sigma_error", "mu_flight", "sigma_flight", "flight_prior"),#, "sample_size", 
                          #"HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"),#, 
                          #"p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
-                iter = 30000, #keep down to 5000 for graphical ppc
+                iter = 5000, #keep down to 5000 for graphical ppc
                 # control = list(adapt_delta = 0.99),
                 chains = 4)
 
