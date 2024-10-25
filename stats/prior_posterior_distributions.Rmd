@@ -1,0 +1,90 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(jagsUI)
+library(here)
+library(furrr)
+library(bayestestR)
+library(truncnorm)
+```
+
+```{r}
+original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds"))
+```
+
+mu_bias
+```{r}
+mu_bias_posterior <- tibble(type = "posterior", 
+                            samples = rstan::extract(original_results, "mu_bias")[[1]])
+  
+
+mu_bias_prior <- tibble(type = "prior", 
+                            samples = rnorm(n = 30000, mean = 0, sd = 1))
+  
+mu_bias <- bind_rows(mu_bias_prior, mu_bias_posterior)
+
+ggplot(data = mu_bias, mapping = aes(x = samples, color = type)) +
+  geom_density() +
+  theme_bw()
+```
+
+sigma_error
+```{r}
+sigma_error_posterior <- tibble(type = "posterior", 
+                            samples = rstan::extract(original_results, "sigma_error")[[1]])
+
+sigma_error_prior <- tibble(type = "prior", 
+                            samples = runif(n = 30000))
+
+sigma_error <- bind_rows(sigma_error_prior, sigma_error_posterior)
+
+ggplot(data = sigma_error, mapping = aes(x = samples, color = type)) +
+  geom_density() +
+  theme_bw()
+```
+
+shape
+```{r}
+shape_posterior <- tibble(type = "posterior", 
+                            samples = rstan::extract(original_results, "shape")[[1]])
+
+shape_prior <- tibble(type = "prior", 
+                            samples = rtruncnorm(n = 30000, a = 0, mean = 0, sd = 5))
+
+shape <- bind_rows(shape_prior, shape_posterior)
+
+ggplot(data = shape, mapping = aes(x = samples, color = type)) +
+  geom_density() +
+  theme_bw()
+```
+
+rate
+```{r}
+rate_posterior <- tibble(type = "posterior", 
+                            samples = rstan::extract(original_results, "rate")[[1]])
+
+rate_prior <- tibble(type = "prior", 
+                            samples = rtruncnorm(n = 30000, a = 0, mean = 0, sd = 10))
+
+rate <- bind_rows(rate_prior, rate_posterior)
+
+ggplot(data = rate, mapping = aes(x = samples, color = type)) +
+  geom_density() +
+  theme_bw()
+```
+
+sample_size
+```{r}
+sample_size_posterior <- tibble(type = "posterior", 
+                            samples = rstan::extract(original_results, "sample_size")[[1]]/428)
+
+ggplot(data = sample_size_posterior, mapping = aes(x = samples, color = type)) +
+  geom_density() +
+  theme_bw() +
+  geom_vline(xintercept = 0.33, color = "blue")
+```
+

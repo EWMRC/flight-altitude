@@ -12,7 +12,7 @@ library(bayestestR)
 ```
 
 ```{r}
-original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds"))
+original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan2.rds"))
 ```
 
 Mode
@@ -49,15 +49,15 @@ plan(sequential)
 
 median_draws %>% 
   unlist() %>% 
-  median() #261.6436
+  median() #261.6436 new 217.5314
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [236.42, 283.97]
+  hdi(ci = 0.5) #50% HDI: [236.42, 283.97] new 50% HDI: [179.69, 264.29]
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [193.53, 330.54]
+  hdi(ci = 0.95) #95% HDI: [193.53, 330.54] new 95% HDI: [85.87, 331.73]
 ```
 
 Mean
@@ -82,15 +82,15 @@ plan(sequential)
 
 mean_draws %>% 
   unlist() %>% 
-  median() #361.9758
+  median() #361.9758 new 329.2261
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [338.23, 383.89]
+  hdi(ci = 0.5) #50% HDI: [338.23, 383.89] new 50% HDI: [298.63, 368.49]
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [298.66, 433.16]
+  hdi(ci = 0.95) #95% HDI: [298.66, 433.16] new 95% HDI: [214.54, 426.70]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -116,15 +116,15 @@ plan(sequential)
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  median() #0.3253
+  median() #0.3253 new 0.3972
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.29, 0.36]
+  hdi(ci = 0.5) #50% HDI: [0.29, 0.36] new 50% HDI: [0.31, 0.45]
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  hdi(0.95) #95% HDI: [0.22, 0.43]
+  hdi(0.95) #95% HDI: [0.22, 0.43] new 95% HDI: [0.22, 0.62]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -151,15 +151,15 @@ plan(sequential)
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  median() #0.101
+  median() #0.101 new 0.156
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.07, 0.12]
+  hdi(ci = 0.5) #50% HDI: [0.07, 0.12] new 50% HDI: [0.07, 0.18]
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.04, 0.18]
+  hdi(ci = 0.95) #95% HDI: [0.04, 0.18] new 5% HDI: [0.03, 0.37]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -186,15 +186,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  median() #.5584
+  median() #.5584 new 0.6135
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.53, 0.59]
+  hdi(ci = 0.5) #50% HDI: [0.53, 0.59] new 50% HDI: [0.56, 0.66]
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.46, 0.64]
+  hdi(ci = 0.95) #95% HDI: [0.46, 0.64] new 95% HDI: [0.46, 0.77]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -221,13 +221,13 @@ plan(sequential)
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  median() #0.2723
+  median() #0.2723 new 0.2919
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.26, 0.29]
+  hdi(ci = 0.5) #50% HDI: [0.26, 0.29] new 50% HDI: [0.28, 0.32]
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.21, 0.32]
+  hdi(ci = 0.95) #95% HDI: [0.21, 0.32] new 95% HDI: [0.22, 0.34]
 ```

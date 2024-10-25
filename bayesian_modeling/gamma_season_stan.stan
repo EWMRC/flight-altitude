@@ -49,6 +49,7 @@ transformed data { // exclusively for posterior predictive checks
 
 parameters {
   real mu_bias;
+  real<lower=0, upper=1> flight_prior;
   real<lower=0> sigma_error;
   real<lower=0> shape_spring;
   real<lower=0> rate_spring;
@@ -65,14 +66,14 @@ transformed parameters {
   
   //spring
   for(i in 1:n_obs_unknown_spring){
-    unknown_q_spring[i, 1] = normal_lpdf(HAT_unknown_spring[i]| mu_bias, sigma_error) + log(0.67);
-    unknown_q_spring[i, 2] = normal_lpdf(HAT_unknown_spring[i]| real_alt_spring[i] + mu_bias, sigma_error) + log(0.33);
+    unknown_q_spring[i, 1] = normal_lpdf(HAT_unknown_spring[i]| mu_bias, sigma_error) + log(1 - flight_prior);
+    unknown_q_spring[i, 2] = normal_lpdf(HAT_unknown_spring[i]| real_alt_spring[i] + mu_bias, sigma_error) + log(flight_prior);
   }
   
   //fall
   for(i in 1:n_obs_unknown_fall){
-    unknown_q_fall[i, 1] = normal_lpdf(HAT_unknown_fall[i]| mu_bias, sigma_error) + log(0.67);
-    unknown_q_fall[i, 2] = normal_lpdf(HAT_unknown_fall[i]| real_alt_fall[i] + mu_bias, sigma_error) + log(0.33);
+    unknown_q_fall[i, 1] = normal_lpdf(HAT_unknown_fall[i]| mu_bias, sigma_error) + log(1 - flight_prior);
+    unknown_q_fall[i, 2] = normal_lpdf(HAT_unknown_fall[i]| real_alt_fall[i] + mu_bias, sigma_error) + log(flight_prior);
   }
 }
 
@@ -100,6 +101,7 @@ model {
   
   mu_bias ~ normal(0, 1); //can be negative
   sigma_error ~ uniform(0, 1); //cannot be negative
+  flight_prior ~ uniform(0, 1);
   shape_spring ~ normal(0, 5) T[0,];
   rate_spring ~ normal(0, 10) T[0,];
   shape_fall ~ normal(0, 5) T[0,];

@@ -105,7 +105,7 @@ init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         rate_spring = runif(1,5,10)
                         )}
 
-model_compiled <- stan_model(here("bayesian_modeling", "stan", "gamma_season_stan.stan"))
+model_compiled <- stan_model(here("bayesian_modeling", "gamma_season_stan.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_known = known_ground_df$hat_scaled,
@@ -115,7 +115,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_unknown_spring = unknown_df_spring$hat_scaled), 
                 init = init,
                 pars = c("mu_bias", "sigma_error", "shape_fall", "rate_fall", 
-                         "shape_spring", "rate_spring", "sample_size_fall",
+                         "shape_spring", "rate_spring", "sample_size_fall", "flight_prior",
                          "sample_size_spring", "HAT_known_mean_gte", "HAT_known_sd_gte", 
                          "HAT_unknown_mean_fall_gte", "HAT_unknown_sd_fall_gte", 
                          "HAT_unknown_mean_spring_gte", "HAT_unknown_sd_spring_gte", "p_flight_fall", 
@@ -125,7 +125,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
 
 print(fit)
 
-saveRDS(fit, file = here("bayesian_modeling", "stan", "gamma_season_stan.rds"))
+saveRDS(fit, file = here("bayesian_modeling", "gamma_season_stan2.rds"))
 
 ## additional variables for graphical ppc
 # pp_known <- known_ground_df$hat_scaled

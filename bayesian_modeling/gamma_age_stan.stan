@@ -49,6 +49,7 @@ transformed data { // exclusively for posterior predictive checks
 
 parameters {
   real mu_bias;
+  real<lower=0, upper=1> flight_prior;
   real<lower=0> sigma_error;
   real<lower=0> shape_juv;
   real<lower=0> rate_juv;
@@ -65,14 +66,14 @@ transformed parameters {
   
   //juv
   for(i in 1:n_obs_unknown_juv){
-    unknown_q_juv[i, 1] = normal_lpdf(HAT_unknown_juv[i]| mu_bias, sigma_error) + log(0.67);
-    unknown_q_juv[i, 2] = normal_lpdf(HAT_unknown_juv[i]| real_alt_juv[i] + mu_bias, sigma_error) + log(0.33);
+    unknown_q_juv[i, 1] = normal_lpdf(HAT_unknown_juv[i]| mu_bias, sigma_error) + log(1 - flight_prior);
+    unknown_q_juv[i, 2] = normal_lpdf(HAT_unknown_juv[i]| real_alt_juv[i] + mu_bias, sigma_error) + log(flight_prior);
   }
   
   //adult
   for(i in 1:n_obs_unknown_adult){
-    unknown_q_adult[i, 1] = normal_lpdf(HAT_unknown_adult[i]| mu_bias, sigma_error) + log(0.67);
-    unknown_q_adult[i, 2] = normal_lpdf(HAT_unknown_adult[i]| real_alt_adult[i] + mu_bias, sigma_error) + log(0.33);
+    unknown_q_adult[i, 1] = normal_lpdf(HAT_unknown_adult[i]| mu_bias, sigma_error) + log(1 - flight_prior);
+    unknown_q_adult[i, 2] = normal_lpdf(HAT_unknown_adult[i]| real_alt_adult[i] + mu_bias, sigma_error) + log(flight_prior);
   }
 }
 
@@ -100,6 +101,7 @@ model {
   
   mu_bias ~ normal(0, 1); //can be negative
   sigma_error ~ uniform(0, 1); //cannot be negative
+  flight_prior ~ uniform(0, 1);
   shape_juv ~ normal(0, 5) T[0,];
   rate_juv ~ normal(0, 10) T[0,];
   shape_adult ~ normal(0, 5) T[0,];

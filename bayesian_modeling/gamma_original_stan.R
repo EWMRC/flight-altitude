@@ -89,24 +89,28 @@ unknown_df <- altitude_data %>%
 init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
                         shape = runif(1,3,5),
-                        rate = runif(1,5,10))}
+                        rate = runif(1,5,10),
+                        flight_prior = 0.33)}
 
-model_compiled <- stan_model(here("bayesian_modeling", "stan", "gamma_original_stan.stan"))
+model_compiled <- stan_model(here("bayesian_modeling", "gamma_original_stan.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_known = known_ground_df$hat_scaled,
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "sample_size", 
-                         "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte", 
-                         "p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
-                iter = 15000, #keep down to 5000 for graphical ppc
+                pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior"),#, "sample_size", 
+                         #"HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"),#, 
+                         #"p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
+                iter = 30000, #keep down to 5000 for graphical ppc
+                # control = list(adapt_delta = 0.99),
                 chains = 4)
 
 print(fit)
+traceplot(fit, pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"))
+launch_shinystan(fit)
 
-saveRDS(fit, file = here("bayesian_modeling", "stan", "gamma_original_stan.rds"))
+saveRDS(fit, file = here("bayesian_modeling", "gamma_original_stan.rds"))
 
 ## additional variables for graphical ppc
 # pp_known <- known_ground_df$hat_scaled

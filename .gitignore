@@ -16,3 +16,5 @@ gamma_age_stan.rds
 gamma_original_stan.rds
 gamma_season_stan.rds
 gamma_sex_stan.rds
+bayesian_modeling/gamma_age_stan2.rds
+bayesian_modeling/gamma_original_stan2.rds

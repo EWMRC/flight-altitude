@@ -143,7 +143,7 @@ init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         shape_juv = runif(1,3,5),
                         rate_juv = runif(1,5,10))}
 
-model_compiled <- stan_model(here("bayesian_modeling", "stan", "gamma_age_stan.stan"))
+model_compiled <- stan_model(here("bayesian_modeling", "gamma_age_stan.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_known = known_ground_df$hat_scaled,
@@ -153,7 +153,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_unknown_juv = unknown_df_juv$hat_scaled), 
                 init = init,
                 pars = c("mu_bias", "sigma_error", "shape_adult", "rate_adult", 
-                         "shape_juv", "rate_juv", "sample_size_adult",
+                         "shape_juv", "rate_juv", "sample_size_adult", "flight_prior",
                          "sample_size_juv", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_adult_gte", "HAT_unknown_sd_adult_gte", 
                          "HAT_unknown_mean_juv_gte", "HAT_unknown_sd_juv_gte", "p_flight_adult", 
                          "p_flight_juv"),
@@ -162,7 +162,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
 
 print(fit)
 
-saveRDS(fit, file = here("bayesian_modeling", "stan", "gamma_age_stan.rds"))
+saveRDS(fit, file = here("bayesian_modeling", "gamma_age_stan2.rds"))
 
 ## additional variables for graphical ppc
 # pp_known <- known_ground_df$hat_scaled
