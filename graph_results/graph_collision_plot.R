@@ -66,13 +66,13 @@ original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds")
 # graphing shape and rate
 # simulating density graphs for each drawn combination of shape and rate 
 
-draws_sampled <- 1:length(rstan::extract(original_results, "shape")[[1]])
+draws_sampled <- 1:length(rstan::extract(original_results, "mu_flight")[[1]])
 
 results_shape_rate <- map(draws_sampled, #
     function(index){
-      res <- rinvgamma(n = 1000, 
-             shape = rstan::extract(original_results, "shape")[[1]][index],
-             rate = rstan::extract(original_results, "rate")[[1]][index]) %>% 
+      res <- rlnorm(n = 1000, 
+                    meanlog = rstan::extract(original_results, "mu_flight")[[1]][index],
+                    sdlog = rstan::extract(original_results, "sigma_flight")[[1]][index]) %>% 
         density(n = 200, from = 0, to = 1)
       
       tibble(x = res$x, y = res$y) %>% 

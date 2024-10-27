@@ -88,9 +88,12 @@ unknown_df <- altitude_data %>%
 
 init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
-                        shape = runif(1,3,5),
-                        rate = runif(1,5,10),
-                        flight_prior = 0.33)}
+                        # shape = runif(1,3,5),
+                        # rate = runif(1,5,10),
+                        mu = runif(1,3,5),
+                        tau = runif(1,0,1),
+                        flight_prior = 0.33,
+                        real_alt = runif(nrow(unknown_df)))}
 
 model_compiled <- stan_model(here("bayesian_modeling", "gamma_original_stan.stan"))
 
@@ -99,14 +102,15 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"), 
+                pars = c("mu_bias", "sigma_error", "mu", "tau", "flight_prior"), #, "HAT_known_ppc", "HAT_unknown_ppc"
                          #"p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
-                iter = 10000, #keep down to 5000 for graphical ppc
+                iter = 15000, #keep down to 5000 for graphical ppc
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20
-                chains = 4)
+                chains = 4,
+                init_r = 0)
 
 print(fit)
-traceplot(fit, pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"))
+traceplot(fit, pars = c("mu_bias", "sigma_error", "inverse_phi", "mu", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"))
 
 saveRDS(fit, file = here("bayesian_modeling", "gamma_original_stan.rds"))
 
