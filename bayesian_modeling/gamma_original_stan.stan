@@ -53,10 +53,10 @@ parameters {
   real mu_bias;
   real<lower=0> sigma_error;
   real<lower=0, upper=1> flight_prior;
-  real<lower=0> shape;
-  real<lower=0> rate;
-  // real<lower=0> mu;
-  // real<lower=0> tau;
+  // real<lower=0> shape;
+  // real<lower=0> rate;
+  real<lower=0> mu;
+  real<lower=0> tau;
   vector<lower=0>[n_obs_unknown] real_alt;
   // real<lower=0> real_alt[n_obs_unknown];
 }
@@ -82,21 +82,20 @@ model {
   }
   
   //describing the altitude distribution https://discourse.mc-stan.org/t/gamma-regression-in-stan-vs-frequentist-approach/16274/3
-  real_alt ~ gamma(shape, rate);
-  // real_alt ~ johnnys_gamma(tau, mu);
+  // real_alt ~ gamma(shape, rate);
+  real_alt ~ johnnys_gamma(tau, mu);
 
   // inverse_phi ~ exponential(1); // in example, 1.25. Simulate using rexp(100)
   // mu ~ normal(0, 0.5) T[0,]; // in example, 0.1598465.
   
   //priors
-  mu_bias ~ normal(0, 1); //can be negative
-  sigma_error ~ uniform(0, 1); //cannot be negative
-  flight_prior ~ uniform(0, 1); 
-  // flight_prior ~ beta(30.5, 60);
-  // tau ~ normal(0, 5) T[0,];
-  // mu ~ normal(0.2060935, 0.04579856) T[0,]; //450m +/- 100m
-  shape ~ normal(0, 5) T[0,];
-  rate ~ normal(0, 10) T[0,];
+  mu_bias ~ normal(0, 1); 
+  sigma_error ~ uniform(0, 1); 
+  flight_prior ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
+  tau ~ normal(0, 5) T[0,]; //uninformative
+  mu ~ normal(0.2060935, 0.04579856) T[0,]; //450m +/- 100m
+  // shape ~ normal(0, 5) T[0,];
+  // rate ~ normal(0, 10) T[0,];
 
 }
 // 
