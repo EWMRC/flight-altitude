@@ -4,34 +4,33 @@ library(tidybayes)
 library(ggpubr)
 library(here)
 library(ggimage)
-library(invgamma)
 
 # original_results <- readRDS(here("bayesian_modeling", "gamma_original.rds"))
 original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds"))
 
 #examining mean flight altitudes
 # mean is shape/rate
-# mean_altitude <- (rstan::extract(original_results, "shape")[[1]]/rstan::extract(original_results, "rate")[[1]])*2183.475
-# median(mean_altitude) #361.9766
-# 
-# mean_altitude <- tibble(samples = mean_altitude)
-# 
-# # plot options: (going with basic for now)
-# # basic
-# plot_mean_basic <- ggplot(mean_altitude, aes(x = samples)) +
-#   stat_halfeye(slab_alpha = 0.5,
-#                slab_fill = "#636363",
-#                slab_color = "black",
-#                .width	= c(0.5, 0.95)) +
-#   stat_halfeye(slab_color = "black", fill = NA,
-#                .width	= c(0.5, 0.95)) +
-#   theme_bw() +
-#   labs(x = "Mean", 
-#        y = "Probability density",
-#        title  = "A") + 
-#   theme(legend.position = "none") +
-#   lims(x = c(0,750))  +
-#   scale_x_continuous(label = scales::label_number(suffix = "m"))
+mean_altitude <- (rstan::extract(original_results, "shape")[[1]]/rstan::extract(original_results, "rate")[[1]])*2183.475
+median(mean_altitude) #361.9766
+
+mean_altitude <- tibble(samples = mean_altitude)
+
+# plot options: (going with basic for now)
+# basic
+plot_mean_basic <- ggplot(mean_altitude, aes(x = samples)) +
+  stat_halfeye(slab_alpha = 0.5,
+               slab_fill = "#636363",
+               slab_color = "black",
+               .width	= c(0.5, 0.95)) +
+  stat_halfeye(slab_color = "black", fill = NA,
+               .width	= c(0.5, 0.95)) +
+  theme_bw() +
+  labs(x = "Mean",
+       y = "Probability density",
+       title  = "A") +
+  theme(legend.position = "none") +
+  lims(x = c(0,750))  +
+  scale_x_continuous(label = scales::label_number(suffix = "m"))
 
 
 # plot_mean_basic
@@ -66,13 +65,13 @@ original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds")
 # graphing shape and rate
 # simulating density graphs for each drawn combination of shape and rate 
 
-draws_sampled <- 1:length(rstan::extract(original_results, "mu_flight")[[1]])
+draws_sampled <- 1:length(rstan::extract(original_results, "shape")[[1]])
 
 results_shape_rate <- map(draws_sampled, #
     function(index){
-      res <- rlnorm(n = 1000, 
-                    meanlog = rstan::extract(original_results, "mu_flight")[[1]][index],
-                    sdlog = rstan::extract(original_results, "sigma_flight")[[1]][index]) %>% 
+      res <- rgamma(n = 1000, 
+                    shape = rstan::extract(original_results, "shape")[[1]][index],
+                    rate = rstan::extract(original_results, "rate")[[1]][index]) %>% 
         density(n = 200, from = 0, to = 1)
       
       tibble(x = res$x, y = res$y) %>% 
@@ -94,9 +93,8 @@ plot_shape_rate <- results_shape_rate %>%
   theme(legend.position="bottom") +
   scale_x_continuous(label = scales::label_number(suffix = "m"))
 
-
-# ggsave(plot = plot_shape_rate, 
-#        filename = here("graph_results", "plot_shape_rate_stan.png"),
+# ggsave(plot = plot_shape_rate,
+#        filename = here("graph_results", "plot_shape_rate_stan_2.png"),
 #        width = 7/1.5,
 #        height = 5/1.5)
 

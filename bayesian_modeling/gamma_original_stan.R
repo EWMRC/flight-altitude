@@ -58,22 +58,23 @@ raw_data %>%
 # dataset, I'm okay with that assumption for now
 
 altitude_data <- raw_data %>% 
-  mutate(HAT_index = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, NA, 1))
+  mutate(probable_ground = if_else(day_night == "Day", 1, NA)) %>% 
+  mutate(possible_flight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, 1, NA))
 
 altitude_data %>% 
-  group_by(HAT_index) %>% 
-  tally() #428 possible flight locations
+  group_by(possible_flight) %>% 
+  tally() #258, down from 428 possible flight locations
 
 # plot results
-# altitude_data %>%
-#   filter(!is.na(HAT_index)) %>%
-#   pull(height_above_terrain) %>%
-#   hist(main = "Presumed ground locations")
-# 
-# altitude_data %>%
-#   filter(is.na(HAT_index)) %>%
-#   pull(height_above_terrain) %>%
-#   hist(main = "Possible flight locations")
+altitude_data %>%
+  filter(probable_ground == 1) %>%
+  pull(height_above_terrain) %>%
+  hist(main = "Presumed ground locations")
+
+altitude_data %>%
+  filter(possible_flight == 1) %>%
+  pull(height_above_terrain) %>%
+  hist(main = "Possible flight locations")
 
 # Scale locations between -1 and 1
 altitude_data <- altitude_data %>% 
@@ -81,17 +82,17 @@ altitude_data <- altitude_data %>%
 
 #splitting into two dataframes
 known_ground_df <- altitude_data %>% 
-  filter(HAT_index == 1)
+  filter(probable_ground == 1)
 
 unknown_df <- altitude_data %>% 
-  filter(is.na(HAT_index))
+  filter(possible_flight == 1)
 
 init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
-                        # shape = runif(1,3,5),
-                        # rate = runif(1,5,10),
-                        mu = runif(1,3,5),
-                        tau = runif(1,0,1),
+                        shape = runif(1,3,5),
+                        rate = runif(1,5,10),
+                        # mu = runif(1,3,5),
+                        # tau = runif(1,0,1),
                         flight_prior = 0.33,
                         real_alt = runif(nrow(unknown_df)))}
 
@@ -102,12 +103,12 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "mu", "tau", "flight_prior"), #, "HAT_known_ppc", "HAT_unknown_ppc"
+                pars = c("mu_bias", "sigma_error", "shape", "rate", "flight_prior"), #, "HAT_known_ppc", "HAT_unknown_ppc"
                          #"p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
                 iter = 15000, #keep down to 5000 for graphical ppc
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20
-                chains = 4,
-                init_r = 0)
+                chains = 4)#,
+                #init_r = 0)
 
 print(fit)
 traceplot(fit, pars = c("mu_bias", "sigma_error", "inverse_phi", "mu", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"))

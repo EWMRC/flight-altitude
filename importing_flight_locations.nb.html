@@ -1754,76 +1754,14 @@ display: none;
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5gYGAifQ== -->
-<pre class="r"><code>library(tidyverse)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5saWJyYXJ5KHNmKVxubGlicmFyeShsdWJyaWRhdGUpXG5saWJyYXJ5KG1vdmUpXG5saWJyYXJ5KGhlcmUpXG5saWJyYXJ5KGFtdClcbmBgYCJ9 -->
+<pre class="r"><code>library(tidyverse)
+library(sf)
+library(lubridate)
+library(move)
+library(here)
+library(amt)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBjb3JlIHRpZHl2ZXJzZSBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDIuMC4wIOKUgOKUgFxu4pyUIGRwbHlyICAgICAxLjEuNCAgICAg4pyUIHJlYWRyICAgICAyLjEuNVxu4pyUIGZvcmNhdHMgICAxLjAuMCAgICAg4pyUIHN0cmluZ3IgICAxLjUuMVxu4pyUIGdncGxvdDIgICAzLjUuMSAgICAg4pyUIHRpYmJsZSAgICAzLjIuMVxu4pyUIGx1YnJpZGF0ZSAxLjkuMyAgICAg4pyUIHRpZHlyICAgICAxLjMuMVxu4pyUIHB1cnJyICAgICAxLjAuMiAgICAg4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG7ihLkgVXNlIHRoZSBcdTAwMWJdODs7aHR0cDovL2NvbmZsaWN0ZWQuci1saWIub3JnL1x1MDAwN2NvbmZsaWN0ZWQgcGFja2FnZVx1MDAxYl04OztcdTAwMDcgdG8gZm9yY2UgYWxsIGNvbmZsaWN0cyB0byBiZWNvbWUgZXJyb3JzXG4ifQ== -->
-<pre><code>── Attaching core tidyverse packages ───────────────────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     ── Conflicts ─────────────────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzZilcbmBgYCJ9 -->
-<pre class="r"><code>library(sf)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTGlua2luZyB0byBHRU9TIDMuMTEuMCwgR0RBTCAzLjUuMywgUFJPSiA5LjEuMDsgc2ZfdXNlX3MyKCkgaXMgVFJVRVxuIn0= -->
-<pre><code>Linking to GEOS 3.11.0, GDAL 3.5.3, PROJ 9.1.0; sf_use_s2() is TRUE</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShsdWJyaWRhdGUpXG5saWJyYXJ5KG1vdmUpXG5gYGAifQ== -->
-<pre class="r"><code>library(lubridate)
-library(move)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTG9hZGluZyByZXF1aXJlZCBwYWNrYWdlOiBnZW9zcGhlcmVcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogc3BcbkxvYWRpbmcgcmVxdWlyZWQgcGFja2FnZTogcmFzdGVyXG5cbkF0dGFjaGluZyBwYWNrYWdlOiDigJhyYXN0ZXLigJlcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpkcGx5cuKAmTpcblxuICAgIHNlbGVjdFxuXG5BIHN1Y2Nlc3NvciB0byBgbW92ZWAgaGFzIGJlZW4gZGV2ZWxvcGVkIGFuZCBpcyBhdmFpbGFibGUgb24gY3JhbiAoYG1vdmUyYCwgaHR0cHM6Ly9iYXJ0ay5naXRsYWIuaW8vbW92ZTIvKS4gVGhpcyBicmluZ3Mgc3BlZWQgaW1wcm92ZW1lbnRzIGFuZCBpcyBiYXNlZCBvbiBgc2ZgLiBGZWVkYmFjayAoaW5jbHVkaW5nIG1pc3NpbmcgZnVuY3Rpb25hbGl0eSkgb24gdGhpcyBuZXcgcGFja2FnZSBpcyB3ZWxjb21lLCBmb3IgbmV3IHByb2plY3RzIGl0IG1pZ2h0IGJlIHdvcnRoIGNvbnNpZGVyaW5nIHN0YXJ0aW5nIGRpcmVjdGx5IHdpdGggYG1vdmUyYC5cbiJ9 -->
-<pre><code>Loading required package: geosphere
-Loading required package: sp
-Loading required package: raster
-
-Attaching package: ‘raster’
-
-The following object is masked from ‘package:dplyr’:
-
-    select
-
-A successor to `move` has been developed and is available on cran (`move2`, https://bartk.gitlab.io/move2/). This brings speed improvements and is based on `sf`. Feedback (including missing functionality) on this new package is welcome, for new projects it might be worth considering starting directly with `move2`.</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShoZXJlKVxuYGBgIn0= -->
-<pre class="r"><code>library(here)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiaGVyZSgpIHN0YXJ0cyBhdCAvVXNlcnMvbGlhbWJlcmlnYW4vTGlicmFyeS9DbG91ZFN0b3JhZ2UvT25lRHJpdmUtS2Fuc2FzU3RhdGVVbml2ZXJzaXR5L01haW5lQW5hbHlzaXMvUHJvamVjdHMvZmxpZ2h0LWFsdGl0dWRlXG4ifQ== -->
-<pre><code>here() starts at /Users/liamberigan/Library/CloudStorage/OneDrive-KansasStateUniversity/MaineAnalysis/Projects/flight-altitude</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShhbXQpXG5gYGAifQ== -->
-<pre class="r"><code>library(amt)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiXG5BdHRhY2hpbmcgcGFja2FnZTog4oCYYW104oCZXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0IGlzIG1hc2tlZCBmcm9tIOKAmHBhY2thZ2U6bW92ZeKAmTpcblxuICAgIHNwZWVkXG5cblRoZSBmb2xsb3dpbmcgb2JqZWN0cyBhcmUgbWFza2VkIGZyb20g4oCYcGFja2FnZTpyYXN0ZXLigJk6XG5cbiAgICBiYm94LCBzZWxlY3RcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpzcOKAmTpcblxuICAgIGJib3hcblxuVGhlIGZvbGxvd2luZyBvYmplY3QgaXMgbWFza2VkIGZyb20g4oCYcGFja2FnZTpnZW9zcGhlcmXigJk6XG5cbiAgICBjZW50cm9pZFxuXG5UaGUgZm9sbG93aW5nIG9iamVjdCBpcyBtYXNrZWQgZnJvbSDigJhwYWNrYWdlOnN0YXRz4oCZOlxuXG4gICAgZmlsdGVyXG4ifQ== -->
-<pre><code>
-Attaching package: ‘amt’
-
-The following object is masked from ‘package:move’:
-
-    speed
-
-The following objects are masked from ‘package:raster’:
-
-    bbox, select
-
-The following object is masked from ‘package:sp’:
-
-    bbox
-
-The following object is masked from ‘package:geosphere’:
-
-    centroid
-
-The following object is masked from ‘package:stats’:
-
-    filter</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -1859,10 +1797,8 @@ amwo_data %&gt;%
 <p>Delineate skips here (need to do it before I start filtering)</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYGBgclxuYGBgclxuYW13b19uZXN0ZWQgPC0gYW13b19kYXRhICU+JSBcbiAgbmVzdCguYnkgPSBJRClcblxuYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJGRhdGEsIGZ1bmN0aW9uKHgpeyAjcmVtZW1iZXIgdG8gdHJhbnNmb3JtIHRvIDUwNzBcbiAgYSA8LSBta190cmFjayh4LCAueCA9IGxvbiwgLnkgPSBsYXQsIGNycyA9IDQzMjYsIGFsbF9jb2xzID0gVFJVRSkgJT4lIFxuICAgIHRyYW5zZm9ybV9jb29yZHMoNTA3MClcbiAgYSRzbCA8LSBzdGVwX2xlbmd0aHMoYSlcbiAgcmV0dXJuKGEpXG59KVxuXG5hbXdvX25lc3RlZCR0cmFjayA8LSBtYXAoYW13b19uZXN0ZWQkdHJhY2ssIGZ1bmN0aW9uKHgpe1xuICB4JG1vdmluZyA8LSBOQVxuICBmb3IoaSBpbiAxOm5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGZpcnN0IHJvdywgdGhlIGJpcmQgaXNuJ3QgbW92aW5nXG4gICAgaWYoaSA9PSAxKXtcbiAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFXG4gICAgfSBlbHNlIGlmKGkgPT0gbnJvdyh4KSl7ICMgaWYgaXQncyB0aGUgbGFzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZ1xuICAgICAgeCRtb3ZpbmdbaV0gPC0gRkFMU0VcbiAgICB9IGVsc2Uge1xuICAgICAgaWYoeCRzbFtpLTFdID49IDEwMDAgJiB4JHNsW2ldID49IDEwMDApeyAjaWYgdGhlIGN1cnJlbnQgYW5kIHByaW9yIHN0ZXBzIGFyZSBib3RoIGF0IGxlYXN0IDEga20sIHRoZSBiaXJkIGlzIG1vdmluZ1xuICAgICAgICB4JG1vdmluZ1tpXSA8LSBUUlVFXG4gICAgICB9IGVsc2Uge1xuICAgICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRVxuICAgICAgfVxuICAgIH1cbiAgfVxuICByZXR1cm4oeClcbn0pXG5cbmFtd29fbmVzdGVkIDwtIGFtd29fbmVzdGVkICU+JSBcbiAgZHBseXI6OnNlbGVjdChJRCwgdHJhY2spICU+JSBcbiAgdW5uZXN0KGNvbHMgPSBjKHRyYWNrKSkgJT4lIFxuICBkcGx5cjo6c2VsZWN0KGV2ZW50X2lkLCBtb3ZpbmcpXG5cbmFtd29fZGF0YSA8LSBhbXdvX2RhdGEgJT4lIFxuICBsZWZ0X2pvaW4oYW13b19uZXN0ZWQpXG5cbmFueShpcy5uYShhbXdvX2RhdGEkbW92aW5nKSkjIHNob3VsZCBiZSBmYWxzZVxuXG5hbXdvX2RhdGEkbW92aW5nICU+JSBcbiAgdGFibGUoKVxuYGBgXG5gYGBcbmBgYCJ9 -->
-<pre class="r"><code>```r
-```r
-amwo_nested &lt;- amwo_data %&gt;% 
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19uZXN0ZWQgPC0gYW13b19kYXRhICU+JSBcbiAgbmVzdCguYnkgPSBJRClcblxuYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJGRhdGEsIGZ1bmN0aW9uKHgpeyAjcmVtZW1iZXIgdG8gdHJhbnNmb3JtIHRvIDUwNzBcbiAgYSA8LSBta190cmFjayh4LCAueCA9IGxvbiwgLnkgPSBsYXQsIGNycyA9IDQzMjYsIGFsbF9jb2xzID0gVFJVRSkgJT4lIFxuICAgIHRyYW5zZm9ybV9jb29yZHMoNTA3MClcbiAgYSRzbCA8LSBzdGVwX2xlbmd0aHMoYSlcbiAgcmV0dXJuKGEpXG59KVxuXG5hbXdvX25lc3RlZCR0cmFjayA8LSBtYXAoYW13b19uZXN0ZWQkdHJhY2ssIGZ1bmN0aW9uKHgpe1xuICB4JG1vdmluZyA8LSBOQVxuICBmb3IoaSBpbiAxOm5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGZpcnN0IHJvdywgdGhlIGJpcmQgaXNuJ3QgbW92aW5nXG4gICAgaWYoaSA9PSAxKXtcbiAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFXG4gICAgfSBlbHNlIGlmKGkgPT0gbnJvdyh4KSl7ICMgaWYgaXQncyB0aGUgbGFzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZ1xuICAgICAgeCRtb3ZpbmdbaV0gPC0gRkFMU0VcbiAgICB9IGVsc2Uge1xuICAgICAgaWYoeCRzbFtpLTFdID49ICg2LjY3ODY4OCAqIDEwMDApICYgeCRzbFtpXSA+PSAoNi42Nzg2ODggKiAxMDAwKSl7ICNpZiB0aGUgY3VycmVudCBhbmQgcHJpb3Igc3RlcHMgYXJlIGJvdGggYXQgbGVhc3QgNi42NyBrbSwgdGhlIGJpcmQgaXMgbW92aW5nLiBQcmlvciB0aHJlc2hvbGQgd2FzIDEga21cbiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gVFJVRVxuICAgICAgfSBlbHNlIHtcbiAgICAgICAgeCRtb3ZpbmdbaV0gPC0gRkFMU0VcbiAgICAgIH1cbiAgICB9XG4gIH1cbiAgcmV0dXJuKHgpXG59KVxuXG5hbXdvX25lc3RlZCA8LSBhbXdvX25lc3RlZCAlPiUgXG4gIGRwbHlyOjpzZWxlY3QoSUQsIHRyYWNrKSAlPiUgXG4gIHVubmVzdChjb2xzID0gYyh0cmFjaykpICU+JSBcbiAgZHBseXI6OnNlbGVjdChldmVudF9pZCwgbW92aW5nKVxuXG5hbXdvX2RhdGEgPC0gYW13b19kYXRhICU+JSBcbiAgbGVmdF9qb2luKGFtd29fbmVzdGVkKVxuYGBgIn0= -->
+<pre class="r"><code>amwo_nested &lt;- amwo_data %&gt;% 
   nest(.by = ID)
 
 amwo_nested$track &lt;- map(amwo_nested$data, function(x){ #remember to transform to 5070
@@ -1880,7 +1816,7 @@ amwo_nested$track &lt;- map(amwo_nested$track, function(x){
     } else if(i == nrow(x)){ # if it&#39;s the last row, the bird isn&#39;t moving
       x$moving[i] &lt;- FALSE
     } else {
-      if(x$sl[i-1] &gt;= 1000 &amp; x$sl[i] &gt;= 1000){ #if the current and prior steps are both at least 1 km, the bird is moving
+      if(x$sl[i-1] &gt;= (6.678688 * 1000) &amp; x$sl[i] &gt;= (6.678688 * 1000)){ #if the current and prior steps are both at least 6.67 km, the bird is moving. Prior threshold was 1 km
         x$moving[i] &lt;- TRUE
       } else {
         x$moving[i] &lt;- FALSE
@@ -1896,50 +1832,62 @@ amwo_nested &lt;- amwo_nested %&gt;%
   dplyr::select(event_id, moving)
 
 amwo_data &lt;- amwo_data %&gt;% 
-  left_join(amwo_nested)
-
-any(is.na(amwo_data$moving))# should be false
-
-amwo_data$moving %&gt;% 
-  table()</code></pre>
-<pre><code></code></pre>
+  left_join(amwo_nested)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZyB3aXRoIGBieSA9IGpvaW5fYnkoZXZlbnRfaWQpYFxuIn0= -->
+<pre><code>Joining with `by = join_by(event_id)`</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW55KGlzLm5hKGFtd29fZGF0YSRtb3ZpbmcpKSMgc2hvdWxkIGJlIGZhbHNlXG5gYGAifQ== -->
+<pre class="r"><code>any(is.na(amwo_data$moving))# should be false</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
+<pre><code>[1] FALSE</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhJG1vdmluZyAlPiUgXG4gIHRhYmxlKClcbmBgYCJ9 -->
+<pre class="r"><code>amwo_data$moving %&gt;% 
+  table()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiLlxuRkFMU0UgIFRSVUUgXG4zNzI4MSAgMTQ3MSBcbiJ9 -->
+<pre><code>.
+FALSE  TRUE 
+37281  1471 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Is a location overwater?</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19zZiA8LSBhbXdvX2RhdGEgJT4lIFxuICBzdF9hc19zZihjb29yZHMgPSBjKFwibG9uXCIsIFwibGF0XCIpLCBjcnMgPSA0MzI2LCByZW1vdmUgPSBGQUxTRSlcblxuY29hc3RsaW5lX3BvbHlnb24gPC0gc3RfcmVhZChcIkQ6L09uZURyaXZlIC0gVW5pdmVyc2l0eSBvZiBNYWluZSBTeXN0ZW0vTWFpbmVBbmFseXNpcy9EYXRhL2NvYXN0bGluZS9uZV8xMG1fY29hc3RsaW5lX3BvbHkuc2hwXCIpICU+JSBcbiAgc3RfdHJhbnNmb3JtKDQzMjYpICU+JSBcbiAgdHJhbnNtdXRlKG9uX2xhbmQgPSBUUlVFKVxuXG5hbXdvX3NmIDwtIGFtd29fc2YgJT4lIFxuICBzdF9qb2luKGNvYXN0bGluZV9wb2x5Z29uKVxuXG4jIEFzIHRoZSBjb2FzdGxpbmUgaXNuJ3QgcGVyZmVjdCwgSSBoYXZlIHNvbWUgZXhjZXB0aW9ucyBoZXJlIHRoYXQgSSdsbCBzZXQgdG8gb24gbGFuZFxub3ZlcndhdGVyX2V4Y2VwdGlvbnMgPC0gcmVhZC5jc3YoaGVyZShcIm92ZXJ3YXRlcl9leGNlcHRpb25zLmNzdlwiKSlcblxuYW13b19zZiA8LSBhbXdvX3NmICU+JVxuICBtdXRhdGUob25fbGFuZCA9IGlmX2Vsc2UoZXZlbnRfaWQgJWluJSBvdmVyd2F0ZXJfZXhjZXB0aW9ucyRldmVudF9pZCwgVFJVRSwgb25fbGFuZCkpXG5cbiMgc2V0IG5hIHZhbHVlcyB0byBGQUxTRSAoaWUgb25sYW5kID09IEZBTFNFIGlzIGFuIG92ZXJ3YXRlciBsb2NhdGlvbilcbmFtd29fc2YgPC0gYW13b19zZiAlPiVcbiAgbXV0YXRlKG9uX2xhbmQgPSBpZl9lbHNlKGlzLm5hKG9uX2xhbmQpLCBGQUxTRSwgb25fbGFuZCkpXG5cbiMgY291bnQgdGhlIG51bWJlciBvZiBvdmVyd2F0ZXIgbG9jYXRpb25zXG5hbXdvX3NmICU+JSBcbiAgc3RfZHJvcF9nZW9tZXRyeSgpICU+JSBcbiAgZ3JvdXBfYnkob25fbGFuZCkgJT4lIFxuICB0YWxseSgpXG5cbiMgbWFwIHRoZSBvdmVyd2F0ZXIgbG9jYXRpb25zOiBnb29kIGZvciBwcm9vZmluZyB0aGUgbG9jYXRpb25zXG4jIGFtd29fc2YgJT4lIFxuIyAgIGZpbHRlcihvbl9sYW5kID09IEZBTFNFKSAlPiUgXG4jICAgbWFwdmlldzo6bWFwdmlldygpXG5cbmBgYCJ9 -->
-<pre class="r"><code>amwo_sf &lt;- amwo_data %&gt;% 
-  st_as_sf(coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326, remove = FALSE)
-
-coastline_polygon &lt;- st_read(&quot;D:/OneDrive - University of Maine System/MaineAnalysis/Data/coastline/ne_10m_coastline_poly.shp&quot;) %&gt;% 
-  st_transform(4326) %&gt;% 
-  transmute(on_land = TRUE)
-
-amwo_sf &lt;- amwo_sf %&gt;% 
-  st_join(coastline_polygon)
-
-# As the coastline isn&#39;t perfect, I have some exceptions here that I&#39;ll set to on land
-overwater_exceptions &lt;- read.csv(here(&quot;overwater_exceptions.csv&quot;))
-
-amwo_sf &lt;- amwo_sf %&gt;%
-  mutate(on_land = if_else(event_id %in% overwater_exceptions$event_id, TRUE, on_land))
-
-# set na values to FALSE (ie onland == FALSE is an overwater location)
-amwo_sf &lt;- amwo_sf %&gt;%
-  mutate(on_land = if_else(is.na(on_land), FALSE, on_land))
-
-# count the number of overwater locations
-amwo_sf %&gt;% 
-  st_drop_geometry() %&gt;% 
-  group_by(on_land) %&gt;% 
-  tally()
-
-# map the overwater locations: good for proofing the locations
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBhbXdvX3NmIDwtIGFtd29fZGF0YSAlPiUgXG4jICAgc3RfYXNfc2YoY29vcmRzID0gYyhcImxvblwiLCBcImxhdFwiKSwgY3JzID0gNDMyNiwgcmVtb3ZlID0gRkFMU0UpXG4jIFxuIyBjb2FzdGxpbmVfcG9seWdvbiA8LSBzdF9yZWFkKFwiRDovT25lRHJpdmUgLSBLYW5zYXMgU3RhdGUgVW5pdmVyc2l0eS9NYWluZUFuYWx5c2lzL0RhdGEvY29hc3RsaW5lL25lXzEwbV9jb2FzdGxpbmVfcG9seS5zaHBcIikgJT4lIFxuIyAgIHN0X3RyYW5zZm9ybSg0MzI2KSAlPiUgXG4jICAgdHJhbnNtdXRlKG9uX2xhbmQgPSBUUlVFKVxuIyBcbiMgYW13b19zZiA8LSBhbXdvX3NmICU+JSBcbiMgICBzdF9qb2luKGNvYXN0bGluZV9wb2x5Z29uKVxuIyBcbiMgIyBBcyB0aGUgY29hc3RsaW5lIGlzbid0IHBlcmZlY3QsIEkgaGF2ZSBzb21lIGV4Y2VwdGlvbnMgaGVyZSB0aGF0IEknbGwgc2V0IHRvIG9uIGxhbmRcbiMgb3ZlcndhdGVyX2V4Y2VwdGlvbnMgPC0gcmVhZC5jc3YoaGVyZShcIm92ZXJ3YXRlcl9leGNlcHRpb25zLmNzdlwiKSlcbiMgXG4jIGFtd29fc2YgPC0gYW13b19zZiAlPiVcbiMgICBtdXRhdGUob25fbGFuZCA9IGlmX2Vsc2UoZXZlbnRfaWQgJWluJSBvdmVyd2F0ZXJfZXhjZXB0aW9ucyRldmVudF9pZCwgVFJVRSwgb25fbGFuZCkpXG4jIFxuIyAjIHNldCBuYSB2YWx1ZXMgdG8gRkFMU0UgKGllIG9ubGFuZCA9PSBGQUxTRSBpcyBhbiBvdmVyd2F0ZXIgbG9jYXRpb24pXG4jIGFtd29fc2YgPC0gYW13b19zZiAlPiVcbiMgICBtdXRhdGUob25fbGFuZCA9IGlmX2Vsc2UoaXMubmEob25fbGFuZCksIEZBTFNFLCBvbl9sYW5kKSlcbiMgXG4jICMgY291bnQgdGhlIG51bWJlciBvZiBvdmVyd2F0ZXIgbG9jYXRpb25zXG4jIGFtd29fc2YgJT4lIFxuIyAgIHN0X2Ryb3BfZ2VvbWV0cnkoKSAlPiUgXG4jICAgZ3JvdXBfYnkob25fbGFuZCkgJT4lIFxuIyAgIHRhbGx5KClcbiMgXG4jICMgbWFwIHRoZSBvdmVyd2F0ZXIgbG9jYXRpb25zOiBnb29kIGZvciBwcm9vZmluZyB0aGUgbG9jYXRpb25zXG4jICMgYW13b19zZiAlPiUgXG4jICMgICBmaWx0ZXIob25fbGFuZCA9PSBGQUxTRSkgJT4lIFxuIyAjICAgbWFwdmlldzo6bWFwdmlldygpXG5cbmBgYCJ9 -->
+<pre class="r"><code># amwo_sf &lt;- amwo_data %&gt;% 
+#   st_as_sf(coords = c(&quot;lon&quot;, &quot;lat&quot;), crs = 4326, remove = FALSE)
+# 
+# coastline_polygon &lt;- st_read(&quot;D:/OneDrive - Kansas State University/MaineAnalysis/Data/coastline/ne_10m_coastline_poly.shp&quot;) %&gt;% 
+#   st_transform(4326) %&gt;% 
+#   transmute(on_land = TRUE)
+# 
+# amwo_sf &lt;- amwo_sf %&gt;% 
+#   st_join(coastline_polygon)
+# 
+# # As the coastline isn&#39;t perfect, I have some exceptions here that I&#39;ll set to on land
+# overwater_exceptions &lt;- read.csv(here(&quot;overwater_exceptions.csv&quot;))
+# 
+# amwo_sf &lt;- amwo_sf %&gt;%
+#   mutate(on_land = if_else(event_id %in% overwater_exceptions$event_id, TRUE, on_land))
+# 
+# # set na values to FALSE (ie onland == FALSE is an overwater location)
+# amwo_sf &lt;- amwo_sf %&gt;%
+#   mutate(on_land = if_else(is.na(on_land), FALSE, on_land))
+# 
+# # count the number of overwater locations
 # amwo_sf %&gt;% 
-#   filter(on_land == FALSE) %&gt;% 
-#   mapview::mapview()
+#   st_drop_geometry() %&gt;% 
+#   group_by(on_land) %&gt;% 
+#   tally()
+# 
+# # map the overwater locations: good for proofing the locations
+# # amwo_sf %&gt;% 
+# #   filter(on_land == FALSE) %&gt;% 
+# #   mapview::mapview()
 </code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
@@ -1947,8 +1895,8 @@ amwo_sf %&gt;%
 <p>Save for later use</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYW13b19kYXRhJG9uX2xhbmQgPC0gYW13b19zZiRvbl9sYW5kXG5cbmFtd29fZGF0YSAlPiVcbiAgZmlsdGVyKCghaXMubmEoaGVpZ2h0X2Fib3ZlX3dnczg0KSkgJiAoIWlzLm5hKHBvaW50X3N0YXRlKSkpICU+JVxuICB3cml0ZS5jc3YoaGVyZShcImludGVybWVkaWF0ZV9maWxlc1wiLCBcImltcG9ydGVkX21vdmViYW5rX2RhdGEuY3N2XCIpKVxuXG4jIFZlcnRpY2FsIGRhdHVtIGlzIFdLSUQ6OjExNTcwMFxuYGBgIn0= -->
-<pre class="r"><code>amwo_data$on_land &lt;- amwo_sf$on_land
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBhbXdvX2RhdGEkb25fbGFuZCA8LSBhbXdvX3NmJG9uX2xhbmRcblxuYW13b19kYXRhICU+JVxuICBmaWx0ZXIoKCFpcy5uYShoZWlnaHRfYWJvdmVfd2dzODQpKSAmICghaXMubmEocG9pbnRfc3RhdGUpKSkgJT4lXG4gIHdyaXRlLmNzdihoZXJlKFwiaW50ZXJtZWRpYXRlX2ZpbGVzXCIsIFwiaW1wb3J0ZWRfbW92ZWJhbmtfZGF0YS5jc3ZcIikpXG5cbiMgVmVydGljYWwgZGF0dW0gaXMgV0tJRDo6MTE1NzAwXG5gYGAifQ== -->
+<pre class="r"><code># amwo_data$on_land &lt;- amwo_sf$on_land
 
 amwo_data %&gt;%
   filter((!is.na(height_above_wgs84)) &amp; (!is.na(point_state))) %&gt;%
@@ -1960,7 +1908,7 @@ amwo_data %&gt;%
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3J9CmxpYnJhcnkodGlkeXZlcnNlKQpsaWJyYXJ5KHNmKQpsaWJyYXJ5KGx1YnJpZGF0ZSkKbGlicmFyeShtb3ZlKQpsaWJyYXJ5KGhlcmUpCmxpYnJhcnkoYW10KQpgYGAKCmBgYHtyfQphbXdvX2RhdGEgPC0gZ2V0TW92ZWJhbmtEYXRhKHN0dWR5ID0gIkFtZXJpY2FuIFdvb2Rjb2NrIE1pZ3JhdGlvbiBFY29sb2d5IGluIEVhc3Rlcm4gTm9ydGggQW1lcmljYSIsIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxvZ2luID0gcmVhZFJEUygibW92ZWJhbmtfY3JlZGVudGlhbHMucmRzIiksIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJlbW92ZUR1cGxpY2F0ZWRUaW1lc3RhbXBzPVRSVUUpCmFtd29fZGF0YSA8LSBhcy5kYXRhLmZyYW1lKGFtd29fZGF0YSkKCmFtd29fZGF0YSAlPiUKICB0cmFuc211dGUoSUQgPSBsb2NhbF9pZGVudGlmaWVyLAogICAgICAgICAgICB0aW1lID0gYXMuY2hhcmFjdGVyKHRpbWVzdGFtcCksCiAgICAgICAgICAgIGxvbiA9IGxvY2F0aW9uX2xvbmcsIAogICAgICAgICAgICBsYXQgPSBsb2NhdGlvbl9sYXQsCiAgICAgICAgICAgIGV2ZW50X2lkID0gZXZlbnRfaWQsCiAgICAgICAgICAgIHRhZ3R5cGUgPSBjb21tZW50cywKICAgICAgICAgICAgc2V4ID0gc2V4LAogICAgICAgICAgICBhZ2UgPSB0YXhvbl9kZXRhaWwsCiAgICAgICAgICAgIGhlaWdodF9hYm92ZV93Z3M4NCA9IGhlaWdodF9hYm92ZV9tc2wsCiAgICAgICAgICAgIGZpeCA9IGxvY2F0aW9uX2Vycm9yX3RleHQsCiAgICAgICAgICAgIHBvaW50X3N0YXRlID0gYmVoYXZpb3VyYWxfY2xhc3NpZmljYXRpb24pIC0+CiAgYW13b19kYXRhCmBgYAoKRGVsaW5lYXRlIHNraXBzIGhlcmUgKG5lZWQgdG8gZG8gaXQgYmVmb3JlIEkgc3RhcnQgZmlsdGVyaW5nKQpgYGB7cn0KYW13b19uZXN0ZWQgPC0gYW13b19kYXRhICU+JSAKICBuZXN0KC5ieSA9IElEKQoKYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJGRhdGEsIGZ1bmN0aW9uKHgpeyAjcmVtZW1iZXIgdG8gdHJhbnNmb3JtIHRvIDUwNzAKICBhIDwtIG1rX3RyYWNrKHgsIC54ID0gbG9uLCAueSA9IGxhdCwgY3JzID0gNDMyNiwgYWxsX2NvbHMgPSBUUlVFKSAlPiUgCiAgICB0cmFuc2Zvcm1fY29vcmRzKDUwNzApCiAgYSRzbCA8LSBzdGVwX2xlbmd0aHMoYSkKICByZXR1cm4oYSkKfSkKCmFtd29fbmVzdGVkJHRyYWNrIDwtIG1hcChhbXdvX25lc3RlZCR0cmFjaywgZnVuY3Rpb24oeCl7CiAgeCRtb3ZpbmcgPC0gTkEKICBmb3IoaSBpbiAxOm5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGZpcnN0IHJvdywgdGhlIGJpcmQgaXNuJ3QgbW92aW5nCiAgICBpZihpID09IDEpewogICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRQogICAgfSBlbHNlIGlmKGkgPT0gbnJvdyh4KSl7ICMgaWYgaXQncyB0aGUgbGFzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZwogICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRQogICAgfSBlbHNlIHsKICAgICAgaWYoeCRzbFtpLTFdID49IDEwMDAgJiB4JHNsW2ldID49IDEwMDApeyAjaWYgdGhlIGN1cnJlbnQgYW5kIHByaW9yIHN0ZXBzIGFyZSBib3RoIGF0IGxlYXN0IDEga20sIHRoZSBiaXJkIGlzIG1vdmluZwogICAgICAgIHgkbW92aW5nW2ldIDwtIFRSVUUKICAgICAgfSBlbHNlIHsKICAgICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRQogICAgICB9CiAgICB9CiAgfQogIHJldHVybih4KQp9KQoKYW13b19uZXN0ZWQgPC0gYW13b19uZXN0ZWQgJT4lIAogIGRwbHlyOjpzZWxlY3QoSUQsIHRyYWNrKSAlPiUgCiAgdW5uZXN0KGNvbHMgPSBjKHRyYWNrKSkgJT4lIAogIGRwbHlyOjpzZWxlY3QoZXZlbnRfaWQsIG1vdmluZykKCmFtd29fZGF0YSA8LSBhbXdvX2RhdGEgJT4lIAogIGxlZnRfam9pbihhbXdvX25lc3RlZCkKCmFueShpcy5uYShhbXdvX2RhdGEkbW92aW5nKSkjIHNob3VsZCBiZSBmYWxzZQoKYW13b19kYXRhJG1vdmluZyAlPiUgCiAgdGFibGUoKQpgYGAKCklzIGEgbG9jYXRpb24gb3ZlcndhdGVyPwpgYGB7cn0KYW13b19zZiA8LSBhbXdvX2RhdGEgJT4lIAogIHN0X2FzX3NmKGNvb3JkcyA9IGMoImxvbiIsICJsYXQiKSwgY3JzID0gNDMyNiwgcmVtb3ZlID0gRkFMU0UpCgpjb2FzdGxpbmVfcG9seWdvbiA8LSBzdF9yZWFkKCJEOi9PbmVEcml2ZSAtIFVuaXZlcnNpdHkgb2YgTWFpbmUgU3lzdGVtL01haW5lQW5hbHlzaXMvRGF0YS9jb2FzdGxpbmUvbmVfMTBtX2NvYXN0bGluZV9wb2x5LnNocCIpICU+JSAKICBzdF90cmFuc2Zvcm0oNDMyNikgJT4lIAogIHRyYW5zbXV0ZShvbl9sYW5kID0gVFJVRSkKCmFtd29fc2YgPC0gYW13b19zZiAlPiUgCiAgc3Rfam9pbihjb2FzdGxpbmVfcG9seWdvbikKCiMgQXMgdGhlIGNvYXN0bGluZSBpc24ndCBwZXJmZWN0LCBJIGhhdmUgc29tZSBleGNlcHRpb25zIGhlcmUgdGhhdCBJJ2xsIHNldCB0byBvbiBsYW5kCm92ZXJ3YXRlcl9leGNlcHRpb25zIDwtIHJlYWQuY3N2KGhlcmUoIm92ZXJ3YXRlcl9leGNlcHRpb25zLmNzdiIpKQoKYW13b19zZiA8LSBhbXdvX3NmICU+JQogIG11dGF0ZShvbl9sYW5kID0gaWZfZWxzZShldmVudF9pZCAlaW4lIG92ZXJ3YXRlcl9leGNlcHRpb25zJGV2ZW50X2lkLCBUUlVFLCBvbl9sYW5kKSkKCiMgc2V0IG5hIHZhbHVlcyB0byBGQUxTRSAoaWUgb25sYW5kID09IEZBTFNFIGlzIGFuIG92ZXJ3YXRlciBsb2NhdGlvbikKYW13b19zZiA8LSBhbXdvX3NmICU+JQogIG11dGF0ZShvbl9sYW5kID0gaWZfZWxzZShpcy5uYShvbl9sYW5kKSwgRkFMU0UsIG9uX2xhbmQpKQoKIyBjb3VudCB0aGUgbnVtYmVyIG9mIG92ZXJ3YXRlciBsb2NhdGlvbnMKYW13b19zZiAlPiUgCiAgc3RfZHJvcF9nZW9tZXRyeSgpICU+JSAKICBncm91cF9ieShvbl9sYW5kKSAlPiUgCiAgdGFsbHkoKQoKIyBtYXAgdGhlIG92ZXJ3YXRlciBsb2NhdGlvbnM6IGdvb2QgZm9yIHByb29maW5nIHRoZSBsb2NhdGlvbnMKIyBhbXdvX3NmICU+JSAKIyAgIGZpbHRlcihvbl9sYW5kID09IEZBTFNFKSAlPiUgCiMgICBtYXB2aWV3OjptYXB2aWV3KCkKCmBgYAoKClNhdmUgZm9yIGxhdGVyIHVzZQpgYGB7cn0KYW13b19kYXRhJG9uX2xhbmQgPC0gYW13b19zZiRvbl9sYW5kCgphbXdvX2RhdGEgJT4lCiAgZmlsdGVyKCghaXMubmEoaGVpZ2h0X2Fib3ZlX3dnczg0KSkgJiAoIWlzLm5hKHBvaW50X3N0YXRlKSkpICU+JQogIHdyaXRlLmNzdihoZXJlKCJpbnRlcm1lZGlhdGVfZmlsZXMiLCAiaW1wb3J0ZWRfbW92ZWJhbmtfZGF0YS5jc3YiKSkKCiMgVmVydGljYWwgZGF0dW0gaXMgV0tJRDo6MTE1NzAwCmBgYAoK</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCmxpYnJhcnkobHVicmlkYXRlKQ0KbGlicmFyeShtb3ZlKQ0KbGlicmFyeShoZXJlKQ0KbGlicmFyeShhbXQpDQpgYGANCg0KYGBge3J9DQphbXdvX2RhdGEgPC0gZ2V0TW92ZWJhbmtEYXRhKHN0dWR5ID0gIkFtZXJpY2FuIFdvb2Rjb2NrIE1pZ3JhdGlvbiBFY29sb2d5IGluIEVhc3Rlcm4gTm9ydGggQW1lcmljYSIsIA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICBsb2dpbiA9IHJlYWRSRFMoIm1vdmViYW5rX2NyZWRlbnRpYWxzLnJkcyIpLCANCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgcmVtb3ZlRHVwbGljYXRlZFRpbWVzdGFtcHM9VFJVRSkNCmFtd29fZGF0YSA8LSBhcy5kYXRhLmZyYW1lKGFtd29fZGF0YSkNCg0KYW13b19kYXRhICU+JQ0KICB0cmFuc211dGUoSUQgPSBsb2NhbF9pZGVudGlmaWVyLA0KICAgICAgICAgICAgdGltZSA9IGFzLmNoYXJhY3Rlcih0aW1lc3RhbXApLA0KICAgICAgICAgICAgbG9uID0gbG9jYXRpb25fbG9uZywgDQogICAgICAgICAgICBsYXQgPSBsb2NhdGlvbl9sYXQsDQogICAgICAgICAgICBldmVudF9pZCA9IGV2ZW50X2lkLA0KICAgICAgICAgICAgdGFndHlwZSA9IGNvbW1lbnRzLA0KICAgICAgICAgICAgc2V4ID0gc2V4LA0KICAgICAgICAgICAgYWdlID0gdGF4b25fZGV0YWlsLA0KICAgICAgICAgICAgaGVpZ2h0X2Fib3ZlX3dnczg0ID0gaGVpZ2h0X2Fib3ZlX21zbCwNCiAgICAgICAgICAgIGZpeCA9IGxvY2F0aW9uX2Vycm9yX3RleHQsDQogICAgICAgICAgICBwb2ludF9zdGF0ZSA9IGJlaGF2aW91cmFsX2NsYXNzaWZpY2F0aW9uKSAtPg0KICBhbXdvX2RhdGENCmBgYA0KDQpEZWxpbmVhdGUgc2tpcHMgaGVyZSAobmVlZCB0byBkbyBpdCBiZWZvcmUgSSBzdGFydCBmaWx0ZXJpbmcpDQpgYGB7cn0NCmFtd29fbmVzdGVkIDwtIGFtd29fZGF0YSAlPiUgDQogIG5lc3QoLmJ5ID0gSUQpDQoNCmFtd29fbmVzdGVkJHRyYWNrIDwtIG1hcChhbXdvX25lc3RlZCRkYXRhLCBmdW5jdGlvbih4KXsgI3JlbWVtYmVyIHRvIHRyYW5zZm9ybSB0byA1MDcwDQogIGEgPC0gbWtfdHJhY2soeCwgLnggPSBsb24sIC55ID0gbGF0LCBjcnMgPSA0MzI2LCBhbGxfY29scyA9IFRSVUUpICU+JSANCiAgICB0cmFuc2Zvcm1fY29vcmRzKDUwNzApDQogIGEkc2wgPC0gc3RlcF9sZW5ndGhzKGEpDQogIHJldHVybihhKQ0KfSkNCg0KYW13b19uZXN0ZWQkdHJhY2sgPC0gbWFwKGFtd29fbmVzdGVkJHRyYWNrLCBmdW5jdGlvbih4KXsNCiAgeCRtb3ZpbmcgPC0gTkENCiAgZm9yKGkgaW4gMTpucm93KHgpKXsgIyBpZiBpdCdzIHRoZSBmaXJzdCByb3csIHRoZSBiaXJkIGlzbid0IG1vdmluZw0KICAgIGlmKGkgPT0gMSl7DQogICAgICB4JG1vdmluZ1tpXSA8LSBGQUxTRQ0KICAgIH0gZWxzZSBpZihpID09IG5yb3coeCkpeyAjIGlmIGl0J3MgdGhlIGxhc3Qgcm93LCB0aGUgYmlyZCBpc24ndCBtb3ZpbmcNCiAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFDQogICAgfSBlbHNlIHsNCiAgICAgIGlmKHgkc2xbaS0xXSA+PSAoNi42Nzg2ODggKiAxMDAwKSAmIHgkc2xbaV0gPj0gKDYuNjc4Njg4ICogMTAwMCkpeyAjaWYgdGhlIGN1cnJlbnQgYW5kIHByaW9yIHN0ZXBzIGFyZSBib3RoIGF0IGxlYXN0IDYuNjcga20sIHRoZSBiaXJkIGlzIG1vdmluZy4gUHJpb3IgdGhyZXNob2xkIHdhcyAxIGttDQogICAgICAgIHgkbW92aW5nW2ldIDwtIFRSVUUNCiAgICAgIH0gZWxzZSB7DQogICAgICAgIHgkbW92aW5nW2ldIDwtIEZBTFNFDQogICAgICB9DQogICAgfQ0KICB9DQogIHJldHVybih4KQ0KfSkNCg0KYW13b19uZXN0ZWQgPC0gYW13b19uZXN0ZWQgJT4lIA0KICBkcGx5cjo6c2VsZWN0KElELCB0cmFjaykgJT4lIA0KICB1bm5lc3QoY29scyA9IGModHJhY2spKSAlPiUgDQogIGRwbHlyOjpzZWxlY3QoZXZlbnRfaWQsIG1vdmluZykNCg0KYW13b19kYXRhIDwtIGFtd29fZGF0YSAlPiUgDQogIGxlZnRfam9pbihhbXdvX25lc3RlZCkNCg0KYW55KGlzLm5hKGFtd29fZGF0YSRtb3ZpbmcpKSMgc2hvdWxkIGJlIGZhbHNlDQoNCmFtd29fZGF0YSRtb3ZpbmcgJT4lIA0KICB0YWJsZSgpDQpgYGANCg0KSXMgYSBsb2NhdGlvbiBvdmVyd2F0ZXI/DQpgYGB7cn0NCiMgYW13b19zZiA8LSBhbXdvX2RhdGEgJT4lIA0KIyAgIHN0X2FzX3NmKGNvb3JkcyA9IGMoImxvbiIsICJsYXQiKSwgY3JzID0gNDMyNiwgcmVtb3ZlID0gRkFMU0UpDQojIA0KIyBjb2FzdGxpbmVfcG9seWdvbiA8LSBzdF9yZWFkKCJEOi9PbmVEcml2ZSAtIEthbnNhcyBTdGF0ZSBVbml2ZXJzaXR5L01haW5lQW5hbHlzaXMvRGF0YS9jb2FzdGxpbmUvbmVfMTBtX2NvYXN0bGluZV9wb2x5LnNocCIpICU+JSANCiMgICBzdF90cmFuc2Zvcm0oNDMyNikgJT4lIA0KIyAgIHRyYW5zbXV0ZShvbl9sYW5kID0gVFJVRSkNCiMgDQojIGFtd29fc2YgPC0gYW13b19zZiAlPiUgDQojICAgc3Rfam9pbihjb2FzdGxpbmVfcG9seWdvbikNCiMgDQojICMgQXMgdGhlIGNvYXN0bGluZSBpc24ndCBwZXJmZWN0LCBJIGhhdmUgc29tZSBleGNlcHRpb25zIGhlcmUgdGhhdCBJJ2xsIHNldCB0byBvbiBsYW5kDQojIG92ZXJ3YXRlcl9leGNlcHRpb25zIDwtIHJlYWQuY3N2KGhlcmUoIm92ZXJ3YXRlcl9leGNlcHRpb25zLmNzdiIpKQ0KIyANCiMgYW13b19zZiA8LSBhbXdvX3NmICU+JQ0KIyAgIG11dGF0ZShvbl9sYW5kID0gaWZfZWxzZShldmVudF9pZCAlaW4lIG92ZXJ3YXRlcl9leGNlcHRpb25zJGV2ZW50X2lkLCBUUlVFLCBvbl9sYW5kKSkNCiMgDQojICMgc2V0IG5hIHZhbHVlcyB0byBGQUxTRSAoaWUgb25sYW5kID09IEZBTFNFIGlzIGFuIG92ZXJ3YXRlciBsb2NhdGlvbikNCiMgYW13b19zZiA8LSBhbXdvX3NmICU+JQ0KIyAgIG11dGF0ZShvbl9sYW5kID0gaWZfZWxzZShpcy5uYShvbl9sYW5kKSwgRkFMU0UsIG9uX2xhbmQpKQ0KIyANCiMgIyBjb3VudCB0aGUgbnVtYmVyIG9mIG92ZXJ3YXRlciBsb2NhdGlvbnMNCiMgYW13b19zZiAlPiUgDQojICAgc3RfZHJvcF9nZW9tZXRyeSgpICU+JSANCiMgICBncm91cF9ieShvbl9sYW5kKSAlPiUgDQojICAgdGFsbHkoKQ0KIyANCiMgIyBtYXAgdGhlIG92ZXJ3YXRlciBsb2NhdGlvbnM6IGdvb2QgZm9yIHByb29maW5nIHRoZSBsb2NhdGlvbnMNCiMgIyBhbXdvX3NmICU+JSANCiMgIyAgIGZpbHRlcihvbl9sYW5kID09IEZBTFNFKSAlPiUgDQojICMgICBtYXB2aWV3OjptYXB2aWV3KCkNCg0KYGBgDQoNCg0KU2F2ZSBmb3IgbGF0ZXIgdXNlDQpgYGB7cn0NCiMgYW13b19kYXRhJG9uX2xhbmQgPC0gYW13b19zZiRvbl9sYW5kDQoNCmFtd29fZGF0YSAlPiUNCiAgZmlsdGVyKCghaXMubmEoaGVpZ2h0X2Fib3ZlX3dnczg0KSkgJiAoIWlzLm5hKHBvaW50X3N0YXRlKSkpICU+JQ0KICB3cml0ZS5jc3YoaGVyZSgiaW50ZXJtZWRpYXRlX2ZpbGVzIiwgImltcG9ydGVkX21vdmViYW5rX2RhdGEuY3N2IikpDQoNCiMgVmVydGljYWwgZGF0dW0gaXMgV0tJRDo6MTE1NzAwDQpgYGANCg0K</div>
 
 
 
