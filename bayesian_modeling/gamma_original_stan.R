@@ -98,8 +98,10 @@ init <- function(){list(mu_bias = rnorm(1,0,0.2),
                         sigma_error = runif(1,0,0.2),
                         # shape = runif(1,3,5),
                         # rate = runif(1,5,10),
-                        mu = runif(1,3,5),
-                        tau = runif(1,0,1),
+                        # mu = runif(1,3,5),
+                        # tau = runif(1,0,1),
+                        mu_alt = runif(1,-1,1),
+                        sigma_alt = runif(1,0,1),
                         flight_prior = rbeta(1,2,2),
                         real_alt = runif(nrow(unknown_df)))}
 
@@ -110,7 +112,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "tau", "mu", "flight_prior"), #, "HAT_known_ppc", "HAT_unknown_ppc"
+                pars = c("mu_bias", "sigma_error", "mu_alt", "sigma_alt", "flight_prior"), #, "HAT_known_ppc", "HAT_unknown_ppc"
                          #"p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
                 iter = 15000, #keep down to 5000 for graphical ppc
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20

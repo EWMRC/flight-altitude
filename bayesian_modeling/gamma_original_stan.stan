@@ -22,13 +22,13 @@
 //   }
 // }
 
-functions {
-  real johnnys_gamma_lpdf(vector x, real tau, real mu) { //https://discourse.mc-stan.org/t/posterior-estimates-of-rate-and-shape-of-gamma-distribution-are-dependent/3220/15
-    int N = num_elements(x);
-    
-    return (tau - 1) * sum(log(x)) + N * tau * (log(tau) - log(mu)) - N * lgamma(tau) - sum(x) * tau / mu;
-  }
-}
+// functions {
+//   real johnnys_gamma_lpdf(vector x, real tau, real mu) { //https://discourse.mc-stan.org/t/posterior-estimates-of-rate-and-shape-of-gamma-distribution-are-dependent/3220/15
+//     int N = num_elements(x);
+//     
+//     return (tau - 1) * sum(log(x)) + N * tau * (log(tau) - log(mu)) - N * lgamma(tau) - sum(x) * tau / mu;
+//   }
+// }
 
 data {
   int<lower=0> n_obs_known;
@@ -37,31 +37,36 @@ data {
   vector[n_obs_unknown] HAT_unknown;
 }
 
-transformed data { // exclusively for posterior predictive checks
-real HAT_known_mean;
-real HAT_known_sd;
-real HAT_unknown_mean;
-real HAT_unknown_sd;
-
-HAT_known_mean = mean(HAT_known);
-HAT_known_sd = sd(HAT_known);
-HAT_unknown_mean = mean(HAT_unknown);
-HAT_unknown_sd = sd(HAT_unknown);
-}
+// transformed data { // exclusively for posterior predictive checks
+// real HAT_known_mean;
+// real HAT_known_sd;
+// real HAT_unknown_mean;
+// real HAT_unknown_sd;
+// 
+// HAT_known_mean = mean(HAT_known);
+// HAT_known_sd = sd(HAT_known);
+// HAT_unknown_mean = mean(HAT_unknown);
+// HAT_unknown_sd = sd(HAT_unknown);
+// }
 
 parameters {
   real mu_bias;
   real<lower=0> sigma_error;
   real<lower=0, upper=1> flight_prior;
+  
+  real mu_alt;
+  real<lower=0> sigma_alt;
+  vector<offset=mu_alt, multiplier=sigma_alt>[n_obs_unknown] log_real_alt;
   // real<lower=0> shape;
   // real<lower=0> rate;
-  real<lower=0> mu;
-  real<lower=0> tau;
-  vector<lower=0>[n_obs_unknown] real_alt;
-  // real<lower=0> real_alt[n_obs_unknown];
+  // real<lower=0> mu;
+  // real<lower=0> tau;
+  // vector<lower=0>[n_obs_unknown] real_alt;
 }
 
 transformed parameters {
+  vector<lower=0>[n_obs_unknown] real_alt = exp(log_real_alt);
+  
   real unknown_q[n_obs_unknown, 2];
   
   for(i in 1:n_obs_unknown){ 
@@ -83,17 +88,17 @@ model {
   
   //describing the altitude distribution https://discourse.mc-stan.org/t/gamma-regression-in-stan-vs-frequentist-approach/16274/3
   // real_alt ~ gamma(shape, rate);
-  real_alt ~ johnnys_gamma(tau, mu);
-
-  // inverse_phi ~ exponential(1); // in example, 1.25. Simulate using rexp(100)
-  // mu ~ normal(0, 0.5) T[0,]; // in example, 0.1598465.
+  // real_alt ~ johnnys_gamma(tau, mu);
+  log_real_alt ~ normal(mu_alt, sigma_alt);
   
   //priors
   mu_bias ~ normal(0, 1); 
-  sigma_error ~ uniform(0, 1); 
+  sigma_error ~ normal(0, 1) T[0,]; //truncation shouldn't be necessary, but inclusing it anyway
   flight_prior ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
-  tau ~ normal(0, 5) T[0,]; //uninformative
-  mu ~ normal(0.2060935, 0.04579856) T[0,]; //450m +/- 100m
+  mu_alt ~ normal(0, 1);
+  sigma_alt ~ normal(0, 1) T[0,];
+  // tau ~ normal(0, 5) T[0,]; //uninformative
+  // mu ~ normal(0.2060935, 0.04579856) T[0,]; //450m +/- 100m
   // shape ~ normal(0, 5) T[0,];
   // rate ~ normal(0, 10) T[0,];
 
