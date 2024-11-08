@@ -95,72 +95,29 @@ unknown_df %>%
   mean() #the true model should give us a proportion close to 0.5658915
 
 init <- function(){list(mu_obs = rnorm(1,0,0.2),
-                        sigma_obs = runif(1,0,0.2),
-                        mu_alt = runif(1,-1,1),
-                        sigma_alt = runif(1,0,1),
-                        flight_prior = rbeta(1,2,2))}
+                        sigma_obs = runif(1,0,0.2)#,
+                        # mu_alt = runif(1,-1,1),
+                        # sigma_alt = runif(1,0,1),
+                        # flight_prior = rbeta(1,2,2)
+                        )}
 
-model_compiled <- stan_model(here("bayesian_modeling", "gamma_original_stan.stan"))
+model_compiled <- stan_model(here("bayesian_modeling", "cauchy_test.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
-                                            HAT_known = known_ground_df$hat_scaled,
-                                            n_obs_unknown = nrow(unknown_df),
-                                            HAT_unknown = unknown_df$hat_scaled), 
+                                            HAT_known = known_ground_df$hat_scaled#,
+                                            # n_obs_unknown = nrow(unknown_df),
+                                            # HAT_unknown = unknown_df$hat_scaled
+                                            ), 
                 init = init,
-                pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior"), #, "p_flight", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"
+                pars = c("mu_obs", "sigma_obs", "HAT_known_ppc"), #, "p_flight", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"
                 iter = 15000,
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20
                 chains = 4, 
                 init_r = 0)
 
 print(fit)
-traceplot(fit, pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior"))
-
-saveRDS(fit, file = here("bayesian_modeling", "gamma_original_stan.rds"))
 
 ## additional variables for graphical ppc
 pp_known <- known_ground_df$hat_scaled
-pp_unknown <- unknown_df$hat_scaled
 
 launch_shinystan(fit) #diagnostics
-
-## extract altitude and p_flight data for each point
-unknown_df_results <- unknown_df %>% 
-  mutate(row = 1:nrow(unknown_df)) %>% 
-  mutate(param = paste0("p_flight[", row, "]"))
-
-unknown_df_results$p_flight <- unknown_df_results$param %>%
-  map(function(x){
-    median(rstan::extract(fit, x)[[1]])
-  }) %>% 
-  unlist()
-
-unknown_df_results <- unknown_df_results %>% 
-  dplyr::select(event_id, height_above_terrain, on_land, p_flight)
-
-known_df_results <- known_ground_df %>% 
-  dplyr::select(event_id, height_above_terrain, on_land) %>% 
-  mutate(p_flight = 0)
-
-movebank_upload <- bind_rows(known_df_results, unknown_df_results)
-
-## checking that all overwater locations are flight locations
-# movebank_upload %>% # one is a "ground location"
-#   filter(on_land == FALSE) %>%
-#   View()
-
-movebank_upload <- movebank_upload %>% # set all overwater locations to flight locations
-  mutate(p_flight = if_else(on_land == FALSE, 1, p_flight))
-
-## recategorize locations into binary flight/nonflight using a 0.5 threshold
-
-movebank_upload <- movebank_upload %>% # 131 locations; probably excluding low-flying points
-  mutate(flight_binary = if_else(p_flight >= 0.5, 1, 0))
-
-## trim
-movebank_upload <- movebank_upload %>% 
-  dplyr::select(-on_land)
-
-## and save for upload to Movebank
-saveRDS(movebank_upload, here("movebank_upload.rds"))
-write.csv(movebank_upload, file = here("movebank_upload.csv"), row.names = FALSE)
