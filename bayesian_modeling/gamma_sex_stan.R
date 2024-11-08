@@ -87,14 +87,16 @@ unknown_df_female <- unknown_df %>%
 unknown_df_male <- unknown_df %>% 
   filter(sex_num == 2)
 
-init <- function(){list(mu_bias = rnorm(1,0,0.2),
-                        sigma_error = runif(1,0,0.2),
-                        shape_male = runif(1,3,5),
-                        rate_male = runif(1,5,10),
-                        shape_female = runif(1,3,5),
-                        rate_female = runif(1,5,10))}
+init <- function(){list(mu_obs = rnorm(1,0,0.2),
+                        sigma_obs = runif(1,0,0.2),
+                        mu_alt_male = runif(1,-1,1),
+                        sigma_alt_male = runif(1,0,1),
+                        mu_alt_female = runif(1,-1,1),
+                        sigma_alt_female = runif(1,0,1),
+                        flight_prior_male = rbeta(1,2,2),
+                        flight_prior_female = rbeta(1,2,2))}
 
-model_compiled <- stan_model(here("bayesian_modeling", "stan", "gamma_sex_stan.stan"))
+model_compiled <- stan_model(here("bayesian_modeling", "gamma_sex_stan.stan"))
 
 fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_known = known_ground_df$hat_scaled,
@@ -104,21 +106,23 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_unknown_female = unknown_df_female$hat_scaled
                                             ), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape_male", "rate_male", 
-                         "shape_female", "rate_female", "sample_size_male",
-                         "sample_size_female", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_male_gte", "HAT_unknown_sd_male_gte", 
-                         "HAT_unknown_mean_female_gte", "HAT_unknown_sd_female_gte", "p_flight_male", 
-                         "p_flight_female"),
-                iter = 15000, #keep down to 5000 for graphical ppc. Extra parameters: "HAT_known_ppc", "HAT_unknown_male_ppc", "HAT_unknown_female_ppc"
-                chains = 4)
+                pars = c("mu_obs", "sigma_obs", "flight_prior_male", "flight_prior_female", 
+                         "mu_alt_male", "mu_alt_female", "sigma_alt_male", "sigma_alt_female",
+                         # "HAT_known_ppc", "HAT_unknown_male_ppc", "HAT_unknown_female_ppc",
+                         # "HAT_unknown_mean_male_gte", "HAT_unknown_sd_male_gte",
+                         # "HAT_unknown_mean_female_gte", "HAT_unknown_sd_female_gte",
+                         "p_flight_male", "p_flight_female"),
+                iter = 15000, #5000 for graphical ppc
+                chains = 4, 
+                init_r = 0)
 
 print(fit)
 
-saveRDS(fit, file = here("bayesian_modeling", "stan", "gamma_sex_stan.rds"))
+saveRDS(fit, file = here("bayesian_modeling", "gamma_sex_stan.rds"))
 
 ## additional variables for graphical ppc
-# pp_known <- known_ground_df$hat_scaled
-# pp_unknown_male <- unknown_df_male$hat_scaled
-# pp_unknown_female <- unknown_df_female$hat_scaled
+pp_known <- known_ground_df$hat_scaled
+pp_unknown_male <- unknown_df_male$hat_scaled
+pp_unknown_female <- unknown_df_female$hat_scaled
 
 launch_shinystan(fit) #diagnostics

@@ -32,53 +32,54 @@ data {
 }
 
 transformed data { // exclusively for posterior predictive checks
-  real HAT_known_mean;
-  real HAT_known_sd;
-  real HAT_unknown_male_mean;
-  real HAT_unknown_male_sd;
-  real HAT_unknown_female_mean;
-  real HAT_unknown_female_sd;
-
-  HAT_known_mean = mean(HAT_known);
-  HAT_known_sd = sd(HAT_known);
-  HAT_unknown_male_mean = mean(HAT_unknown_male);
-  HAT_unknown_male_sd = sd(HAT_unknown_male);
-  HAT_unknown_female_mean = mean(HAT_unknown_female);
-  HAT_unknown_female_sd = sd(HAT_unknown_female);
+  real HAT_known_mean = mean(HAT_known);
+  real HAT_known_sd = sd(HAT_known);
+  real HAT_unknown_male_mean = mean(HAT_unknown_male);
+  real HAT_unknown_male_sd = sd(HAT_unknown_male);
+  real HAT_unknown_female_mean = mean(HAT_unknown_female);
+  real HAT_unknown_female_sd = sd(HAT_unknown_female);
 }
 
 parameters {
-  real mu_bias;
-  real<lower=0> sigma_error;
-  real<lower=0> shape_male;
-  real<lower=0> rate_male;
-  real<lower=0> shape_female;
-  real<lower=0> rate_female;
-  real<lower=0> real_alt_male[n_obs_unknown_male];
-  real<lower=0> real_alt_female[n_obs_unknown_female];
+  //observation parameters
+  real mu_obs;
+  real<lower=0> sigma_obs;
+  real<lower=0, upper=1> flight_prior_male;
+  real<lower=0, upper=1> flight_prior_female;
+  //process parameters (male)
+  real mu_alt_male;
+  real<lower=0> sigma_alt_male;
+  vector<offset=mu_alt_male, multiplier=sigma_alt_male>[n_obs_unknown_male] log_real_alt_male;
+  //process parameters (female)
+  real mu_alt_female;
+  real<lower=0> sigma_alt_female;
+  vector<offset=mu_alt_female, multiplier=sigma_alt_female>[n_obs_unknown_female] log_real_alt_female;
 }
 
 transformed parameters {
+  vector<lower=0>[n_obs_unknown_male] real_alt_male = exp(log_real_alt_male);
+  vector<lower=0>[n_obs_unknown_female] real_alt_female = exp(log_real_alt_female);
+  
   //calculating likelihood of unknown states through marginalization
   real unknown_q_male[n_obs_unknown_male, 2];
   real unknown_q_female[n_obs_unknown_female, 2];
   
   //male
   for(i in 1:n_obs_unknown_male){
-    unknown_q_male[i, 1] = normal_lpdf(HAT_unknown_male[i]| mu_bias, sigma_error) + log(0.67);
-    unknown_q_male[i, 2] = normal_lpdf(HAT_unknown_male[i]| real_alt_male[i] + mu_bias, sigma_error) + log(0.33);
+    unknown_q_male[i, 1] = normal_lpdf(HAT_unknown_male[i] | mu_obs, sigma_obs) + log(1 - flight_prior_male);
+    unknown_q_male[i, 2] = normal_lpdf(HAT_unknown_male[i] | real_alt_male[i] + mu_obs, sigma_obs) + log(flight_prior_male);
   }
   
   //female
   for(i in 1:n_obs_unknown_female){
-    unknown_q_female[i, 1] = normal_lpdf(HAT_unknown_female[i]| mu_bias, sigma_error) + log(0.67);
-    unknown_q_female[i, 2] = normal_lpdf(HAT_unknown_female[i]| real_alt_female[i] + mu_bias, sigma_error) + log(0.33);
+    unknown_q_female[i, 1] = normal_lpdf(HAT_unknown_female[i]| mu_obs, sigma_obs) + log(1 - flight_prior_female);
+    unknown_q_female[i, 2] = normal_lpdf(HAT_unknown_female[i]| real_alt_female[i] + mu_obs, sigma_obs) + log(flight_prior_female);
   }
 }
 
 model {
   // likelihood of known locations
-  target += normal_lpdf(HAT_known| mu_bias, sigma_error); 
+  target += normal_lpdf(HAT_known | mu_obs, sigma_obs); 
   
   // likelihood of unknown locations
   for (i in 1:n_obs_unknown_male){ 
@@ -89,21 +90,19 @@ model {
     target += log_sum_exp(unknown_q_female[i, 1], unknown_q_female[i, 2]);
   }
   
+  //describing the altitude distribution https://discourse.mc-stan.org/t/gamma-regression-in-stan-vs-frequentist-approach/16274/3
+  log_real_alt_male ~ normal(mu_alt_male, sigma_alt_male);
+  log_real_alt_female ~ normal(mu_alt_female, sigma_alt_female);
+  
   //priors
-  for(i in 1:n_obs_unknown_male){
-    real_alt_male[i] ~ gamma(shape_male, rate_male);
-  }
-  
-  for(i in 1:n_obs_unknown_female){
-    real_alt_female[i] ~ gamma(shape_female, rate_female);
-  }
-  
-  mu_bias ~ normal(0, 1); //can be negative
-  sigma_error ~ uniform(0, 1); //cannot be negative
-  shape_male ~ normal(0, 5) T[0,];
-  rate_male ~ normal(0, 10) T[0,];
-  shape_female ~ normal(0, 5) T[0,];
-  rate_female ~ normal(0, 10) T[0,];
+  mu_obs ~ normal(0, 1); 
+  sigma_obs ~ normal(0, 1) T[0,]; //truncation shouldn't be necessary, but including it anyway
+  flight_prior_male ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
+  flight_prior_female ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
+  mu_alt_male ~ normal(0, 1);
+  mu_alt_female ~ normal(0, 1);
+  sigma_alt_male ~ normal(0, 1) T[0,];
+  sigma_alt_female ~ normal(0, 1) T[0,];
 }
 
 generated quantities {
@@ -115,88 +114,73 @@ generated quantities {
   for (i in 1:n_obs_unknown_male){ //probability of state 2 (flight state)
     p_flight_male[i] = exp(unknown_q_male[i, 2] - log_sum_exp(unknown_q_male[i, 1], unknown_q_male[i, 2]));
   }
-  
+
   for (i in 1:n_obs_unknown_female){ //probability of state 2 (flight state)
     p_flight_female[i] = exp(unknown_q_female[i, 2] - log_sum_exp(unknown_q_female[i, 1], unknown_q_female[i, 2]));
   }
-  
+
   sample_size_male = sum(p_flight_male);
   sample_size_female = sum(p_flight_female);
-  
+  int sample_size_int_male = bin_search(round(sample_size_male), 0, n_obs_unknown_male);
+  int sample_size_int_female = bin_search(round(sample_size_female), 0, n_obs_unknown_female);
+
   // posterior predictive checks following Meng 1994
   real HAT_known_ppc[n_obs_known];
-  real HAT_known_mean_ppc;
-  real HAT_known_sd_ppc;
-  int<lower=0, upper=1> HAT_known_mean_gte;
-  int<lower=0, upper=1> HAT_known_sd_gte;
-  
+  real HAT_known_mean_ppc = mean(HAT_known_ppc);
+  real HAT_known_sd_ppc = sd(HAT_known_ppc);
+  int<lower=0, upper=1> HAT_known_mean_gte = (HAT_known_mean_ppc >= HAT_known_mean);
+  int<lower=0, upper=1> HAT_known_sd_gte = (HAT_known_sd_ppc >= HAT_known_sd);
+
   // known ground
   for(k in 1:n_obs_known){
-    HAT_known_ppc[k] = normal_rng(mu_bias, sigma_error);
+    HAT_known_ppc[k] = normal_rng(mu_obs, sigma_obs);
   }
-  
-  HAT_known_mean_ppc = mean(HAT_known_ppc);
-  HAT_known_sd_ppc = sd(HAT_known_ppc);
-  
-  HAT_known_mean_gte = (HAT_known_mean_ppc >= HAT_known_mean);
-  HAT_known_sd_gte = (HAT_known_sd_ppc >= HAT_known_sd);
-  
+
   //unknown male
-  real<lower=0> real_alt_male_ppc[n_obs_unknown_male];
+  vector<offset=mu_alt_male, multiplier=sigma_alt_male>[n_obs_unknown_male] log_real_alt_male_ppc;
   vector[n_obs_unknown_male] HAT_unknown_male_ppc;
-  real HAT_unknown_mean_male_ppc;
-  real HAT_unknown_sd_male_ppc;
-  int<lower=0, upper=1> HAT_unknown_mean_male_gte;
-  int<lower=0, upper=1> HAT_unknown_sd_male_gte;
-  int sample_size_int_male = bin_search(round(sample_size_male), 0, n_obs_unknown_male);
-  
+
   for(f in 1:n_obs_unknown_male){
-    real_alt_male_ppc[f] = gamma_rng(shape_male, rate_male);
+    log_real_alt_male_ppc[f] = normal_rng(mu_alt_male, sigma_alt_male);
   }
-  
+
   //unknown flight male
   for(g in 1:sample_size_int_male){ // number of presumed flight locations
-    HAT_unknown_male_ppc[g] = normal_rng(real_alt_male_ppc[g] + mu_bias, sigma_error);
+    HAT_unknown_male_ppc[g] = normal_rng(exp(log_real_alt_male_ppc[g]) + mu_obs, sigma_obs);
   }
-  
+
   //unknown ground male
   for(h in (sample_size_int_male + 1):n_obs_unknown_male){
-    HAT_unknown_male_ppc[h] = normal_rng(mu_bias, sigma_error);
+    HAT_unknown_male_ppc[h] = normal_rng(mu_obs, sigma_obs);
   }
-  
-  HAT_unknown_mean_male_ppc = mean(HAT_unknown_male_ppc);
-  HAT_unknown_sd_male_ppc = sd(HAT_unknown_male_ppc);
-  
-  HAT_unknown_mean_male_gte = (HAT_unknown_mean_male_ppc >= HAT_unknown_male_mean);
-  HAT_unknown_sd_male_gte= (HAT_unknown_sd_male_ppc >= HAT_unknown_male_sd);
   
   //unknown female
-  real<lower=0> real_alt_female_ppc[n_obs_unknown_female];
+  vector<offset=mu_alt_female, multiplier=sigma_alt_female>[n_obs_unknown_female] log_real_alt_female_ppc;
   vector[n_obs_unknown_female] HAT_unknown_female_ppc;
-  real HAT_unknown_mean_female_ppc;
-  real HAT_unknown_sd_female_ppc;
-  int<lower=0, upper=1> HAT_unknown_mean_female_gte;
-  int<lower=0, upper=1> HAT_unknown_sd_female_gte;
-  int sample_size_int_female = bin_search(round(sample_size_female), 0, n_obs_unknown_female);
-  
+
   for(f in 1:n_obs_unknown_female){
-    real_alt_female_ppc[f] = gamma_rng(shape_female, rate_female);
+    log_real_alt_female_ppc[f] = normal_rng(mu_alt_female, sigma_alt_female);
   }
-  
-  //unknown flight male
+
+  //unknown flight female
   for(g in 1:sample_size_int_female){ // number of presumed flight locations
-    HAT_unknown_female_ppc[g] = normal_rng(real_alt_female_ppc[g] + mu_bias, sigma_error);
+    HAT_unknown_female_ppc[g] = normal_rng(exp(log_real_alt_female_ppc[g]) + mu_obs, sigma_obs);
   }
-  
-  //unknown ground male
+
+  //unknown ground female
   for(h in (sample_size_int_female + 1):n_obs_unknown_female){
-    HAT_unknown_female_ppc[h] = normal_rng(mu_bias, sigma_error);
+    HAT_unknown_female_ppc[h] = normal_rng(mu_obs, sigma_obs);
   }
+
+  //ppc stats
+  real HAT_unknown_mean_male_ppc = mean(HAT_unknown_male_ppc);
+  real HAT_unknown_sd_male_ppc = sd(HAT_unknown_male_ppc);
+  int<lower=0, upper=1> HAT_unknown_mean_male_gte = (HAT_unknown_mean_male_ppc >= HAT_unknown_male_mean);
+  int<lower=0, upper=1> HAT_unknown_sd_male_gte = (HAT_unknown_sd_male_ppc >= HAT_unknown_male_sd);
   
-  HAT_unknown_mean_female_ppc = mean(HAT_unknown_female_ppc);
-  HAT_unknown_sd_female_ppc = sd(HAT_unknown_female_ppc);
-  
-  HAT_unknown_mean_female_gte = (HAT_unknown_mean_female_ppc >= HAT_unknown_female_mean);
-  HAT_unknown_sd_female_gte= (HAT_unknown_sd_female_ppc >= HAT_unknown_female_sd);
+  real HAT_unknown_mean_female_ppc = mean(HAT_unknown_female_ppc);
+  real HAT_unknown_sd_female_ppc = sd(HAT_unknown_female_ppc);
+  int<lower=0, upper=1> HAT_unknown_mean_female_gte = (HAT_unknown_mean_female_ppc >= HAT_unknown_female_mean);
+  int<lower=0, upper=1> HAT_unknown_sd_female_gte = (HAT_unknown_sd_female_ppc >= HAT_unknown_female_sd);
   
 }

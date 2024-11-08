@@ -118,7 +118,6 @@ altitude_data$age_num <- altitude_data$current_age %>%
   as.factor() %>% 
   as.numeric() #Adults are 1, Juveniles are 2
 
-
 # Scale locations between -1 and 1
 altitude_data <- altitude_data %>% 
   mutate(hat_scaled = height_above_terrain/2183.475)
@@ -136,12 +135,14 @@ unknown_df_adult <- unknown_df %>%
 unknown_df_juv <- unknown_df %>% 
   filter(age_num == 2)
 
-init <- function(){list(mu_bias = rnorm(1,0,0.2),
-                        sigma_error = runif(1,0,0.2),
-                        shape_adult = runif(1,3,5),
-                        rate_adult = runif(1,5,10),
-                        shape_juv = runif(1,3,5),
-                        rate_juv = runif(1,5,10))}
+init <- function(){list(mu_obs = rnorm(1,0,0.2),
+                        sigma_obs = runif(1,0,0.2),
+                        mu_alt_adult = runif(1,-1,1),
+                        sigma_alt_adult = runif(1,0,1),
+                        mu_alt_juv = runif(1,-1,1),
+                        sigma_alt_juv = runif(1,0,1),
+                        flight_prior_adult = rbeta(1,2,2),
+                        flight_prior_juv = rbeta(1,2,2))}
 
 model_compiled <- stan_model(here("bayesian_modeling", "gamma_age_stan.stan"))
 
@@ -152,21 +153,23 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_unknown_adult = unknown_df_adult$hat_scaled,
                                             HAT_unknown_juv = unknown_df_juv$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape_adult", "rate_adult", 
-                         "shape_juv", "rate_juv", "sample_size_adult", "flight_prior",
-                         "sample_size_juv", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_adult_gte", "HAT_unknown_sd_adult_gte", 
-                         "HAT_unknown_mean_juv_gte", "HAT_unknown_sd_juv_gte", "p_flight_adult", 
-                         "p_flight_juv"),
-                iter = 15000, #keep down to 5000 for graphical ppc. Extra parameters: "HAT_known_ppc", "HAT_unknown_adult_ppc", "HAT_unknown_juv_ppc"
-                chains = 4)
+                pars = c("mu_obs", "sigma_obs", "flight_prior_adult", "flight_prior_juv", 
+                         "mu_alt_adult", "mu_alt_juv", "sigma_alt_adult", "sigma_alt_juv",
+                         # "HAT_known_ppc", "HAT_unknown_adult_ppc", "HAT_unknown_juv_ppc",
+                         # "HAT_unknown_mean_adult_gte", "HAT_unknown_sd_adult_gte",
+                         # "HAT_unknown_mean_juv_gte", "HAT_unknown_sd_juv_gte",
+                         "p_flight_adult", "p_flight_juv"),
+                iter = 15000, #5000 for graphical ppc
+                chains = 4, 
+                init_r = 0)
 
 print(fit)
 
-saveRDS(fit, file = here("bayesian_modeling", "gamma_age_stan2.rds"))
+saveRDS(fit, file = here("bayesian_modeling", "gamma_age_stan.rds"))
 
 ## additional variables for graphical ppc
-# pp_known <- known_ground_df$hat_scaled
-# pp_unknown_adult <- unknown_df_adult$hat_scaled
-# pp_unknown_juv <- unknown_df_juv$hat_scaled
+pp_known <- known_ground_df$hat_scaled
+pp_unknown_adult <- unknown_df_adult$hat_scaled
+pp_unknown_juv <- unknown_df_juv$hat_scaled
 
 launch_shinystan(fit) #diagnostics

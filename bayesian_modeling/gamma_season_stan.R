@@ -97,13 +97,14 @@ unknown_df_fall <- unknown_df %>%
 unknown_df_spring <- unknown_df %>% 
   filter(season == 2)
 
-init <- function(){list(mu_bias = rnorm(1,0,0.2),
-                        sigma_error = runif(1,0,0.2),
-                        shape_fall = runif(1,3,5),
-                        rate_fall = runif(1,5,10),
-                        shape_spring = runif(1,3,5),
-                        rate_spring = runif(1,5,10)
-                        )}
+init <- function(){list(mu_obs = rnorm(1,0,0.2),
+                        sigma_obs = runif(1,0,0.2),
+                        mu_alt_fall = runif(1,-1,1),
+                        sigma_alt_fall = runif(1,0,1),
+                        mu_alt_spring = runif(1,-1,1),
+                        sigma_alt_spring = runif(1,0,1),
+                        flight_prior_fall = rbeta(1,2,2),
+                        flight_prior_spring = rbeta(1,2,2))}
 
 model_compiled <- stan_model(here("bayesian_modeling", "gamma_season_stan.stan"))
 
@@ -114,22 +115,22 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_unknown_fall = unknown_df_fall$hat_scaled,
                                             HAT_unknown_spring = unknown_df_spring$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "shape_fall", "rate_fall", 
-                         "shape_spring", "rate_spring", "sample_size_fall", "flight_prior",
-                         "sample_size_spring", "HAT_known_mean_gte", "HAT_known_sd_gte", 
-                         "HAT_unknown_mean_fall_gte", "HAT_unknown_sd_fall_gte", 
-                         "HAT_unknown_mean_spring_gte", "HAT_unknown_sd_spring_gte", "p_flight_fall", 
-                         "p_flight_spring"),
-                iter = 15000, #keep down to 5000 for graphical ppc. Extra parameters: "HAT_known_ppc", "HAT_unknown_fall_ppc", "HAT_unknown_spring_ppc"
+                pars = c("mu_obs", "sigma_obs", "flight_prior_fall", "flight_prior_spring", 
+                         "mu_alt_fall", "mu_alt_spring", "sigma_alt_fall", "sigma_alt_spring",
+                         # "HAT_known_ppc", "HAT_unknown_fall_ppc", "HAT_unknown_spring_ppc",
+                         # "HAT_unknown_mean_fall_gte", "HAT_unknown_sd_fall_gte",
+                         # "HAT_unknown_mean_spring_gte", "HAT_unknown_sd_spring_gte",
+                         "p_flight_fall", "p_flight_spring"),
+                iter = 15000, #5000 for graphical ppc
                 chains = 4)
 
 print(fit)
 
-saveRDS(fit, file = here("bayesian_modeling", "gamma_season_stan2.rds"))
+saveRDS(fit, file = here("bayesian_modeling", "gamma_season_stan.rds"))
 
 ## additional variables for graphical ppc
-# pp_known <- known_ground_df$hat_scaled
-# pp_unknown_fall <- unknown_df_fall$hat_scaled
-# pp_unknown_spring <- unknown_df_spring$hat_scaled
+pp_known <- known_ground_df$hat_scaled
+pp_unknown_fall <- unknown_df_fall$hat_scaled
+pp_unknown_spring <- unknown_df_spring$hat_scaled
 
 launch_shinystan(fit) #diagnostics
