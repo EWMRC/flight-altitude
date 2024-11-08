@@ -94,12 +94,8 @@ unknown_df %>%
   pull(check) %>% 
   mean() #the true model should give us a proportion close to 0.5658915
 
-init <- function(){list(mu_bias = rnorm(1,0,0.2),
-                        sigma_error = runif(1,0,0.2),
-                        # shape = runif(1,3,5),
-                        # rate = runif(1,5,10),
-                        # mu = runif(1,3,5),
-                        # tau = runif(1,0,1),
+init <- function(){list(mu_obs = rnorm(1,0,0.2),
+                        sigma_obs = runif(1,0,0.2),
                         mu_alt = runif(1,-1,1),
                         sigma_alt = runif(1,0,1),
                         flight_prior = rbeta(1,2,2),
@@ -112,15 +108,14 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_bias", "sigma_error", "mu_alt", "sigma_alt", "flight_prior"), #, "HAT_known_ppc", "HAT_unknown_ppc"
-                         #"p_flight"), #additional variables for graphical ppc: "HAT_known_ppc", "HAT_unknown_ppc"
-                iter = 15000, #keep down to 5000 for graphical ppc
+                pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior", "p_flight"), #, "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"
+                iter = 15000,
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20
-                chains = 4,
+                chains = 4, 
                 init_r = 0)
 
 print(fit)
-traceplot(fit, pars = c("mu_bias", "sigma_error", "inverse_phi", "mu", "flight_prior", "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_unknown_mean_gte", "HAT_unknown_sd_gte"))
+traceplot(fit, pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior"))
 
 saveRDS(fit, file = here("bayesian_modeling", "gamma_original_stan.rds"))
 
