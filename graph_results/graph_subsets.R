@@ -10,19 +10,23 @@ age_results <- readRDS(here("bayesian_modeling", "gamma_age_stan.rds"))
 sex_results <- readRDS(here("bayesian_modeling", "gamma_sex_stan.rds"))
 
 ## Season
+mean_altitude_fall <- map2_dbl(rstan::extract(season_results, "mu_alt_fall")[[1]], rstan::extract(season_results, "sigma_alt_fall")[[1]],
+     function(mu, sigma){
+       exp(mu + ((sigma^2)/2))*2183.475
+     })
+median(mean_altitude_fall) #323.6526
 
-mean_altitude_fall <- (rstan::extract(season_results, "shape_fall")[[1]]/rstan::extract(season_results, "rate_fall")[[1]])*2183.475
-median(mean_altitude_fall) #309.7749
-
-mean_altitude_spring <- (rstan::extract(season_results, "shape_spring")[[1]]/rstan::extract(season_results, "rate_spring")[[1]])*2183.475
-median(mean_altitude_spring) #427.3196
+mean_altitude_spring <- map2_dbl(rstan::extract(season_results, "mu_alt_spring")[[1]], rstan::extract(season_results, "sigma_alt_spring")[[1]],
+                                 function(mu, sigma){
+                                   exp(mu + ((sigma^2)/2))*2183.475
+                                 })
+median(mean_altitude_spring) #447.0675
 
 mean_altitude_fall <- tibble(season = "Fall", samples = mean_altitude_fall)
 mean_altitude_spring <- tibble(season = "Spring", samples = mean_altitude_spring)
 mean_altitude_season <- bind_rows(mean_altitude_fall, mean_altitude_spring)
 
 # note that plot uses median and highest density interval
-
 plot_mean_season <- ggplot(mean_altitude_season, aes(x = samples, 
                                              group = season,
                                              color = season)) +
@@ -40,25 +44,31 @@ plot_mean_season <- ggplot(mean_altitude_season, aes(x = samples,
        fill = "Season") + 
   scale_fill_manual(values = c("Fall" = "#e6550d", "Spring" = "#756bb1")) +
   scale_color_manual(values = c("Fall" = "#e6550d", "Spring" = "#756bb1")) +
-  lims(x = c(0,750), y = c(-0.08, 1)) +
+  lims(x = c(0,1500), y = c(-0.08, 1)) +
   guides(color = "none") +
-  scale_x_continuous(label = scales::label_number(suffix = "m"),
-                     breaks = c(200,300,400,500,600,700)) +
+  scale_x_continuous(label = scales::label_number(big.mark = "",
+                                                  suffix = "m"),
+                     breaks = seq(200, 1600, 200)) +
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
-  expand_limits(x = c(200, 725)) +
+  expand_limits(x = c(200, 1200)) +
   annotate("text", label = "Fall", x = 310, y = 0.95, col = "#e6550d") +
-  annotate("text", label = "Spring", x = 420, y = 0.72, col = "#756bb1")
+  annotate("text", label = "Spring", x = 480, y = 0.67, col = "#756bb1")
 
 plot_mean_season
 
 ## Age
+mean_altitude_adult <- map2_dbl(rstan::extract(age_results, "mu_alt_adult")[[1]], rstan::extract(age_results, "sigma_alt_adult")[[1]],
+                                function(mu, sigma){
+                                  exp(mu + ((sigma^2)/2))*2183.475
+                                })
+median(mean_altitude_adult) #433.7849
 
-mean_altitude_adult <- (rstan::extract(age_results, "shape_adult")[[1]]/rstan::extract(age_results, "rate_adult")[[1]])*2183.475
-median(mean_altitude_adult) #397.6309
-
-mean_altitude_juv <- (rstan::extract(age_results, "shape_juv")[[1]]/rstan::extract(age_results, "rate_juv")[[1]])*2183.475
-median(mean_altitude_juv) #342.4547
+mean_altitude_juv <- map2_dbl(rstan::extract(age_results, "mu_alt_juv")[[1]], rstan::extract(age_results, "sigma_alt_juv")[[1]],
+                              function(mu, sigma){
+                                exp(mu + ((sigma^2)/2))*2183.475
+                              })
+median(mean_altitude_juv) #369.3922
 
 mean_altitude_adult <- tibble(age = "Adult", samples = mean_altitude_adult)
 mean_altitude_juv <- tibble(age = "Juvenile", samples = mean_altitude_juv)
@@ -82,25 +92,31 @@ plot_mean_age <- ggplot(mean_altitude_age, aes(x = samples,
        fill = "Age") + 
   scale_fill_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   scale_color_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
-  lims(x = c(0,750), y = c(-0.08, 1)) + 
+  lims(x = c(0,1500), y = c(-0.08, 1)) + 
   guides(color = "none")  +
-  scale_x_continuous(label = scales::label_number(suffix = "m"),
-                     breaks = c(200,300,400,500,600,700)) +
+  scale_x_continuous(label = scales::label_number(big.mark = "",
+                                                  suffix = "m"),
+                     breaks = seq(200, 1600, 200)) +
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
-  expand_limits(x = c(200, 725)) +
-  annotate("text", label = "Juvenile", x = 340, y = 0.95, col = "#3182bd") +
-  annotate("text", label = "Adult", x = 435, y = 0.71, col = "#de2d26")
+  expand_limits(x = c(200, 1200)) +
+  annotate("text", label = "Juvenile", x = 350, y = 0.95, col = "#3182bd") +
+  annotate("text", label = "Adult", x = 500, y = 0.69, col = "#de2d26")
 
 plot_mean_age
-
+ 
 ## Sex
+mean_altitude_female <- map2_dbl(rstan::extract(sex_results, "mu_alt_female")[[1]], rstan::extract(sex_results, "sigma_alt_female")[[1]],
+                                 function(mu, sigma){
+                                   exp(mu + ((sigma^2)/2))*2183.475
+                                 })
+median(mean_altitude_female) #344.4138
 
-mean_altitude_female <- (rstan::extract(sex_results, "shape_female")[[1]]/rstan::extract(sex_results, "rate_female")[[1]])*2183.475
-median(mean_altitude_female) #333.6355
-
-mean_altitude_male <- (rstan::extract(sex_results, "shape_male")[[1]]/rstan::extract(sex_results, "rate_male")[[1]])*2183.475
-median(mean_altitude_male) #392.312
+mean_altitude_male <- map2_dbl(rstan::extract(sex_results, "mu_alt_male")[[1]], rstan::extract(sex_results, "sigma_alt_male")[[1]],
+                               function(mu, sigma){
+                                 exp(mu + ((sigma^2)/2))*2183.475
+                               })
+median(mean_altitude_male) #412.7133
 
 mean_altitude_female <- tibble(sex = "Female", samples = mean_altitude_female)
 mean_altitude_male <- tibble(sex = "Male", samples = mean_altitude_male)
@@ -124,19 +140,21 @@ plot_mean_sex <- ggplot(mean_altitude_sex, aes(x = samples,
        fill = "Sex") + 
   scale_fill_manual(values = c("Female" = "#c5247d", "Male" = "#4d9221")) +
   scale_color_manual(values = c("Female" = "#c5247d", "Male" = "#4d9221")) +
-  lims(x = c(0,750), y = c(-0.08, 1)) +
+  lims(x = c(0,1500), y = c(-0.08, 1)) +
   guides(color = "none") +
-  scale_x_continuous(label = scales::label_number(suffix = "m"),
-                     breaks = c(200,300,400,500,600,700)) +
+  scale_x_continuous(label = scales::label_number(big.mark = "",
+                                                  suffix = "m"),
+                     breaks = seq(200, 1600, 200)) +
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
-  expand_limits(x = c(200, 725)) +
+  expand_limits(x = c(200, 1200)) +
   annotate("text", label = "Female", x = 330, y = 0.95, col = "#c5247d") +
-  annotate("text", label = "Male", x = 425, y = 0.80, col = "#4d9221")
+  annotate("text", label = "Male", x = 505, y = 0.86, col = "#4d9221")
 
 plot_mean_sex
 
 ## Graph combined plots
+# extract legends
 plot_mean_season_p <- plot_mean_season +
   theme(legend.position = "none")
 plot_mean_season_l <- get_legend(plot_mean_season) %>% 
@@ -153,11 +171,12 @@ plot_mean_sex_l <- get_legend(plot_mean_sex) %>%
   as_ggplot()
 
 
-plot_combined <- ggarrange(plot_mean_season_p, plot_mean_age_p, plot_mean_sex_p, nrow = 1, ncol = 3)
+plot_combined <- ggarrange(plot_mean_season_p, plot_mean_age_p, plot_mean_sex_p, 
+                           nrow = 1, ncol = 3) 
 
 ggsave(plot = plot_combined, 
-       filename = here("graph_results", "figures", "combined_plot_stan.png"),
-       width = 8,
+       filename = here("graph_results", "figures", "subset_plot_stan.png"),
+       width = 8.5,
        height = 3,
        units = "in")
 

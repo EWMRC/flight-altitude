@@ -17,41 +17,19 @@ Fall is index 1, spring 2
 season_results <- readRDS(here("bayesian_modeling", "gamma_season_stan.rds"))
 ```
 
-Mode
-```{r}
-# mode (calculated from samples)
-# fall
-mode_draws_fall <- ((rstan::extract(season_results, "shape_fall")[[1]] - 1)/rstan::extract(season_results, "rate_fall")[[1]])*2183.475
-
-median(mode_draws_fall)
-#32.2696
-
-hdi(mode_draws_fall, ci = 0.95)
-#5% HDI: [-115.25, 172.58]
-
-#spring
-mode_draws_spring <- ((rstan::extract(season_results, "shape_spring")[[1]] - 1)/rstan::extract(season_results, "rate_spring")[[1]])*2183.475
-
-median(mode_draws_spring)
-#83.63531
-
-hdi(mode_draws_spring, ci = 0.95)
-#95% HDI: [-112.63, 251.79]
-```
-
 Median
 ```{r}
 #fall
 plan(multisession)
 
-median_draws_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
-            .y = rstan::extract(season_results, "rate_fall")[[1]],
+median_draws_fall <- future_map2(.x = rstan::extract(season_results, "mu_alt_fall")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -62,27 +40,27 @@ plan(sequential)
 
 median_draws_fall %>% 
   unlist() %>% 
-  median() # 223.2481
+  median() #212.4468
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) # 50% HDI: [191.85, 247.62]
+  hdi(ci = 0.5) #50% HDI: [183.70, 235.74]
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) # 95% HDI: [143.58, 304.50]
+  hdi(ci = 0.95) #95% HDI: [140.83, 287.09]
 
 # spring
 plan(multisession)
 
-median_draws_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
-            .y = rstan::extract(season_results, "rate_spring")[[1]],
+median_draws_spring <- future_map2(.x = rstan::extract(season_results, "mu_alt_spring")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -93,15 +71,15 @@ plan(sequential)
 
 median_draws_spring %>% 
   unlist() %>% 
-  median() #319.1291
+  median() #287.8422
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [281.92, 356.19]
+  hdi(ci = 0.5) #50% HDI: [252.41, 325.26]
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [212.97, 429.43]
+  hdi(ci = 0.95) #95% HDI: [177.63, 392.96]
 ```
 
 Mean
@@ -109,14 +87,14 @@ Mean
 #fall
 plan(multisession)
 
-mean_draws_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
-            .y = rstan::extract(season_results, "rate_fall")[[1]],
+mean_draws_fall <- future_map2(.x = rstan::extract(season_results, "mu_alt_fall")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -127,27 +105,27 @@ plan(sequential)
 
 mean_draws_fall %>% 
   unlist() %>% 
-  median() #309.7425
+  median() #323.6515
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [277.12, 330.85]
+  hdi(ci = 0.5) #50% HDI: [287.94, 348.27]
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [235.24, 391.52]
+  hdi(ci = 0.95) #95% HDI: [241.22, 420.29]
 
 #spring
 plan(multisession)
 
-mean_draws_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
-            .y = rstan::extract(season_results, "rate_spring")[[1]],
+mean_draws_spring <- future_map2(.x = rstan::extract(season_results, "mu_alt_spring")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -158,15 +136,15 @@ plan(sequential)
 
 mean_draws_spring %>% 
   unlist() %>% 
-  median() #427.2789
+  median() #447.1308
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [386.09, 458.83]
+  hdi(ci = 0.5) #50% HDI: [390.82, 479.79]
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #5% HDI: [325.84, 543.71]
+  hdi(ci = 0.95) #95% HDI: [318.77, 599.63]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -175,14 +153,14 @@ Calculate the percentage of these locations that fall below the minimum	threshol
 #fall
 plan(multisession)
 
-pct_below_radar_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
-            .y = rstan::extract(season_results, "rate_fall")[[1]],
+pct_below_radar_threshold_fall <- future_map2(.x = rstan::extract(season_results, "mu_alt_fall")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -193,27 +171,27 @@ plan(sequential)
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  median() #0.3737
+  median() #0.365
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) # 50% HDI: [0.33, 0.43]
+  hdi(ci = 0.5) #50% HDI: [0.30, 0.42]
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.23, 0.52]
+  hdi(ci = 0.95) #95% HDI: [0.21, 0.53]
 
 #spring
 plan(multisession)
 
-pct_below_radar_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
-            .y = rstan::extract(season_results, "rate_spring")[[1]],
+pct_below_radar_threshold_spring <- future_map2(.x = rstan::extract(season_results, "mu_alt_spring")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -224,15 +202,15 @@ plan(sequential)
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2586
+  median() #0.2531
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.21, 0.30]
+  hdi(ci = 0.5) #50% HDI: [0.18, 0.30]
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.13, 0.40]
+  hdi(ci = 0.95) #95% HDI: [0.10, 0.43]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -240,14 +218,14 @@ How may of these locations are at an altitude where they might collide with a bu
 #fall
 plan(multisession)
 
-pct_below_building_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
-            .y = rstan::extract(season_results, "rate_fall")[[1]],
+pct_below_building_threshold_fall <- future_map2(.x = rstan::extract(season_results, "mu_alt_fall")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -260,27 +238,27 @@ plan(sequential)
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  median() #0.1198
+  median() #0.0495
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.07, 0.14]
+  hdi(ci = 0.5) #50% HDI: [0.01, 0.05]
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.03, 0.23]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.15]
 
 #spring
 plan(multisession)
 
-pct_below_building_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
-            .y = rstan::extract(season_results, "rate_spring")[[1]],
+pct_below_building_threshold_spring <- future_map2(.x = rstan::extract(season_results, "mu_alt_spring")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -293,15 +271,15 @@ plan(sequential)
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  median() #0.069
+  median() #0.026
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.03, 0.08]
+  hdi(ci = 0.5) #50% HDI: [0.00, 0.03]
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.01, 0.16]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.11]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -309,14 +287,14 @@ How may of these locations are at an altitude where they might collide with a co
 #fall
 plan(multisession)
 
-pct_below_comm_tower_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
-            .y = rstan::extract(season_results, "rate_fall")[[1]],
+pct_below_comm_tower_threshold_fall <- future_map2(.x = rstan::extract(season_results, "mu_alt_fall")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -329,27 +307,27 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  median() #0.6204
+  median() #0.6545
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.59, 0.67]
+  hdi(ci = 0.5) #50% HDI: [0.62, 0.71]
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.50, 0.73]
+  hdi(ci = 0.95) #95% HDI: [0.54, 0.77]
 
 #spring
 plan(multisession)
 
-pct_below_comm_tower_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
-            .y = rstan::extract(season_results, "rate_spring")[[1]],
+pct_below_comm_tower_threshold_spring <- future_map2(.x = rstan::extract(season_results, "mu_alt_spring")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -362,15 +340,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  median() #0.4819
+  median() #0.5249
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.44, 0.53]
+  hdi(ci = 0.5) #50% HDI: [0.47, 0.58]
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.35, 0.61]
+  hdi(ci = 0.95) #95% HDI: [0.37, 0.67]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -378,14 +356,14 @@ How may of these locations are at an altitude where they might collide with a wi
 #fall
 plan(multisession)
 
-pct_below_wind_threshold_fall <- future_map2(.x = rstan::extract(season_results, "shape_fall")[[1]], 
-            .y = rstan::extract(season_results, "rate_fall")[[1]],
+pct_below_wind_threshold_fall <- future_map2(.x = rstan::extract(season_results, "mu_alt_fall")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_fall")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -398,27 +376,27 @@ plan(sequential)
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  median() #0.3067
+  median() #0.3662
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.29, 0.34]
+  hdi(ci = 0.5) #50% HDI: [0.33, 0.42]
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.23, 0.37]
+  hdi(ci = 0.95) #95% HDI: [0.24, 0.48]
 
 #spring
 plan(multisession)
 
-pct_below_wind_threshold_spring <- future_map2(.x = rstan::extract(season_results, "shape_spring")[[1]], 
-            .y = rstan::extract(season_results, "rate_spring")[[1]],
+pct_below_wind_threshold_spring <- future_map2(.x = rstan::extract(season_results, "mu_alt_spring")[[1]], 
+            .y = rstan::extract(season_results, "sigma_alt_spring")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -431,21 +409,21 @@ plan(sequential)
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2276
+  median() #0.2621
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.21, 0.26]
+  hdi(ci = 0.5) #50% HDI: [0.21, 0.31]
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.14, 0.30]
+  hdi(ci = 0.95) #95% HDI: [0.13, 0.39]
 ```
 
 Quantify the likelihood that one seasonal mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_spring) > unlist(mean_draws_fall))*100/length(unlist(mean_draws_spring))
-#95.91667% probability that the spring mean is higher than the fall mean
+#93.97333% probability that the spring mean is higher than the fall mean
 ```
 

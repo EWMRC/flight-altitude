@@ -12,33 +12,21 @@ library(bayestestR)
 ```
 
 ```{r}
-original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan2.rds"))
-```
-
-Mode
-```{r}
-# mode (calculated from samples)
-mode_draws <- ((rstan::extract(original_results, pars = c("shape"))[[1]] - 1)/rstan::extract(original_results, pars = c("rate"))[[1]])*2183.475
-
-median(mode_draws)
-#38.98425
-
-hdi(mode_draws, ci = 0.95)
-# 95% HDI: [-88.32, 156.58]
+original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds"))
 ```
 
 Median
 ```{r}
 plan(multisession)
 
-median_draws <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
-            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
+median_draws <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -49,29 +37,29 @@ plan(sequential)
 
 median_draws %>% 
   unlist() %>% 
-  median() #261.6436 new 217.5314
+  median() #225.4219
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [236.42, 283.97] new 50% HDI: [179.69, 264.29]
+  hdi(ci = 0.5) #50% HDI: [199.80, 250.01]
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [193.53, 330.54] new 95% HDI: [85.87, 331.73]
+  hdi(ci = 0.95) #95% HDI: [152.88, 298.71]
 ```
 
 Mean
 ```{r}
 plan(multisession)
 
-mean_draws <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
-            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
+mean_draws <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -82,15 +70,15 @@ plan(sequential)
 
 mean_draws %>% 
   unlist() %>% 
-  median() #361.9758 new 329.2261
+  median() #362.9175
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [338.23, 383.89] new 50% HDI: [298.63, 368.49]
+  hdi(ci = 0.5) #50% HDI: [332.04, 386.54]
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [298.66, 433.16] new 95% HDI: [214.54, 426.70]
+  hdi(ci = 0.95) #95% HDI: [284.79, 448.82]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -98,14 +86,14 @@ Calculate the percentage of these locations that fall below the minimum	threshol
 ```{r}
 plan(multisession)
 
-pct_below_radar_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
-            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
+pct_below_radar_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -116,29 +104,29 @@ plan(sequential)
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  median() #0.3253 new 0.3972
+  median() #0.3499
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.29, 0.36] new 50% HDI: [0.31, 0.45]
+  hdi(ci = 0.5) #50% HDI: [0.30, 0.40]
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  hdi(0.95) #95% HDI: [0.22, 0.43] new 95% HDI: [0.22, 0.62]
+  hdi(0.95) #95% HDI: [0.21, 0.50]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
 ```{r}
 plan(multisession)
 
-pct_below_building_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
-            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
+pct_below_building_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -151,29 +139,29 @@ plan(sequential)
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  median() #0.101 new 0.156
+  median() #0.0536
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.07, 0.12] new 50% HDI: [0.07, 0.18]
+  hdi(ci = 0.5) #50% HDI: [0.02, 0.06]
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.04, 0.18] new 5% HDI: [0.03, 0.37]
+  hdi(ci = 0.95) #95% HDI: [0.01, 0.15]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
 ```{r}
 plan(multisession)
 
-pct_below_comm_tower_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
-            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
+pct_below_comm_tower_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -186,29 +174,29 @@ plan(sequential)
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  median() #.5584 new 0.6135
+  median() #0.6225
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.53, 0.59] new 50% HDI: [0.56, 0.66]
+  hdi(ci = 0.5) #50% HDI: [0.59, 0.66]
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.46, 0.64] new 95% HDI: [0.46, 0.77]
+  hdi(ci = 0.95) #95% HDI: [0.51, 0.73]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
 ```{r}
 plan(multisession)
 
-pct_below_wind_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("shape"))[[1]], 
-            .y = rstan::extract(original_results, pars = c("rate"))[[1]],
+pct_below_wind_threshold <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -221,13 +209,13 @@ plan(sequential)
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  median() #0.2723 new 0.2919
+  median() #0.3475
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.26, 0.29] new 50% HDI: [0.28, 0.32]
+  hdi(ci = 0.5) #50% HDI: [0.32, 0.39]
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.21, 0.32] new 95% HDI: [0.22, 0.34]
+  hdi(ci = 0.95) #95% HDI: [0.24, 0.44]
 ```

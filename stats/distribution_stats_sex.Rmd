@@ -17,41 +17,19 @@ male is index 1, female 2
 sex_results <- readRDS(here("bayesian_modeling", "gamma_sex_stan.rds"))
 ```
 
-Mode
-```{r}
-# mode (calculated from samples)
-# male
-mode_draws_male <- ((rstan::extract(sex_results, "shape_male")[[1]] - 1)/rstan::extract(sex_results, "rate_male")[[1]])*2183.475
-
-median(mode_draws_male)
-#56.42664
-
-hdi(mode_draws_male, ci = 0.95)
-#95% HDI: [-139.53, 234.72]
-
-#female
-mode_draws_female <- ((rstan::extract(sex_results, "shape_female")[[1]] - 1)/rstan::extract(sex_results, "rate_female")[[1]])*2183.475
-
-median(mode_draws_female)
-#79.7429
-
-hdi(mode_draws_female, ci = 0.95)
-#95% HDI: [-62.29, 204.92]
-```
-
 Median
 ```{r}
 #male
 plan(multisession)
 
-median_draws_male <- future_map2(.x = rstan::extract(sex_results, "shape_male")[[1]], 
-            .y = rstan::extract(sex_results, "rate_male")[[1]],
+median_draws_male <- future_map2(.x = rstan::extract(sex_results, "mu_alt_male")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_male")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -62,27 +40,27 @@ plan(sequential)
 
 median_draws_male %>% 
   unlist() %>% 
-  median() #287.0442
+  median() #271.8826
 
 median_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) # 50% HDI: [247.60, 320.87]
+  hdi(ci = 0.5) #50% HDI: [241.33, 307.56]
 
 median_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [181.83, 394.41]
+  hdi(ci = 0.95) #95% HDI: [172.08, 370.57]
 
 # female
 plan(multisession)
 
-median_draws_female <- future_map2(.x = rstan::extract(sex_results, "shape_female")[[1]], 
-            .y = rstan::extract(sex_results, "rate_female")[[1]],
+median_draws_female <- future_map2(.x = rstan::extract(sex_results, "mu_alt_female")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_female")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -93,15 +71,15 @@ plan(sequential)
 
 median_draws_female %>% 
   unlist() %>% 
-  median() #252.9734
+  median() #224.0236
 
 median_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [226.29, 283.31]
+  hdi(ci = 0.5) #50% HDI: [195.02, 256.55]
 
 median_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [169.75, 334.93]
+  hdi(ci = 0.95) #95% HDI: [133.48, 312.46]
 ```
 
 Mean
@@ -109,14 +87,14 @@ Mean
 #male
 plan(multisession)
 
-mean_draws_male <- future_map2(.x = rstan::extract(sex_results, "shape_male")[[1]], 
-            .y = rstan::extract(sex_results, "rate_male")[[1]],
+mean_draws_male <- future_map2(.x = rstan::extract(sex_results, "mu_alt_male")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_male")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -127,27 +105,27 @@ plan(sequential)
 
 mean_draws_male %>% 
   unlist() %>% 
-  median() #392.2709
+  median() #412.6205
 
 mean_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [357.32, 426.56]
+  hdi(ci = 0.5) #50% HDI: [368.76, 446.76]
 
 mean_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [292.33, 495.90]
+  hdi(ci = 0.95) #95% HDI: [300.10, 539.93]
 
 #female
 plan(multisession)
 
-mean_draws_female <- future_map2(.x = rstan::extract(sex_results, "shape_female")[[1]], 
-            .y = rstan::extract(sex_results, "rate_female")[[1]],
+mean_draws_female <- future_map2(.x = rstan::extract(sex_results, "mu_alt_female")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_female")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -158,15 +136,15 @@ plan(sequential)
 
 mean_draws_female %>% 
   unlist() %>% 
-  median() #333.4846
+  median() #344.3026
 
 mean_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [302.30, 358.91]
+  hdi(ci = 0.5) #50% HDI: [303.27, 373.14]
 
 mean_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [255.61, 420.61]
+  hdi(ci = 0.95) #95% HDI: [241.69, 454.48]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -175,14 +153,14 @@ Calculate the percentage of these locations that male below the minimum	threshol
 #male
 plan(multisession)
 
-pct_below_radar_threshold_male <- future_map2(.x = rstan::extract(sex_results, "shape_male")[[1]], 
-            .y = rstan::extract(sex_results, "rate_male")[[1]],
+pct_below_radar_threshold_male <- future_map2(.x = rstan::extract(sex_results, "mu_alt_male")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_male")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -193,27 +171,27 @@ plan(sequential)
 
 pct_below_radar_threshold_male %>% 
   unlist() %>% 
-  median() #0.2948
+  median() #0.2674
 
 pct_below_radar_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) # 50% HDI: [0.24, 0.35]
+  hdi(ci = 0.5) #50% HDI: [0.20, 0.31]
 
 pct_below_radar_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.15, 0.45]
+  hdi(ci = 0.95) #95% HDI: [0.12, 0.45]
 
 #female
 plan(multisession)
 
-pct_below_radar_threshold_female <- future_map2(.x = rstan::extract(sex_results, "shape_female")[[1]], 
-            .y = rstan::extract(sex_results, "rate_female")[[1]],
+pct_below_radar_threshold_female <- future_map2(.x = rstan::extract(sex_results, "mu_alt_female")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_female")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -224,15 +202,15 @@ plan(sequential)
 
 pct_below_radar_threshold_female %>% 
   unlist() %>% 
-  median() #0.3195
+  median() #0.3442
 
 pct_below_radar_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.27, 0.37]
+  hdi(ci = 0.5) #50% HDI: [0.27, 0.40]
 
 pct_below_radar_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.18, 0.46]
+  hdi(ci = 0.95) #95% HDI: [0.17, 0.54]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -240,14 +218,14 @@ How may of these locations are at an altitude where they might collide with a bu
 #male
 plan(multisession)
 
-pct_below_building_threshold_male <- future_map2(.x = rstan::extract(sex_results, "shape_male")[[1]], 
-            .y = rstan::extract(sex_results, "rate_male")[[1]],
+pct_below_building_threshold_male <- future_map2(.x = rstan::extract(sex_results, "mu_alt_male")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_male")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -260,27 +238,27 @@ plan(sequential)
 
 pct_below_building_threshold_male %>% 
   unlist() %>% 
-  median() #0.0861
+  median() #0.0267
 
 pct_below_building_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.04, 0.10]
+  hdi(ci = 0.5) #50% HDI: [0.00, 0.03]
 
 pct_below_building_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.01, 0.20]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.11]
 
 #female
 plan(multisession)
 
-pct_below_building_threshold_female <- future_map2(.x = rstan::extract(sex_results, "shape_female")[[1]], 
-            .y = rstan::extract(sex_results, "rate_female")[[1]],
+pct_below_building_threshold_female <- future_map2(.x = rstan::extract(sex_results, "mu_alt_female")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_female")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -293,15 +271,15 @@ plan(sequential)
 
 pct_below_building_threshold_female %>% 
   unlist() %>% 
-  median() #0.0834
+  median() #0.0451
 
 pct_below_building_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.04, 0.10]
+  hdi(ci = 0.5) #50% HDI: [0.00, 0.05]
 
 pct_below_building_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.02, 0.18]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.16]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -309,14 +287,14 @@ How may of these locations are at an altitude where they might collide with a co
 #male
 plan(multisession)
 
-pct_below_comm_tower_threshold_male <- future_map2(.x = rstan::extract(sex_results, "shape_male")[[1]], 
-            .y = rstan::extract(sex_results, "rate_male")[[1]],
+pct_below_comm_tower_threshold_male <- future_map2(.x = rstan::extract(sex_results, "mu_alt_male")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_male")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -329,27 +307,27 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_male %>% 
   unlist() %>% 
-  median() #0.5237
+  median() #0.5501
 
 pct_below_comm_tower_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.48, 0.57]
+  hdi(ci = 0.5) #50% HDI: [0.50, 0.60]
 
 pct_below_comm_tower_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.38, 0.65]
+  hdi(ci = 0.95) #95% HDI: [0.40, 0.69]
 
 #female
 plan(multisession)
 
-pct_below_comm_tower_threshold_female <- future_map2(.x = rstan::extract(sex_results, "shape_female")[[1]], 
-            .y = rstan::extract(sex_results, "rate_female")[[1]],
+pct_below_comm_tower_threshold_female <- future_map2(.x = rstan::extract(sex_results, "mu_alt_female")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_female")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -362,15 +340,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_female %>% 
   unlist() %>% 
-  median() #0.5783
+  median() #0.6317
 
 pct_below_comm_tower_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.54, 0.63]
+  hdi(ci = 0.5) #50% HDI: [0.59, 0.68]
 
 pct_below_comm_tower_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.45, 0.70]
+  hdi(ci = 0.95) #95% HDI: [0.50, 0.77]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -378,14 +356,14 @@ How may of these locations are at an altitude where they might collide with a wi
 #male
 plan(multisession)
 
-pct_below_wind_threshold_male <- future_map2(.x = rstan::extract(sex_results, "shape_male")[[1]], 
-            .y = rstan::extract(sex_results, "rate_male")[[1]],
+pct_below_wind_threshold_male <- future_map2(.x = rstan::extract(sex_results, "mu_alt_male")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_male")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -398,27 +376,27 @@ plan(sequential)
 
 pct_below_wind_threshold_male %>% 
   unlist() %>% 
-  median() #0.2514
+  median() #0.2776
 
 pct_below_wind_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.23, 0.28]
+  hdi(ci = 0.5) #50% HDI: [0.23, 0.33]
 
 pct_below_wind_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.16, 0.32]
+  hdi(ci = 0.95) #95% HDI: [0.14, 0.41]
 
 #female
 plan(multisession)
 
-pct_below_wind_threshold_female <- future_map2(.x = rstan::extract(sex_results, "shape_female")[[1]], 
-            .y = rstan::extract(sex_results, "rate_female")[[1]],
+pct_below_wind_threshold_female <- future_map2(.x = rstan::extract(sex_results, "mu_alt_female")[[1]], 
+            .y = rstan::extract(sex_results, "sigma_alt_female")[[1]],
             .progress = TRUE,
             .options = furrr_options(seed = 8),
             .f = function(x, y){
-              res <- rgamma(n = 10000, 
-                          shape = x,
-                          rate = y)
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
               
               res <- res * 2183.475
               
@@ -431,21 +409,21 @@ plan(sequential)
 
 pct_below_wind_threshold_female %>% 
   unlist() %>% 
-  median() #0.28195
+  median() #0.3466
 
 pct_below_wind_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.26, 0.31]
+  hdi(ci = 0.5) #50% HDI: [0.31, 0.41]
 
 pct_below_wind_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.20, 0.36]
+  hdi(ci = 0.95) #95% HDI: [0.20, 0.47]
 ```
 
-Quantify the likelihood that one sexal mean is greater than the other
+Quantify the likelihood that one sex's mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_male) > unlist(mean_draws_female))*100/length(unlist(mean_draws_male))
-#81.12% probability that the female mean is higher than the male mean
+#80.90667 probability that the female mean is higher than the male mean
 ```
 
