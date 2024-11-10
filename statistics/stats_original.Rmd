@@ -78,7 +78,7 @@ mean_draws %>%
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [284.79, 448.82]
+  hdi(ci = 0.95) #95% HDI: [284.7944, 448.82]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
