@@ -5,7 +5,7 @@ library(ggpubr)
 library(here)
 library(ggimage)
 
-original_results <- readRDS(here("bayesian_modeling", "gamma_original_stan.rds"))
+original_results <- readRDS(here("modeling", "results", "lnorm_original.rds"))
 
 draws_sampled <- 1:length(rstan::extract(original_results, "mu_alt")[[1]])
 

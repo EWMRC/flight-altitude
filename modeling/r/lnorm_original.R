@@ -107,11 +107,12 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior", "p_flight"), #, "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"
+                pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior", "p_flight", "HAT_known_ppc"), #, "HAT_known_mean_gte", "HAT_known_sd_gte",  "HAT_unknown_ppc"
                 iter = 15000,
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20
                 chains = 4, 
-                init_r = 0)
+                init_r = 0,
+                seed = 8)
 
 print(fit)
 traceplot(fit, pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior"))

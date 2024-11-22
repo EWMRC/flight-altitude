@@ -37,15 +37,15 @@ plan(sequential)
 
 median_draws %>% 
   unlist() %>% 
-  median() #225.4219
+  median() #224.469
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [199.80, 250.01]
+  hdi(ci = 0.5) #50% HDI: [201.27, 251.27]
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [152.88, 298.71]
+  hdi(ci = 0.95) #95% HDI: [148.15, 295.01]
 ```
 
 Mean
@@ -70,15 +70,81 @@ plan(sequential)
 
 mean_draws %>% 
   unlist() %>% 
-  median() #362.9175
+  median() #361.0677
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [332.04, 386.54]
+  hdi(ci = 0.5) #50% HDI: [333.12, 386.44]
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [284.7944, 448.82]
+  hdi(ci = 0.95) #95% HDI: [284.74, 444.20]
+```
+
+Standard deviation
+```{r}
+plan(multisession)
+
+sd_draws <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(sd(res))
+            })
+
+plan(sequential)
+
+sd_draws %>% 
+  unlist() %>% 
+  median() # 448.8329
+
+sd_draws %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [365.05, 484.56]
+
+sd_draws %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [293.69, 685.57]
+```
+
+Skewness
+```{r}
+plan(multisession)
+
+skew_draws <- future_map2(.x = rstan::extract(original_results, pars = c("mu_alt"))[[1]], 
+            .y = rstan::extract(original_results, pars = c("sigma_alt"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(EnvStats::skewness(res))
+            })
+
+plan(sequential)
+
+skew_draws %>% 
+  unlist() %>% 
+  median() # 5.097035
+
+skew_draws %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [3.70, 5.57]
+
+skew_draws %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [2.67, 10.65]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -104,11 +170,11 @@ plan(sequential)
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  median() #0.3499
+  median() #0.35145
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.30, 0.40]
+  hdi(ci = 0.5) #50% HDI: [0.29, 0.40]
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
@@ -139,7 +205,7 @@ plan(sequential)
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  median() #0.0536
+  median() #0.0538
 
 pct_below_building_threshold %>% 
   unlist() %>% 
@@ -147,7 +213,7 @@ pct_below_building_threshold %>%
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.01, 0.15]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.15]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -174,7 +240,7 @@ plan(sequential)
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  median() #0.6225
+  median() #0.6238
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
@@ -182,7 +248,7 @@ pct_below_comm_tower_threshold %>%
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.51, 0.73]
+  hdi(ci = 0.95) #95% HDI: [0.52, 0.73]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -209,7 +275,7 @@ plan(sequential)
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  median() #0.3475
+  median() #0.3486
 
 pct_below_wind_threshold %>% 
   unlist() %>% 

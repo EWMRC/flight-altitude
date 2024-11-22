@@ -40,15 +40,15 @@ plan(sequential)
 
 median_draws_fall %>% 
   unlist() %>% 
-  median() #212.4468
+  median() #205.1177
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [183.70, 235.74]
+  hdi(ci = 0.5) #50% HDI: [179.01, 233.08]
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [140.83, 287.09]
+  hdi(ci = 0.95) #95% HDI: [128.98, 279.66]
 
 # spring
 plan(multisession)
@@ -71,15 +71,15 @@ plan(sequential)
 
 median_draws_spring %>% 
   unlist() %>% 
-  median() #287.8422
+  median() #284.9893
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [252.41, 325.26]
+  hdi(ci = 0.5) #50% HDI: [245.01, 322.74]
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [177.63, 392.96]
+  hdi(ci = 0.95) #95% HDI: [167.79, 393.43]
 ```
 
 Mean
@@ -105,15 +105,15 @@ plan(sequential)
 
 mean_draws_fall %>% 
   unlist() %>% 
-  median() #323.6515
+  median() #319.594
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [287.94, 348.27]
+  hdi(ci = 0.5) #50% HDI: [283.29, 344.41]
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [241.22, 420.29]
+  hdi(ci = 0.95) #95% HDI: [234.25, 417.51]
 
 #spring
 plan(multisession)
@@ -136,15 +136,15 @@ plan(sequential)
 
 mean_draws_spring %>% 
   unlist() %>% 
-  median() #447.1308
+  median() #446.9399
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [390.82, 479.79]
+  hdi(ci = 0.5) #50% HDI: [392.80, 486.25]
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [318.77, 599.63]
+  hdi(ci = 0.95) #95% HDI: [315.32, 603.03]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -171,15 +171,15 @@ plan(sequential)
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  median() #0.365
+  median() #0.3822
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.30, 0.42]
+  hdi(ci = 0.5) #50% HDI: [0.32, 0.44]
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.21, 0.53]
+  hdi(ci = 0.95) #95% HDI: [0.21, 0.55]
 
 #spring
 plan(multisession)
@@ -202,15 +202,15 @@ plan(sequential)
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2531
+  median() #0.2585
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.18, 0.30]
+  hdi(ci = 0.5) #50% HDI: [0.19, 0.31]
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.10, 0.43]
+  hdi(ci = 0.95) #95% HDI: [0.10, 0.45]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -238,15 +238,15 @@ plan(sequential)
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  median() #0.0495
+  median() #0.0576
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.01, 0.05]
+  hdi(ci = 0.5) #50% HDI: [0.01, 0.06]
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.15]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.16]
 
 #spring
 plan(multisession)
@@ -271,7 +271,7 @@ plan(sequential)
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  median() #0.026
+  median() #0.02795
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
@@ -279,7 +279,7 @@ pct_below_building_threshold_spring %>%
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.11]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.12]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -307,15 +307,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  median() #0.6545
+  median() #0.6644
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.62, 0.71]
+  hdi(ci = 0.5) #50% HDI: [0.63, 0.71]
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.54, 0.77]
+  hdi(ci = 0.95) #95% HDI: [0.54, 0.78]
 
 #spring
 plan(multisession)
@@ -340,7 +340,7 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  median() #0.5249
+  median() #0.5286
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
@@ -348,7 +348,7 @@ pct_below_comm_tower_threshold_spring %>%
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.37, 0.67]
+  hdi(ci = 0.95) #95% HDI: [0.38, 0.69]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -376,11 +376,11 @@ plan(sequential)
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  median() #0.3662
+  median() #0.3778
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.33, 0.42]
+  hdi(ci = 0.5) #50% HDI: [0.35, 0.44]
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
@@ -409,15 +409,15 @@ plan(sequential)
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2621
+  median() #0.2665
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.21, 0.31]
+  hdi(ci = 0.5) #50% HDI: [0.22, 0.32]
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.13, 0.39]
+  hdi(ci = 0.95) #95% HDI: [0.13, 0.40]
 ```
 
 Quantify the likelihood that one seasonal mean is greater than the other

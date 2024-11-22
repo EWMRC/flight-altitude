@@ -5,22 +5,22 @@ library(ggpubr)
 library(here)
 library(ggnewscale)
 
-season_results <- readRDS(here("bayesian_modeling", "gamma_season_stan.rds"))
-age_results <- readRDS(here("bayesian_modeling", "gamma_age_stan.rds"))
-sex_results <- readRDS(here("bayesian_modeling", "gamma_sex_stan.rds"))
+season_results <- readRDS(here("modeling", "results", "lnorm_season.rds"))
+age_results <- readRDS(here("modeling", "results", "lnorm_age.rds"))
+sex_results <- readRDS(here("modeling", "results", "lnorm_sex.rds"))
 
 ## Season
 mean_altitude_fall <- map2_dbl(rstan::extract(season_results, "mu_alt_fall")[[1]], rstan::extract(season_results, "sigma_alt_fall")[[1]],
      function(mu, sigma){
        exp(mu + ((sigma^2)/2))*2183.475
      })
-median(mean_altitude_fall) #323.6526
+median(mean_altitude_fall) #319.6693
 
 mean_altitude_spring <- map2_dbl(rstan::extract(season_results, "mu_alt_spring")[[1]], rstan::extract(season_results, "sigma_alt_spring")[[1]],
                                  function(mu, sigma){
                                    exp(mu + ((sigma^2)/2))*2183.475
                                  })
-median(mean_altitude_spring) #447.0675
+median(mean_altitude_spring) #447.0618
 
 mean_altitude_fall <- tibble(season = "Fall", samples = mean_altitude_fall)
 mean_altitude_spring <- tibble(season = "Spring", samples = mean_altitude_spring)
@@ -53,7 +53,7 @@ plot_mean_season <- ggplot(mean_altitude_season, aes(x = samples,
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
   annotate("text", label = "Fall", x = 310, y = 0.95, col = "#e6550d") +
-  annotate("text", label = "Spring", x = 480, y = 0.67, col = "#756bb1")
+  annotate("text", label = "Spring", x = 480, y = 0.65, col = "#756bb1")
 
 plot_mean_season
 
@@ -101,7 +101,7 @@ plot_mean_age <- ggplot(mean_altitude_age, aes(x = samples,
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
   annotate("text", label = "Juvenile", x = 350, y = 0.95, col = "#3182bd") +
-  annotate("text", label = "Adult", x = 500, y = 0.69, col = "#de2d26")
+  annotate("text", label = "Adult", x = 550, y = 0.69, col = "#de2d26")
 
 plot_mean_age
  
@@ -110,13 +110,13 @@ mean_altitude_female <- map2_dbl(rstan::extract(sex_results, "mu_alt_female")[[1
                                  function(mu, sigma){
                                    exp(mu + ((sigma^2)/2))*2183.475
                                  })
-median(mean_altitude_female) #344.4138
+median(mean_altitude_female) #340.6453
 
 mean_altitude_male <- map2_dbl(rstan::extract(sex_results, "mu_alt_male")[[1]], rstan::extract(sex_results, "sigma_alt_male")[[1]],
                                function(mu, sigma){
                                  exp(mu + ((sigma^2)/2))*2183.475
                                })
-median(mean_altitude_male) #412.7133
+median(mean_altitude_male) #408.5727
 
 mean_altitude_female <- tibble(sex = "Female", samples = mean_altitude_female)
 mean_altitude_male <- tibble(sex = "Male", samples = mean_altitude_male)
@@ -179,4 +179,4 @@ ggsave(plot = plot_combined,
        width = 8.5,
        height = 3,
        units = "in")
-
+ 

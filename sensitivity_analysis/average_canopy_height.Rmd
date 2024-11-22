@@ -1,0 +1,36 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(sf)
+library(terra)
+library(here)
+```
+
+Read in datasets
+```{r}
+dataset <- read_csv(here("intermediate_files", "imported_movebank_data.csv")) %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+evh <- rast(here("sensitivity_analysis", "landfire_2023_evh", "LC23_EVH_240.tif"))
+```
+
+Extract values to dataset, and rearrange to get average canopy height
+```{r}
+dataset$evh_raw <- terra::extract(evh, vect(dataset))[,2]
+
+dataset_filtered <- dataset %>% 
+  filter(str_detect(evh_raw, "Tree Height"))
+
+dataset_filtered$end_str_loc <- str_locate(dataset_filtered$evh_raw, "m")[,1] - 2
+
+dataset_filtered <- dataset_filtered %>% 
+  mutate(evh = as.numeric(str_sub(evh_raw, 15, end_str_loc)))
+
+mean(dataset_filtered$evh) #16.5556
+
+```
+

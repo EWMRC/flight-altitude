@@ -58,22 +58,12 @@ raw_data %>%
 # dataset, I'm okay with that assumption for now
 
 altitude_data <- raw_data %>% 
-  mutate(HAT_index = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, NA, 1))
+  mutate(probable_ground = if_else(day_night == "Day", 1, NA)) %>% 
+  mutate(possible_flight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, 1, NA))
 
 altitude_data %>% 
-  group_by(HAT_index) %>% 
-  tally() #428 possible flight locations
-
-# plot results
-# altitude_data %>%
-#   filter(!is.na(HAT_index)) %>%
-#   pull(height_above_terrain) %>%
-#   hist(main = "Presumed ground locations")
-# 
-# altitude_data %>%
-#   filter(is.na(HAT_index)) %>%
-#   pull(height_above_terrain) %>%
-#   hist(main = "Possible flight locations")
+  group_by(possible_flight) %>% 
+  tally() #258, down from 428 possible flight locations
 
 # Scale locations between -1 and 1
 altitude_data <- altitude_data %>% 
@@ -81,10 +71,10 @@ altitude_data <- altitude_data %>%
 
 #splitting into two dataframes
 known_ground_df <- altitude_data %>% 
-  filter(HAT_index == 1)
+  filter(probable_ground == 1)
 
 unknown_df <- altitude_data %>% 
-  filter(is.na(HAT_index))
+  filter(possible_flight == 1)
 
 # Recategorizing fall and spring locations as numeric
 # fall 1, spring 2
@@ -122,7 +112,8 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                          # "HAT_unknown_mean_spring_gte", "HAT_unknown_sd_spring_gte",
                          "p_flight_fall", "p_flight_spring"),
                 iter = 15000, #5000 for graphical ppc
-                chains = 4)
+                chains = 4,
+                seed = 10)
 
 print(fit)
 

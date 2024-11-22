@@ -59,12 +59,13 @@ raw_data %>%
 # dataset, I'm okay with that assumption for now
 
 altitude_data <- raw_data %>% 
-  mutate(HAT_index = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, NA, 1)) %>% 
+  mutate(probable_ground = if_else(day_night == "Day", 1, NA)) %>% 
+  mutate(possible_flight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, 1, NA)) %>% 
   dplyr::select(-age) #take out the old age category, use the one from the capture sheet
 
 altitude_data %>% 
-  group_by(HAT_index) %>% 
-  tally() #428 possible flight locations
+  group_by(possible_flight) %>% 
+  tally() #258, down from 428 possible flight locations
 
 # doing the age calculations
 
@@ -124,10 +125,10 @@ altitude_data <- altitude_data %>%
 
 #splitting into two dataframes
 known_ground_df <- altitude_data %>% 
-  filter(HAT_index == 1)
+  filter(probable_ground == 1)
 
 unknown_df <- altitude_data %>% 
-  filter(is.na(HAT_index))
+  filter(possible_flight == 1)
 
 unknown_df_adult <- unknown_df %>% 
   filter(age_num == 1)
@@ -161,7 +162,8 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                          "p_flight_adult", "p_flight_juv"),
                 iter = 15000, #5000 for graphical ppc
                 chains = 4, 
-                init_r = 0)
+                init_r = 0,
+                seed = 8)
 
 print(fit)
 

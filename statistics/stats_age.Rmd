@@ -39,15 +39,15 @@ plan(sequential)
 
 median_draws_adult %>% 
   unlist() %>% 
-  median() #279.9309
+  median() #278.4478
 
 median_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [243.83, 312.42]
+  hdi(ci = 0.5) #50% HDI: [242.15, 313.73]
 
 median_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [179.45, 383.17]
+  hdi(ci = 0.95) #95% HDI: [170.66, 380.69]
 
 # juv
 plan(multisession)
@@ -70,15 +70,15 @@ plan(sequential)
 
 median_draws_juv %>% 
   unlist() %>% 
-  median() #253.2824
+  median() #249.2478
 
 median_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [228.12, 285.64]
+  hdi(ci = 0.5) #50% HDI: [222.51, 283.22]
 
 median_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [166.58, 334.21]
+  hdi(ci = 0.95) #95% HDI: [163.79, 335.88]
 ```
 
 Mean
@@ -104,15 +104,15 @@ plan(sequential)
 
 mean_draws_adult %>% 
   unlist() %>% 
-  median() #433.831
+  median() #434.9942
 
 mean_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [376.60, 466.96]
+  hdi(ci = 0.5) #50% HDI: [375.18, 468.52]
 
 mean_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [303.21, 592.58]
+  hdi(ci = 0.95) #95% HDI: [304.85, 600.81]
 
 # juv
 plan(multisession)
@@ -135,15 +135,15 @@ plan(sequential)
 
 mean_draws_juv %>% 
   unlist() %>% 
-  median() #369.3185
+  median() #368.5115
 
 mean_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [330.16, 394.46]
+  hdi(ci = 0.5) #50% HDI: [332.00, 398.98]
 
 mean_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [279.39, 477.93]
+  hdi(ci = 0.95) #95% HDI: [276.97, 476.57]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -170,15 +170,15 @@ plan(sequential)
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  median() #0.2621
+  median() #0.2666
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.20, 0.31]
+  hdi(ci = 0.5) #50% HDI: [0.20, 0.32]
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.12, 0.44]
+  hdi(ci = 0.95) #95% HDI: [0.11, 0.45]
 
 # juv
 plan(multisession)
@@ -201,15 +201,15 @@ plan(sequential)
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  median() #0.2844
+  median() #0.2944
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.22, 0.33]
+  hdi(ci = 0.5) #50% HDI: [0.22, 0.34]
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.14, 0.46]
+  hdi(ci = 0.95) #95% HDI: [0.13, 0.47]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -237,7 +237,7 @@ plan(sequential)
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
-  median() #0.0277
+  median() #0.0294
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
@@ -245,7 +245,7 @@ pct_below_building_threshold_adult %>%
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.11]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.12]
 
 # juv
 plan(multisession)
@@ -270,7 +270,7 @@ plan(sequential)
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
-  median() #0.0258
+  median() #0.029
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
@@ -278,7 +278,7 @@ pct_below_building_threshold_juv %>%
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.11]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.12]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -306,15 +306,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  median() #0.537
+  median() #0.5389
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.49, 0.59]
+  hdi(ci = 0.5) #50% HDI: [0.48, 0.59]
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.39, 0.68]
+  hdi(ci = 0.95) #95% HDI: [0.39, 0.69]
 
 # juv
 plan(multisession)
@@ -339,15 +339,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  median() #0.5852
+  median() #0.5911
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.55, 0.64]
+  hdi(ci = 0.5) #50% HDI: [0.54, 0.64]
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.45, 0.71]
+  hdi(ci = 0.95) #95% HDI: [0.46, 0.72]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -375,7 +375,7 @@ plan(sequential)
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
-  median() #0.2706
+  median() #0.2738
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
@@ -383,7 +383,7 @@ pct_below_wind_threshold_adult %>%
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.14, 0.40]
+  hdi(ci = 0.95) #95% HDI: [0.13, 0.40]
 
 # juv
 plan(multisession)
@@ -408,11 +408,11 @@ plan(sequential)
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
-  median() #0.2971
+  median() #0.3051
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.25, 0.35]
+  hdi(ci = 0.5) #50% HDI: [0.25, 0.36]
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
@@ -423,5 +423,5 @@ Quantify the likelihood that one age mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_adult) > unlist(mean_draws_juv))*100/length(unlist(mean_draws_adult))
-#78.32% probability that the adult mean is higher than the juvenile mean
+#78.58% probability that the adult mean is higher than the juvenile mean
 ```

@@ -40,15 +40,15 @@ plan(sequential)
 
 median_draws_male %>% 
   unlist() %>% 
-  median() #271.8826
+  median() #264.8976
 
 median_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [241.33, 307.56]
+  hdi(ci = 0.5) #50% HDI: [232.08, 301.08]
 
 median_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [172.08, 370.57]
+  hdi(ci = 0.95) #95% HDI: [164.78, 363.48]
 
 # female
 plan(multisession)
@@ -71,15 +71,15 @@ plan(sequential)
 
 median_draws_female %>% 
   unlist() %>% 
-  median() #224.0236
+  median() #217.119
 
 median_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [195.02, 256.55]
+  hdi(ci = 0.5) #50% HDI: [184.59, 250.86]
 
 median_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [133.48, 312.46]
+  hdi(ci = 0.95) #95% HDI: [125.24, 311.77]
 ```
 
 Mean
@@ -105,15 +105,15 @@ plan(sequential)
 
 mean_draws_male %>% 
   unlist() %>% 
-  median() #412.6205
+  median() #408.4257
 
 mean_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [368.76, 446.76]
+  hdi(ci = 0.5) #50% HDI: [363.13, 442.74]
 
 mean_draws_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [300.10, 539.93]
+  hdi(ci = 0.95) #95% HDI: [295.97, 542.08]
 
 #female
 plan(multisession)
@@ -136,15 +136,15 @@ plan(sequential)
 
 mean_draws_female %>% 
   unlist() %>% 
-  median() #344.3026
+  median() #340.746
 
 mean_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [303.27, 373.14]
+  hdi(ci = 0.5) #50% HDI: [296.86, 369.75]
 
 mean_draws_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [241.69, 454.48]
+  hdi(ci = 0.95) #95% HDI: [234.79, 460.79]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -171,15 +171,15 @@ plan(sequential)
 
 pct_below_radar_threshold_male %>% 
   unlist() %>% 
-  median() #0.2674
+  median() #0.2817
 
 pct_below_radar_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.20, 0.31]
+  hdi(ci = 0.5) #50% HDI: [0.21, 0.33]
 
 pct_below_radar_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.12, 0.45]
+  hdi(ci = 0.95) #95% HDI: [0.12, 0.46]
 
 #female
 plan(multisession)
@@ -202,15 +202,15 @@ plan(sequential)
 
 pct_below_radar_threshold_female %>% 
   unlist() %>% 
-  median() #0.3442
+  median() #0.3598
 
 pct_below_radar_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.27, 0.40]
+  hdi(ci = 0.5) #50% HDI: [0.28, 0.42]
 
 pct_below_radar_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.17, 0.54]
+  hdi(ci = 0.95) #95% HDI: [0.17, 0.56]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -238,7 +238,7 @@ plan(sequential)
 
 pct_below_building_threshold_male %>% 
   unlist() %>% 
-  median() #0.0267
+  median() #0.031
 
 pct_below_building_threshold_male %>% 
   unlist() %>% 
@@ -246,7 +246,7 @@ pct_below_building_threshold_male %>%
 
 pct_below_building_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.11]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.12]
 
 #female
 plan(multisession)
@@ -271,15 +271,15 @@ plan(sequential)
 
 pct_below_building_threshold_female %>% 
   unlist() %>% 
-  median() #0.0451
+  median() #0.0523
 
 pct_below_building_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.00, 0.05]
+  hdi(ci = 0.5) #50% HDI: [0.00, 0.06]
 
 pct_below_building_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.16]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.18]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -307,15 +307,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_male %>% 
   unlist() %>% 
-  median() #0.5501
+  median() #0.5608
 
 pct_below_comm_tower_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.50, 0.60]
+  hdi(ci = 0.5) #50% HDI: [0.51, 0.61]
 
 pct_below_comm_tower_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.40, 0.69]
+  hdi(ci = 0.95) #95% HDI: [0.41, 0.70]
 
 #female
 plan(multisession)
@@ -340,15 +340,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_female %>% 
   unlist() %>% 
-  median() #0.6317
+  median() #0.6415
 
 pct_below_comm_tower_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.59, 0.68]
+  hdi(ci = 0.5) #50% HDI: [0.60, 0.70]
 
 pct_below_comm_tower_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.50, 0.77]
+  hdi(ci = 0.95) #95% HDI: [0.49, 0.78]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -376,15 +376,15 @@ plan(sequential)
 
 pct_below_wind_threshold_male %>% 
   unlist() %>% 
-  median() #0.2776
+  median() #0.2892
 
 pct_below_wind_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.23, 0.33]
+  hdi(ci = 0.5) #50% HDI: [0.24, 0.34]
 
 pct_below_wind_threshold_male %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.14, 0.41]
+  hdi(ci = 0.95) #95% HDI: [0.15, 0.42]
 
 #female
 plan(multisession)
@@ -409,21 +409,21 @@ plan(sequential)
 
 pct_below_wind_threshold_female %>% 
   unlist() %>% 
-  median() #0.3466
+  median() #0.358
 
 pct_below_wind_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.31, 0.41]
+  hdi(ci = 0.5) #50% HDI: [0.33, 0.43]
 
 pct_below_wind_threshold_female %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.20, 0.47]
+  hdi(ci = 0.95) #95% HDI: [0.20, 0.48]
 ```
 
 Quantify the likelihood that one sex's mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_male) > unlist(mean_draws_female))*100/length(unlist(mean_draws_male))
-#80.90667 probability that the female mean is higher than the male mean
+#79.43333 probability that the female mean is higher than the male mean
 ```
 

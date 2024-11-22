@@ -58,12 +58,13 @@ raw_data %>%
 # dataset, I'm okay with that assumption for now
 
 altitude_data <- raw_data %>% 
-  mutate(HAT_index = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, NA, 1)) %>% 
-  filter(sex != "") #exclude 187 locations from individuals with unknown sex
+  mutate(probable_ground = if_else(day_night == "Day", 1, NA)) %>% 
+  mutate(possible_flight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, 1, NA)) %>% 
+  filter(sex != "")
 
 altitude_data %>% 
-  group_by(HAT_index) %>% 
-  tally() #428 possible flight locations
+  group_by(possible_flight) %>% 
+  tally() #249, down from 428 possible flight locations
 
 #classify sex
 altitude_data$sex_num <- altitude_data$sex %>% 
@@ -76,10 +77,10 @@ altitude_data <- altitude_data %>%
 
 #splitting into two dataframes
 known_ground_df <- altitude_data %>% 
-  filter(HAT_index == 1)
+  filter(probable_ground == 1)
 
 unknown_df <- altitude_data %>% 
-  filter(is.na(HAT_index))
+  filter(possible_flight == 1)
 
 unknown_df_female <- unknown_df %>% 
   filter(sex_num == 1)
@@ -108,13 +109,14 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                 init = init,
                 pars = c("mu_obs", "sigma_obs", "flight_prior_male", "flight_prior_female", 
                          "mu_alt_male", "mu_alt_female", "sigma_alt_male", "sigma_alt_female",
-                         # "HAT_known_ppc", "HAT_unknown_male_ppc", "HAT_unknown_female_ppc",
+                         #"HAT_known_ppc", "HAT_unknown_male_ppc", "HAT_unknown_female_ppc",
                          # "HAT_unknown_mean_male_gte", "HAT_unknown_sd_male_gte",
                          # "HAT_unknown_mean_female_gte", "HAT_unknown_sd_female_gte",
                          "p_flight_male", "p_flight_female"),
                 iter = 15000, #5000 for graphical ppc
                 chains = 4, 
-                init_r = 0)
+                init_r = 0,
+                seed = 8)
 
 print(fit)
 
