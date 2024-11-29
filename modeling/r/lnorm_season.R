@@ -87,7 +87,8 @@ unknown_df_fall <- unknown_df %>%
 unknown_df_spring <- unknown_df %>% 
   filter(season == 2)
 
-init <- function(){list(mu_obs = rnorm(1,0,0.2),
+init <- function(){list(nu_obs = rgamma(1,2,0.1),
+                        mu_obs = rnorm(1,0,0.2),
                         sigma_obs = runif(1,0,0.2),
                         mu_alt_fall = runif(1,-1,1),
                         sigma_alt_fall = runif(1,0,1),
@@ -105,7 +106,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_unknown_fall = unknown_df_fall$hat_scaled,
                                             HAT_unknown_spring = unknown_df_spring$hat_scaled), 
                 init = init,
-                pars = c("mu_obs", "sigma_obs", "flight_prior_fall", "flight_prior_spring", 
+                pars = c("nu_obs", "mu_obs", "sigma_obs", "flight_prior_fall", "flight_prior_spring", 
                          "mu_alt_fall", "mu_alt_spring", "sigma_alt_fall", "sigma_alt_spring",
                          # "HAT_known_ppc", "HAT_unknown_fall_ppc", "HAT_unknown_spring_ppc",
                          # "HAT_unknown_mean_fall_gte", "HAT_unknown_sd_fall_gte",
@@ -113,7 +114,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                          "p_flight_fall", "p_flight_spring"),
                 iter = 15000, #5000 for graphical ppc
                 chains = 4,
-                seed = 10)
+                seed = 8)
 
 print(fit)
 

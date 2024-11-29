@@ -53,7 +53,7 @@ plot_mean_season <- ggplot(mean_altitude_season, aes(x = samples,
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
   annotate("text", label = "Fall", x = 310, y = 0.95, col = "#e6550d") +
-  annotate("text", label = "Spring", x = 480, y = 0.65, col = "#756bb1")
+  annotate("text", label = "Spring", x = 505, y = 0.65, col = "#756bb1")
 
 plot_mean_season
 
@@ -101,7 +101,7 @@ plot_mean_age <- ggplot(mean_altitude_age, aes(x = samples,
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
   annotate("text", label = "Juvenile", x = 350, y = 0.95, col = "#3182bd") +
-  annotate("text", label = "Adult", x = 550, y = 0.69, col = "#de2d26")
+  annotate("text", label = "Adult", x = 500, y = 0.67, col = "#de2d26")
 
 plot_mean_age
  
@@ -149,7 +149,7 @@ plot_mean_sex <- ggplot(mean_altitude_sex, aes(x = samples,
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
   annotate("text", label = "Female", x = 330, y = 0.95, col = "#c5247d") +
-  annotate("text", label = "Male", x = 505, y = 0.86, col = "#4d9221")
+  annotate("text", label = "Male", x = 480, y = 0.85, col = "#4d9221")
 
 plot_mean_sex
 

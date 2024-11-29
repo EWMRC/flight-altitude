@@ -37,10 +37,12 @@ transformed data { // exclusively for posterior predictive checks
 }
 
 parameters {
+  //observation parameters
+  real<lower=0> nu_obs;
   real mu_obs;
   real<lower=0> sigma_obs;
   real<lower=0, upper=1> flight_prior;
-  
+  //process parameters
   real mu_alt;
   real<lower=0> sigma_alt;
   vector<offset=mu_alt, multiplier=sigma_alt>[n_obs_unknown] log_real_alt;
@@ -54,14 +56,14 @@ transformed parameters {
   for(i in 1:n_obs_unknown){ 
     // Marginalized discrete parameter (https://mc-stan.org/docs/stan-users-guide/latent-discrete.html)
     // Measuring the likelihood that a given location is in a ground or flight state
-    unknown_q[i, 1] = normal_lpdf(HAT_unknown[i] | mu_obs, sigma_obs) + log(1 - flight_prior);//+ log(0.67);
-    unknown_q[i, 2] = normal_lpdf(HAT_unknown[i] | real_alt[i] + mu_obs, sigma_obs) + log(flight_prior);//+ log(0.33);
+    unknown_q[i, 1] = student_t_lpdf(HAT_unknown[i] | nu_obs, mu_obs, sigma_obs) + log(1 - flight_prior);//+ log(0.67);
+    unknown_q[i, 2] = student_t_lpdf(HAT_unknown[i] | nu_obs, real_alt[i] + mu_obs, sigma_obs) + log(flight_prior);//+ log(0.33);
   }
 }
 
 model {
   // likelihood of known locations
-  target += normal_lpdf(HAT_known | mu_obs, sigma_obs); 
+  target += student_t_lpdf(HAT_known | nu_obs, mu_obs, sigma_obs); 
   
   // likelihood of unknown locations
   for (i in 1:n_obs_unknown){ 
@@ -72,6 +74,7 @@ model {
   log_real_alt ~ normal(mu_alt, sigma_alt);
   
   //priors
+  nu_obs ~ gamma(2, 0.1); //Juárez and Steel (2010) (Model-based clustering of non-Gaussian panel data based on skew-t distributions. Journal of Business & Economic Statistics 28, 52–66.)
   mu_obs ~ normal(0, 1); 
   sigma_obs ~ normal(0, 1) T[0,]; //truncation shouldn't be necessary, but including it anyway
   flight_prior ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
@@ -100,7 +103,7 @@ generated quantities {
 
   // known ground
   for(k in 1:n_obs_known){
-    HAT_known_ppc[k] = normal_rng(mu_obs, sigma_obs);
+    HAT_known_ppc[k] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //unknown
@@ -114,12 +117,12 @@ generated quantities {
   
   //unknown flight
   for(g in 1:sample_size_int){ // number of presumed flight locations
-    HAT_unknown_ppc[g] = normal_rng(exp(log_real_alt_ppc[g]) + mu_obs, sigma_obs);
+    HAT_unknown_ppc[g] = student_t_rng(nu_obs, exp(log_real_alt_ppc[g]) + mu_obs, sigma_obs);
   }
 
   //unknown ground
   for(h in (sample_size_int + 1):n_obs_unknown){
-    HAT_unknown_ppc[h] = normal_rng(mu_obs, sigma_obs);
+    HAT_unknown_ppc[h] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //ppc stats

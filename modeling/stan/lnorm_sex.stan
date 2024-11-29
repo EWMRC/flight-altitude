@@ -42,6 +42,7 @@ transformed data { // exclusively for posterior predictive checks
 
 parameters {
   //observation parameters
+  real<lower=0> nu_obs;
   real mu_obs;
   real<lower=0> sigma_obs;
   real<lower=0, upper=1> flight_prior_male;
@@ -66,20 +67,20 @@ transformed parameters {
   
   //male
   for(i in 1:n_obs_unknown_male){
-    unknown_q_male[i, 1] = normal_lpdf(HAT_unknown_male[i] | mu_obs, sigma_obs) + log(1 - flight_prior_male);
-    unknown_q_male[i, 2] = normal_lpdf(HAT_unknown_male[i] | real_alt_male[i] + mu_obs, sigma_obs) + log(flight_prior_male);
+    unknown_q_male[i, 1] = student_t_lpdf(HAT_unknown_male[i] | nu_obs, mu_obs, sigma_obs) + log(1 - flight_prior_male);
+    unknown_q_male[i, 2] = student_t_lpdf(HAT_unknown_male[i] | nu_obs, real_alt_male[i] + mu_obs, sigma_obs) + log(flight_prior_male);
   }
   
   //female
   for(i in 1:n_obs_unknown_female){
-    unknown_q_female[i, 1] = normal_lpdf(HAT_unknown_female[i]| mu_obs, sigma_obs) + log(1 - flight_prior_female);
-    unknown_q_female[i, 2] = normal_lpdf(HAT_unknown_female[i]| real_alt_female[i] + mu_obs, sigma_obs) + log(flight_prior_female);
+    unknown_q_female[i, 1] = student_t_lpdf(HAT_unknown_female[i]| nu_obs, mu_obs, sigma_obs) + log(1 - flight_prior_female);
+    unknown_q_female[i, 2] = student_t_lpdf(HAT_unknown_female[i]| nu_obs, real_alt_female[i] + mu_obs, sigma_obs) + log(flight_prior_female);
   }
 }
 
 model {
   // likelihood of known locations
-  target += normal_lpdf(HAT_known | mu_obs, sigma_obs); 
+  target += student_t_lpdf(HAT_known | nu_obs, mu_obs, sigma_obs); 
   
   // likelihood of unknown locations
   for (i in 1:n_obs_unknown_male){ 
@@ -95,6 +96,7 @@ model {
   log_real_alt_female ~ normal(mu_alt_female, sigma_alt_female);
   
   //priors
+  nu_obs ~ gamma(2, 0.1); //Juárez and Steel (2010) (Model-based clustering of non-Gaussian panel data based on skew-t distributions. Journal of Business & Economic Statistics 28, 52–66.)
   mu_obs ~ normal(0, 1); 
   sigma_obs ~ normal(0, 1) T[0,]; //truncation shouldn't be necessary, but including it anyway
   flight_prior_male ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
@@ -133,7 +135,7 @@ generated quantities {
 
   // known ground
   for(k in 1:n_obs_known){
-    HAT_known_ppc[k] = normal_rng(mu_obs, sigma_obs);
+    HAT_known_ppc[k] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //unknown male
@@ -146,12 +148,12 @@ generated quantities {
 
   //unknown flight male
   for(g in 1:sample_size_int_male){ // number of presumed flight locations
-    HAT_unknown_male_ppc[g] = normal_rng(exp(log_real_alt_male_ppc[g]) + mu_obs, sigma_obs);
+    HAT_unknown_male_ppc[g] = student_t_rng(nu_obs, exp(log_real_alt_male_ppc[g]) + mu_obs, sigma_obs);
   }
 
   //unknown ground male
   for(h in (sample_size_int_male + 1):n_obs_unknown_male){
-    HAT_unknown_male_ppc[h] = normal_rng(mu_obs, sigma_obs);
+    HAT_unknown_male_ppc[h] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
   
   //unknown female
@@ -164,12 +166,12 @@ generated quantities {
 
   //unknown flight female
   for(g in 1:sample_size_int_female){ // number of presumed flight locations
-    HAT_unknown_female_ppc[g] = normal_rng(exp(log_real_alt_female_ppc[g]) + mu_obs, sigma_obs);
+    HAT_unknown_female_ppc[g] = student_t_rng(nu_obs, exp(log_real_alt_female_ppc[g]) + mu_obs, sigma_obs);
   }
 
   //unknown ground female
   for(h in (sample_size_int_female + 1):n_obs_unknown_female){
-    HAT_unknown_female_ppc[h] = normal_rng(mu_obs, sigma_obs);
+    HAT_unknown_female_ppc[h] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //ppc stats

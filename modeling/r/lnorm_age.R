@@ -136,7 +136,8 @@ unknown_df_adult <- unknown_df %>%
 unknown_df_juv <- unknown_df %>% 
   filter(age_num == 2)
 
-init <- function(){list(mu_obs = rnorm(1,0,0.2),
+init <- function(){list(nu_obs = rgamma(1,2,0.1),
+                        mu_obs = rnorm(1,0,0.2),
                         sigma_obs = runif(1,0,0.2),
                         mu_alt_adult = runif(1,-1,1),
                         sigma_alt_adult = runif(1,0,1),
@@ -154,7 +155,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             HAT_unknown_adult = unknown_df_adult$hat_scaled,
                                             HAT_unknown_juv = unknown_df_juv$hat_scaled), 
                 init = init,
-                pars = c("mu_obs", "sigma_obs", "flight_prior_adult", "flight_prior_juv", 
+                pars = c("nu_obs", "mu_obs", "sigma_obs", "flight_prior_adult", "flight_prior_juv", 
                          "mu_alt_adult", "mu_alt_juv", "sigma_alt_adult", "sigma_alt_juv",
                          # "HAT_known_ppc", "HAT_unknown_adult_ppc", "HAT_unknown_juv_ppc",
                          # "HAT_unknown_mean_adult_gte", "HAT_unknown_sd_adult_gte",

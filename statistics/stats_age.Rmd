@@ -39,15 +39,15 @@ plan(sequential)
 
 median_draws_adult %>% 
   unlist() %>% 
-  median() #278.4478
+  median() #291.4735
 
 median_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [242.15, 313.73]
+  hdi(ci = 0.5) #50% HDI: [264.96, 316.38]
 
 median_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [170.66, 380.69]
+  hdi(ci = 0.95) #95% HDI: [218.23, 373.99]
 
 # juv
 plan(multisession)
@@ -70,15 +70,15 @@ plan(sequential)
 
 median_draws_juv %>% 
   unlist() %>% 
-  median() #249.2478
+  median() #266.0887
 
 median_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [222.51, 283.22]
+  hdi(ci = 0.5) #50% HDI: [247.08, 286.09]
 
 median_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [163.79, 335.88]
+  hdi(ci = 0.95) #95% HDI: [210.44, 324.63]
 ```
 
 Mean
@@ -104,15 +104,15 @@ plan(sequential)
 
 mean_draws_adult %>% 
   unlist() %>% 
-  median() #434.9942
+  median() #431.222
 
 mean_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [375.18, 468.52]
+  hdi(ci = 0.5) #50% HDI: [376.85, 459.42]
 
 mean_draws_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [304.85, 600.81]
+  hdi(ci = 0.95) #95% HDI: [316.56, 581.20]
 
 # juv
 plan(multisession)
@@ -135,15 +135,141 @@ plan(sequential)
 
 mean_draws_juv %>% 
   unlist() %>% 
-  median() #368.5115
+  median() #370.8597
 
 mean_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [332.00, 398.98]
+  hdi(ci = 0.5) #50% HDI: [337.28, 393.26]
 
 mean_draws_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [276.97, 476.57]
+  hdi(ci = 0.95) #95% HDI: [294.91, 465.26]
+```
+
+Standard deviation
+```{r}
+plan(multisession)
+
+sd_draws_adult <- future_map2(.x = rstan::extract(age_results, pars = c("mu_alt_adult"))[[1]], 
+            .y = rstan::extract(age_results, pars = c("sigma_alt_adult"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(sd(res))
+            })
+
+plan(sequential)
+
+sd_draws_adult %>% 
+  unlist() %>% 
+  median() #464.5481
+
+sd_draws_adult %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [349.89, 508.57]
+
+sd_draws_adult %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [261.81, 804.93]
+
+plan(multisession)
+
+sd_draws_juv <- future_map2(.x = rstan::extract(age_results, pars = c("mu_alt_juv"))[[1]], 
+            .y = rstan::extract(age_results, pars = c("sigma_alt_juv"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(sd(res))
+            })
+
+plan(sequential)
+
+sd_draws_juv %>% 
+  unlist() %>% 
+  median() #358.4397
+
+sd_draws_juv %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [291.99, 389.74]
+
+sd_draws_juv %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [232.64, 545.77]
+```
+
+Skewness
+```{r}
+plan(multisession)
+
+skew_draws_adult <- future_map2(.x = rstan::extract(age_results, pars = c("mu_alt_adult"))[[1]], 
+            .y = rstan::extract(age_results, pars = c("sigma_alt_adult"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(EnvStats::skewness(res))
+            })
+
+plan(sequential)
+
+skew_draws_adult %>% 
+  unlist() %>% 
+  median() #4.188694
+
+skew_draws_adult %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [3.20, 4.59]
+
+skew_draws_adult %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [2.33, 7.86]
+
+plan(multisession)
+
+skew_draws_juv <- future_map2(.x = rstan::extract(age_results, pars = c("mu_alt_juv"))[[1]], 
+            .y = rstan::extract(age_results, pars = c("sigma_alt_juv"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(EnvStats::skewness(res))
+            })
+
+plan(sequential)
+
+skew_draws_juv %>% 
+  unlist() %>% 
+  median() #3.627106
+
+skew_draws_juv %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [2.91, 3.93]
+
+skew_draws_juv %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [2.31, 6.12]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -170,15 +296,15 @@ plan(sequential)
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  median() #0.2666
+  median() #0.2359
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.20, 0.32]
+  hdi(ci = 0.5) #50% HDI: [0.20, 0.27]
 
 pct_below_radar_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.11, 0.45]
+  hdi(ci = 0.95) #95% HDI: [0.13, 0.35]
 
 # juv
 plan(multisession)
@@ -201,15 +327,15 @@ plan(sequential)
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  median() #0.2944
+  median() #0.2535
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.22, 0.34]
+  hdi(ci = 0.5) #50% HDI: [0.22, 0.29]
 
 pct_below_radar_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.13, 0.47]
+  hdi(ci = 0.95) #95% HDI: [0.15, 0.36]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -237,15 +363,15 @@ plan(sequential)
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
-  median() #0.0294
+  median() #0.0189
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.00, 0.03]
+  hdi(ci = 0.5) #50% HDI: [0.01, 0.02]
 
 pct_below_building_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.12]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.06]
 
 # juv
 plan(multisession)
@@ -270,15 +396,15 @@ plan(sequential)
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
-  median() #0.029
+  median() #0.0166
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.00, 0.03]
+  hdi(ci = 0.5) #50% HDI: [0.01, 0.02]
 
 pct_below_building_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.12]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.05]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -306,15 +432,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  median() #0.5389
+  median() #0.5205
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.48, 0.59]
+  hdi(ci = 0.5) #50% HDI: [0.48, 0.56]
 
 pct_below_comm_tower_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.39, 0.69]
+  hdi(ci = 0.95) #95% HDI: [0.41, 0.64]
 
 # juv
 plan(multisession)
@@ -339,15 +465,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  median() #0.5911
+  median() #0.5668
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.54, 0.64]
+  hdi(ci = 0.5) #50% HDI: [0.53, 0.60]
 
 pct_below_comm_tower_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.46, 0.72]
+  hdi(ci = 0.95) #95% HDI: [0.46, 0.66]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -375,15 +501,15 @@ plan(sequential)
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
-  median() #0.2738
+  median() #0.2489
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.22, 0.32]
+  hdi(ci = 0.5) #50% HDI: [0.21, 0.28]
 
 pct_below_wind_threshold_adult %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.13, 0.40]
+  hdi(ci = 0.95) #95% HDI: [0.15, 0.35]
 
 # juv
 plan(multisession)
@@ -408,20 +534,20 @@ plan(sequential)
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
-  median() #0.3051
+  median() #0.2704
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.25, 0.36]
+  hdi(ci = 0.5) #50% HDI: [0.23, 0.30]
 
 pct_below_wind_threshold_juv %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.17, 0.43]
+  hdi(ci = 0.95) #95% HDI: [0.18, 0.36]
 ```
 
 Quantify the likelihood that one age mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_adult) > unlist(mean_draws_juv))*100/length(unlist(mean_draws_adult))
-#78.58% probability that the adult mean is higher than the juvenile mean
+#79.06333% probability that the adult mean is higher than the juvenile mean
 ```

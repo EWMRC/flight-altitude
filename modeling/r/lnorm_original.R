@@ -94,7 +94,8 @@ unknown_df %>%
   pull(check) %>% 
   mean() #the true model should give us a proportion close to 0.5658915
 
-init <- function(){list(mu_obs = rnorm(1,0,0.2),
+init <- function(){list(nu_obs = rgamma(1,2,0.1),
+                        mu_obs = rnorm(1,0,0.2),
                         sigma_obs = runif(1,0,0.2),
                         mu_alt = runif(1,-1,1),
                         sigma_alt = runif(1,0,1),
@@ -107,7 +108,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior", "p_flight", "HAT_known_ppc"), #, "HAT_known_mean_gte", "HAT_known_sd_gte",  "HAT_unknown_ppc"
+                pars = c("nu_obs", "mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior", "p_flight"), #, "HAT_known_ppc", "HAT_unknown_ppc", "HAT_known_mean_gte", "HAT_known_sd_gte"
                 iter = 15000,
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20
                 chains = 4, 
@@ -115,7 +116,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                 seed = 8)
 
 print(fit)
-traceplot(fit, pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior"))
+traceplot(fit, pars = c("nu_obs", "mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior"))
 
 saveRDS(fit, file = here("modeling", "results", "lnorm_original.rds"))
 

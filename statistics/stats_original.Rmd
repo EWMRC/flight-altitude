@@ -37,15 +37,15 @@ plan(sequential)
 
 median_draws %>% 
   unlist() %>% 
-  median() #224.469
+  median() #262.4708
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [201.27, 251.27]
+  hdi(ci = 0.5) #50% HDI: [247.72, 276.96]
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [148.15, 295.01]
+  hdi(ci = 0.95) #95% HDI: [218.46, 304.69]
 ```
 
 Mean
@@ -70,15 +70,15 @@ plan(sequential)
 
 mean_draws %>% 
   unlist() %>% 
-  median() #361.0677
+  median() #378.9098
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [333.12, 386.44]
+  hdi(ci = 0.5) #50% HDI: [353.49, 396.36]
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [284.74, 444.20]
+  hdi(ci = 0.95) #95% HDI: [319.91, 446.72]
 ```
 
 Standard deviation
@@ -103,15 +103,15 @@ plan(sequential)
 
 sd_draws %>% 
   unlist() %>% 
-  median() # 448.8329
+  median() # 392.5709
 
 sd_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [365.05, 484.56]
+  hdi(ci = 0.5) #50% HDI: [339.56, 423.27]
 
 sd_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [293.69, 685.57]
+  hdi(ci = 0.95) #95% HDI: [278.65, 539.75]
 ```
 
 Skewness
@@ -136,15 +136,15 @@ plan(sequential)
 
 skew_draws %>% 
   unlist() %>% 
-  median() # 5.097035
+  median() #3.950941
 
 skew_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [3.70, 5.57]
+  hdi(ci = 0.5) #50% HDI: [3.20, 4.20]
 
 skew_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [2.67, 10.65]
+  hdi(ci = 0.95) #95% HDI: [2.64, 6.53]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -170,15 +170,15 @@ plan(sequential)
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  median() #0.35145
+  median() #0.2687
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.29, 0.40]
+  hdi(ci = 0.5) #50% HDI: [0.24, 0.29]
 
 pct_below_radar_threshold %>% 
   unlist() %>% 
-  hdi(0.95) #95% HDI: [0.21, 0.50]
+  hdi(0.95) #95% HDI: [0.20, 0.35]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -205,15 +205,15 @@ plan(sequential)
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  median() #0.0538
+  median() #0.0221
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.02, 0.06]
+  hdi(ci = 0.5) #50% HDI: [0.01, 0.03]
 
 pct_below_building_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.15]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.05]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -240,15 +240,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  median() #0.6238
+  median() #0.56985
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.59, 0.66]
+  hdi(ci = 0.5) #50% HDI: [0.55, 0.60]
 
 pct_below_comm_tower_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.52, 0.73]
+  hdi(ci = 0.95) #95% HDI: [0.50, 0.64]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -275,13 +275,13 @@ plan(sequential)
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  median() #0.3486
+  median() #0.2831
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.32, 0.39]
+  hdi(ci = 0.5) #50% HDI: [0.26, 0.31]
 
 pct_below_wind_threshold %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.24, 0.44]
+  hdi(ci = 0.95) #95% HDI: [0.21, 0.35]
 ```

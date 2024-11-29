@@ -40,15 +40,15 @@ plan(sequential)
 
 median_draws_fall %>% 
   unlist() %>% 
-  median() #205.1177
+  median() #241.6429
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [179.01, 233.08]
+  hdi(ci = 0.5) #50% HDI: [222.55, 258.75]
 
 median_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [128.98, 279.66]
+  hdi(ci = 0.95) #95% HDI: [187.89, 295.78]
 
 # spring
 plan(multisession)
@@ -71,15 +71,15 @@ plan(sequential)
 
 median_draws_spring %>% 
   unlist() %>% 
-  median() #284.9893
+  median() #294.8802
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [245.01, 322.74]
+  hdi(ci = 0.5) #50% HDI: [266.61, 318.49]
 
 median_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [167.79, 393.43]
+  hdi(ci = 0.95) #95% HDI: [219.75, 375.58]
 ```
 
 Mean
@@ -105,15 +105,15 @@ plan(sequential)
 
 mean_draws_fall %>% 
   unlist() %>% 
-  median() #319.594
+  median() #337.7761
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [283.29, 344.41]
+  hdi(ci = 0.5) #50% HDI: [305.67, 357.53]
 
 mean_draws_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [234.25, 417.51]
+  hdi(ci = 0.95) #95% HDI: [267.02, 422.94]
 
 #spring
 plan(multisession)
@@ -136,15 +136,141 @@ plan(sequential)
 
 mean_draws_spring %>% 
   unlist() %>% 
-  median() #446.9399
+  median() #444.0485
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [392.80, 486.25]
+  hdi(ci = 0.5) #50% HDI: [398.31, 476.48]
 
 mean_draws_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [315.32, 603.03]
+  hdi(ci = 0.95) #95% HDI: [333.05, 577.71]
+```
+
+Standard deviation
+```{r}
+plan(multisession)
+
+sd_draws_fall <- future_map2(.x = rstan::extract(season_results, pars = c("mu_alt_fall"))[[1]], 
+            .y = rstan::extract(season_results, pars = c("sigma_alt_fall"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(sd(res))
+            })
+
+plan(sequential)
+
+sd_draws_fall %>% 
+  unlist() %>% 
+  median() #327.9796
+
+sd_draws_fall %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [262.50, 352.54]
+
+sd_draws_fall %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [209.94, 504.04]
+
+plan(multisession)
+
+sd_draws_spring <- future_map2(.x = rstan::extract(season_results, pars = c("mu_alt_spring"))[[1]], 
+            .y = rstan::extract(season_results, pars = c("sigma_alt_spring"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(sd(res))
+            })
+
+plan(sequential)
+
+sd_draws_spring %>% 
+  unlist() %>% 
+  median() #491.2334
+
+sd_draws_spring %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [379.91, 534.56]
+
+sd_draws_spring %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [291.90, 824.63]
+```
+
+Skewness
+```{r}
+plan(multisession)
+
+skew_draws_fall <- future_map2(.x = rstan::extract(season_results, pars = c("mu_alt_fall"))[[1]], 
+            .y = rstan::extract(season_results, pars = c("sigma_alt_fall"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(EnvStats::skewness(res))
+            })
+
+plan(sequential)
+
+skew_draws_fall %>% 
+  unlist() %>% 
+  median() #3.646246
+
+skew_draws_fall %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [2.86, 3.90]
+
+skew_draws_fall %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [2.33, 6.24]
+
+plan(multisession)
+
+skew_draws_spring <- future_map2(.x = rstan::extract(season_results, pars = c("mu_alt_spring"))[[1]], 
+            .y = rstan::extract(season_results, pars = c("sigma_alt_spring"))[[1]],
+            .progress = TRUE,
+            .options = furrr_options(seed = 8),
+            .f = function(x, y){
+              res <- rlnorm(n = 10000, 
+                          meanlog = x,
+                          sdlog = y)
+              
+              res <- res * 2183.475
+              
+              return(EnvStats::skewness(res))
+            })
+
+plan(sequential)
+
+skew_draws_spring %>% 
+  unlist() %>% 
+  median() #4.344244
+
+skew_draws_spring %>% 
+  unlist() %>% 
+  hdi(ci = 0.5) #50% HDI: [3.27, 4.70]
+
+skew_draws_spring %>% 
+  unlist() %>% 
+  hdi(ci = 0.95) #95% HDI: [2.48, 8.38]
 ```
 
 Are these birds regularly flying lower than the flight heights reported via radar?
@@ -171,15 +297,15 @@ plan(sequential)
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  median() #0.3822
+  median() #0.2926
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.32, 0.44]
+  hdi(ci = 0.5) #50% HDI: [0.26, 0.33]
 
 pct_below_radar_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.21, 0.55]
+  hdi(ci = 0.95) #95% HDI: [0.19, 0.40]
 
 #spring
 plan(multisession)
@@ -202,15 +328,15 @@ plan(sequential)
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2585
+  median() #0.2357
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.19, 0.31]
+  hdi(ci = 0.5) #50% HDI: [0.20, 0.27]
 
 pct_below_radar_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.10, 0.45]
+  hdi(ci = 0.95) #95% HDI: [0.13, 0.35]
 ```
 
 How may of these locations are at an altitude where they might collide with a building (0-47m)?
@@ -238,15 +364,15 @@ plan(sequential)
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  median() #0.0576
+  median() #0.0223
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.01, 0.06]
+  hdi(ci = 0.5) #50% HDI: [0.01, 0.03]
 
 pct_below_building_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.16]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.06]
 
 #spring
 plan(multisession)
@@ -271,15 +397,15 @@ plan(sequential)
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  median() #0.02795
+  median() #0.0201
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.00, 0.03]
+  hdi(ci = 0.5) #50% HDI: [0.01, 0.02]
 
 pct_below_building_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.00, 0.12]
+  hdi(ci = 0.95) #95% HDI: [0.00, 0.06]
 ```
 
 How may of these locations are at an altitude where they might collide with a comm tower (0-305m)?
@@ -307,15 +433,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  median() #0.6644
+  median() #0.6124
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.63, 0.71]
+  hdi(ci = 0.5) #50% HDI: [0.58, 0.65]
 
 pct_below_comm_tower_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.54, 0.78]
+  hdi(ci = 0.95) #95% HDI: [0.51, 0.71]
 
 #spring
 plan(multisession)
@@ -340,15 +466,15 @@ plan(sequential)
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  median() #0.5286
+  median() #0.515
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.47, 0.58]
+  hdi(ci = 0.5) #50% HDI: [0.48, 0.56]
 
 pct_below_comm_tower_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.38, 0.69]
+  hdi(ci = 0.95) #95% HDI: [0.40, 0.63]
 ```
 
 How may of these locations are at an altitude where they might collide with a wind turbine (32.2-163.8m)?
@@ -376,15 +502,15 @@ plan(sequential)
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  median() #0.3778
+  median() #0.3088
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.35, 0.44]
+  hdi(ci = 0.5) #50% HDI: [0.28, 0.34]
 
 pct_below_wind_threshold_fall %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.24, 0.48]
+  hdi(ci = 0.95) #95% HDI: [0.22, 0.41]
 
 #spring
 plan(multisession)
@@ -409,21 +535,21 @@ plan(sequential)
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  median() #0.2665
+  median() #0.248
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.5) #50% HDI: [0.22, 0.32]
+  hdi(ci = 0.5) #50% HDI: [0.21, 0.28]
 
 pct_below_wind_threshold_spring %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [0.13, 0.40]
+  hdi(ci = 0.95) #95% HDI: [0.15, 0.35]
 ```
 
 Quantify the likelihood that one seasonal mean is greater than the other
 This is called probability of superiority: see "A Probability-Based Measure of Effect Size: Robustness to Base Rates and Other Factors"
 ```{r}
 sum(unlist(mean_draws_spring) > unlist(mean_draws_fall))*100/length(unlist(mean_draws_spring))
-#93.97333% probability that the spring mean is higher than the fall mean
+#93.69667% probability that the spring mean is higher than the fall mean
 ```
 

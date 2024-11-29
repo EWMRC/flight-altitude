@@ -42,6 +42,7 @@ transformed data { // exclusively for posterior predictive checks
 
 parameters {
   //observation parameters
+  real<lower=0> nu_obs;
   real mu_obs;
   real<lower=0> sigma_obs;
   real<lower=0, upper=1> flight_prior_adult;
@@ -66,20 +67,20 @@ transformed parameters {
   
   //adult
   for(i in 1:n_obs_unknown_adult){
-    unknown_q_adult[i, 1] = normal_lpdf(HAT_unknown_adult[i] | mu_obs, sigma_obs) + log(1 - flight_prior_adult);
-    unknown_q_adult[i, 2] = normal_lpdf(HAT_unknown_adult[i] | real_alt_adult[i] + mu_obs, sigma_obs) + log(flight_prior_adult);
+    unknown_q_adult[i, 1] = student_t_lpdf(HAT_unknown_adult[i] | nu_obs, mu_obs, sigma_obs) + log(1 - flight_prior_adult);
+    unknown_q_adult[i, 2] = student_t_lpdf(HAT_unknown_adult[i] | nu_obs, real_alt_adult[i] + mu_obs, sigma_obs) + log(flight_prior_adult);
   }
   
   //juv
   for(i in 1:n_obs_unknown_juv){
-    unknown_q_juv[i, 1] = normal_lpdf(HAT_unknown_juv[i]| mu_obs, sigma_obs) + log(1 - flight_prior_juv);
-    unknown_q_juv[i, 2] = normal_lpdf(HAT_unknown_juv[i]| real_alt_juv[i] + mu_obs, sigma_obs) + log(flight_prior_juv);
+    unknown_q_juv[i, 1] = student_t_lpdf(HAT_unknown_juv[i]| nu_obs, mu_obs, sigma_obs) + log(1 - flight_prior_juv);
+    unknown_q_juv[i, 2] = student_t_lpdf(HAT_unknown_juv[i]| nu_obs, real_alt_juv[i] + mu_obs, sigma_obs) + log(flight_prior_juv);
   }
 }
 
 model {
   // likelihood of known locations
-  target += normal_lpdf(HAT_known | mu_obs, sigma_obs); 
+  target += student_t_lpdf(HAT_known | nu_obs, mu_obs, sigma_obs); 
   
   // likelihood of unknown locations
   for (i in 1:n_obs_unknown_adult){ 
@@ -95,6 +96,7 @@ model {
   log_real_alt_juv ~ normal(mu_alt_juv, sigma_alt_juv);
   
   //priors
+  nu_obs ~ gamma(2, 0.1); //Juárez and Steel (2010) (Model-based clustering of non-Gaussian panel data based on skew-t distributions. Journal of Business & Economic Statistics 28, 52–66.)
   mu_obs ~ normal(0, 1); 
   sigma_obs ~ normal(0, 1) T[0,]; //truncation shouldn't be necessary, but including it anyway
   flight_prior_adult ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
@@ -133,7 +135,7 @@ generated quantities {
 
   // known ground
   for(k in 1:n_obs_known){
-    HAT_known_ppc[k] = normal_rng(mu_obs, sigma_obs);
+    HAT_known_ppc[k] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //unknown adult
@@ -146,12 +148,12 @@ generated quantities {
 
   //unknown flight adult
   for(g in 1:sample_size_int_adult){ // number of presumed flight locations
-    HAT_unknown_adult_ppc[g] = normal_rng(exp(log_real_alt_adult_ppc[g]) + mu_obs, sigma_obs);
+    HAT_unknown_adult_ppc[g] = student_t_rng(nu_obs, exp(log_real_alt_adult_ppc[g]) + mu_obs, sigma_obs);
   }
 
   //unknown ground adult
   for(h in (sample_size_int_adult + 1):n_obs_unknown_adult){
-    HAT_unknown_adult_ppc[h] = normal_rng(mu_obs, sigma_obs);
+    HAT_unknown_adult_ppc[h] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
   
   //unknown juv
@@ -164,12 +166,12 @@ generated quantities {
 
   //unknown flight juv
   for(g in 1:sample_size_int_juv){ // number of presumed flight locations
-    HAT_unknown_juv_ppc[g] = normal_rng(exp(log_real_alt_juv_ppc[g]) + mu_obs, sigma_obs);
+    HAT_unknown_juv_ppc[g] = student_t_rng(nu_obs, exp(log_real_alt_juv_ppc[g]) + mu_obs, sigma_obs);
   }
 
   //unknown ground juv
   for(h in (sample_size_int_juv + 1):n_obs_unknown_juv){
-    HAT_unknown_juv_ppc[h] = normal_rng(mu_obs, sigma_obs);
+    HAT_unknown_juv_ppc[h] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //ppc stats

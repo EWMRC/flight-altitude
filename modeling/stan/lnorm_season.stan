@@ -42,6 +42,7 @@ transformed data { // exclusively for posterior predictive checks
 
 parameters {
   //observation parameters
+  real<lower=0> nu_obs;
   real mu_obs;
   real<lower=0> sigma_obs;
   real<lower=0, upper=1> flight_prior_fall;
@@ -66,20 +67,20 @@ transformed parameters {
   
   //fall
   for(i in 1:n_obs_unknown_fall){
-    unknown_q_fall[i, 1] = normal_lpdf(HAT_unknown_fall[i] | mu_obs, sigma_obs) + log(1 - flight_prior_fall);
-    unknown_q_fall[i, 2] = normal_lpdf(HAT_unknown_fall[i] | real_alt_fall[i] + mu_obs, sigma_obs) + log(flight_prior_fall);
+    unknown_q_fall[i, 1] = student_t_lpdf(HAT_unknown_fall[i] | nu_obs, mu_obs, sigma_obs) + log(1 - flight_prior_fall);
+    unknown_q_fall[i, 2] = student_t_lpdf(HAT_unknown_fall[i] | nu_obs, real_alt_fall[i] + mu_obs, sigma_obs) + log(flight_prior_fall);
   }
   
   //spring
   for(i in 1:n_obs_unknown_spring){
-    unknown_q_spring[i, 1] = normal_lpdf(HAT_unknown_spring[i]| mu_obs, sigma_obs) + log(1 - flight_prior_spring);
-    unknown_q_spring[i, 2] = normal_lpdf(HAT_unknown_spring[i]| real_alt_spring[i] + mu_obs, sigma_obs) + log(flight_prior_spring);
+    unknown_q_spring[i, 1] = student_t_lpdf(HAT_unknown_spring[i]| nu_obs, mu_obs, sigma_obs) + log(1 - flight_prior_spring);
+    unknown_q_spring[i, 2] = student_t_lpdf(HAT_unknown_spring[i]| nu_obs, real_alt_spring[i] + mu_obs, sigma_obs) + log(flight_prior_spring);
   }
 }
 
 model {
   // likelihood of known locations
-  target += normal_lpdf(HAT_known | mu_obs, sigma_obs); 
+  target += student_t_lpdf(HAT_known | nu_obs, mu_obs, sigma_obs); 
   
   // likelihood of unknown locations
   for (i in 1:n_obs_unknown_fall){ 
@@ -95,6 +96,7 @@ model {
   log_real_alt_spring ~ normal(mu_alt_spring, sigma_alt_spring);
   
   //priors
+  nu_obs ~ gamma(2, 0.1); //Juárez and Steel (2010) (Model-based clustering of non-Gaussian panel data based on skew-t distributions. Journal of Business & Economic Statistics 28, 52–66.)
   mu_obs ~ normal(0, 1); 
   sigma_obs ~ normal(0, 1) T[0,]; //truncation shouldn't be necessary, but including it anyway
   flight_prior_fall ~ beta(2, 2); //peak at 0.5, with a mild slope towards 0 and 1
@@ -133,7 +135,7 @@ generated quantities {
 
   // known ground
   for(k in 1:n_obs_known){
-    HAT_known_ppc[k] = normal_rng(mu_obs, sigma_obs);
+    HAT_known_ppc[k] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //unknown fall
@@ -146,12 +148,12 @@ generated quantities {
 
   //unknown flight fall
   for(g in 1:sample_size_int_fall){ // number of presumed flight locations
-    HAT_unknown_fall_ppc[g] = normal_rng(exp(log_real_alt_fall_ppc[g]) + mu_obs, sigma_obs);
+    HAT_unknown_fall_ppc[g] = student_t_rng(nu_obs, exp(log_real_alt_fall_ppc[g]) + mu_obs, sigma_obs);
   }
 
   //unknown ground fall
   for(h in (sample_size_int_fall + 1):n_obs_unknown_fall){
-    HAT_unknown_fall_ppc[h] = normal_rng(mu_obs, sigma_obs);
+    HAT_unknown_fall_ppc[h] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
   
   //unknown spring
@@ -164,12 +166,12 @@ generated quantities {
 
   //unknown flight spring
   for(g in 1:sample_size_int_spring){ // number of presumed flight locations
-    HAT_unknown_spring_ppc[g] = normal_rng(exp(log_real_alt_spring_ppc[g]) + mu_obs, sigma_obs);
+    HAT_unknown_spring_ppc[g] = student_t_rng(nu_obs, exp(log_real_alt_spring_ppc[g]) + mu_obs, sigma_obs);
   }
 
   //unknown ground spring
   for(h in (sample_size_int_spring + 1):n_obs_unknown_spring){
-    HAT_unknown_spring_ppc[h] = normal_rng(mu_obs, sigma_obs);
+    HAT_unknown_spring_ppc[h] = student_t_rng(nu_obs, mu_obs, sigma_obs);
   }
 
   //ppc stats

@@ -116,7 +116,8 @@ known_ground_df <- known_ground_df %>%
 
 
 ```{r}
-init <- function(){list(mu_obs = rnorm(1,0,0.2),
+init <- function(){list(nu_obs = rgamma(1,2,0.1),
+                        mu_obs = rnorm(1,0,0.2),
                         sigma_obs = runif(1,0,0.2),
                         mu_alt = runif(1,-1,1),
                         sigma_alt = runif(1,0,1),
@@ -129,7 +130,7 @@ fit <- sampling(model_compiled, data = list(n_obs_known = nrow(known_ground_df),
                                             n_obs_unknown = nrow(unknown_df),
                                             HAT_unknown = unknown_df$hat_scaled), 
                 init = init,
-                pars = c("mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior", "p_flight"), #, "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"
+                pars = c("nu_obs","mu_obs", "sigma_obs", "mu_alt", "sigma_alt", "flight_prior", "p_flight"), #, "HAT_known_mean_gte", "HAT_known_sd_gte", "HAT_known_ppc", "HAT_unknown_ppc"
                 iter = 15000,
                 #control = list(adapt_delta = 0.99), #, max_treedepth = 20
                 chains = 4, 
@@ -162,11 +163,11 @@ median_draws <- future_map2(.x = rstan::extract(fit, pars = c("mu_alt"))[[1]],
 
 median_draws %>% 
   unlist() %>% 
-  median() # 225.4834
+  median() #262.9985
 
 median_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [151.75, 300.54]
+  hdi(ci = 0.95) #95% HDI: [219.75, 309.09]
 ```
 
 Mean
@@ -187,11 +188,11 @@ mean_draws <- future_map2(.x = rstan::extract(fit, pars = c("mu_alt"))[[1]],
 
 mean_draws %>% 
   unlist() %>% 
-  median() # 362.5867
+  median() # 379.7752
 
 mean_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [283.42, 453.61]
+  hdi(ci = 0.95) #95% HDI: [318.26, 448.68]
 ```
 
 Standard deviation
@@ -212,11 +213,11 @@ sd_draws <- future_map2(.x = rstan::extract(fit, pars = c("mu_alt"))[[1]],
 
 sd_draws %>% 
   unlist() %>% 
-  median() # 450.3527
+  median() # 394.1858
 
 sd_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) # 95% HDI: [296.95, 694.11]
+  hdi(ci = 0.95) # 95% HDI: [280.45, 540.98]
 ```
 
 Skewness
@@ -237,9 +238,9 @@ skew_draws <- future_map2(.x = rstan::extract(fit, pars = c("mu_alt"))[[1]],
 
 skew_draws %>% 
   unlist() %>% 
-  median() # 5.109539
+  median() # 3.960762
 
 skew_draws %>% 
   unlist() %>% 
-  hdi(ci = 0.95) #95% HDI: [2.65, 10.60]
+  hdi(ci = 0.95) #95% HDI: [2.62, 6.49]
 ```

@@ -61,4 +61,3 @@ ggsave(plot = collision_plot,
        filename = here("graph_results", "figures", "collision_plot_stan.png"),
        width = 7/1.5,
        height = 5/1.5)
-
