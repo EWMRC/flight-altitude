@@ -24,3 +24,5 @@ modeling/results/lnorm_age.rds
 modeling/results/lnorm_original.rds
 modeling/results/lnorm_season.rds
 modeling/results/lnorm_sex.rds
+modeling/results/lnorm_age.rds
+sensitivity_analysis/lnorm_sensitivity.rds
