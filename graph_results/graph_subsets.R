@@ -14,13 +14,13 @@ mean_altitude_fall <- map2_dbl(rstan::extract(season_results, "mu_alt_fall")[[1]
      function(mu, sigma){
        exp(mu + ((sigma^2)/2))*2183.475
      })
-median(mean_altitude_fall) #319.6693
+median(mean_altitude_fall) #337.767
 
 mean_altitude_spring <- map2_dbl(rstan::extract(season_results, "mu_alt_spring")[[1]], rstan::extract(season_results, "sigma_alt_spring")[[1]],
                                  function(mu, sigma){
                                    exp(mu + ((sigma^2)/2))*2183.475
                                  })
-median(mean_altitude_spring) #447.0618
+median(mean_altitude_spring) #444.0911
 
 mean_altitude_fall <- tibble(season = "Fall", samples = mean_altitude_fall)
 mean_altitude_spring <- tibble(season = "Spring", samples = mean_altitude_spring)
@@ -34,9 +34,11 @@ plot_mean_season <- ggplot(mean_altitude_season, aes(x = samples,
             slab_alpha = 0.5, slab_color = "black") +
   stat_slab(slab_color = "black",
             fill = NA) +
-  stat_pointinterval(position = position_nudge(x = c(-0.03, -0.03, -0.08, -0.08), 
-                                               y = c(-0.03, -0.03, -0.08, -0.08)),
-                     .width	= c(0.5, 0.95)) +
+  stat_pointinterval(position = position_nudge(x = c(-0.03, -0.08), 
+                                               y = c(-0.03, -0.08)),
+                     linewidth = 1,
+                     point_size = 2,
+                     .width	= c(0.95)) +
   theme_bw() +
   labs(x = "", 
        y = "Probability density",
@@ -46,8 +48,8 @@ plot_mean_season <- ggplot(mean_altitude_season, aes(x = samples,
   scale_color_manual(values = c("Fall" = "#e6550d", "Spring" = "#756bb1")) +
   lims(x = c(0,1500), y = c(-0.08, 1)) +
   guides(color = "none") +
-  scale_x_continuous(label = scales::label_number(big.mark = "",
-                                                  suffix = "m"),
+  scale_x_continuous(#label = scales::label_number(big.mark = "",
+                    #                              suffix = "m"),
                      breaks = seq(200, 1600, 200)) +
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
@@ -82,11 +84,13 @@ plot_mean_age <- ggplot(mean_altitude_age, aes(x = samples,
             slab_alpha = 0.5, slab_color = "black") +
   stat_slab(slab_color = "black",
             fill = NA) +
-  stat_pointinterval(position = position_nudge(x = c(-0.03, -0.03, -0.08, -0.08), 
-                                               y = c(-0.03, -0.03, -0.08, -0.08)),
-                     .width	= c(0.5, 0.95)) +
+  stat_pointinterval(position = position_nudge(x = c(-0.03, -0.08), 
+                                               y = c(-0.03, -0.08)),
+                     linewidth = 1,
+                     point_size = 2,
+                     .width	= c(0.95)) +
   theme_bw() +
-  labs(x = "Mean altitude", 
+  labs(x = "Mean altitude (m)", 
        y = "",
        title  = "Age",
        fill = "Age") + 
@@ -94,8 +98,8 @@ plot_mean_age <- ggplot(mean_altitude_age, aes(x = samples,
   scale_color_manual(values = c("Adult" = "#de2d26", "Juvenile" = "#3182bd")) +
   lims(x = c(0,1500), y = c(-0.08, 1)) + 
   guides(color = "none")  +
-  scale_x_continuous(label = scales::label_number(big.mark = "",
-                                                  suffix = "m"),
+  scale_x_continuous(#label = scales::label_number(big.mark = "",
+                    #                              suffix = "m"),
                      breaks = seq(200, 1600, 200)) +
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
@@ -110,13 +114,13 @@ mean_altitude_female <- map2_dbl(rstan::extract(sex_results, "mu_alt_female")[[1
                                  function(mu, sigma){
                                    exp(mu + ((sigma^2)/2))*2183.475
                                  })
-median(mean_altitude_female) #340.6453
+median(mean_altitude_female) #351.6217
 
 mean_altitude_male <- map2_dbl(rstan::extract(sex_results, "mu_alt_male")[[1]], rstan::extract(sex_results, "sigma_alt_male")[[1]],
                                function(mu, sigma){
                                  exp(mu + ((sigma^2)/2))*2183.475
                                })
-median(mean_altitude_male) #408.5727
+median(mean_altitude_male) #416.6841
 
 mean_altitude_female <- tibble(sex = "Female", samples = mean_altitude_female)
 mean_altitude_male <- tibble(sex = "Male", samples = mean_altitude_male)
@@ -130,9 +134,11 @@ plot_mean_sex <- ggplot(mean_altitude_sex, aes(x = samples,
             slab_alpha = 0.5, slab_color = "black") +
   stat_slab(slab_color = "black",
             fill = NA) +
-  stat_pointinterval(position = position_nudge(x = c(-0.03, -0.03, -0.08, -0.08), 
-                                               y = c(-0.03, -0.03, -0.08, -0.08)),
-                     .width	= c(0.5, 0.95)) +
+  stat_pointinterval(position = position_nudge(x = c(-0.03, -0.08), 
+                                               y = c(-0.03, -0.08)),
+                     linewidth = 1,
+                     point_size = 2,
+                     .width	= c(0.95)) +
   theme_bw() +
   labs(x = "", 
        y = "",
@@ -142,8 +148,8 @@ plot_mean_sex <- ggplot(mean_altitude_sex, aes(x = samples,
   scale_color_manual(values = c("Female" = "#c5247d", "Male" = "#4d9221")) +
   lims(x = c(0,1500), y = c(-0.08, 1)) +
   guides(color = "none") +
-  scale_x_continuous(label = scales::label_number(big.mark = "",
-                                                  suffix = "m"),
+  scale_x_continuous(#label = scales::label_number(big.mark = "",
+                     #                              suffix = "m"),
                      breaks = seq(200, 1600, 200)) +
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +

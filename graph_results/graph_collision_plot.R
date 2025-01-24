@@ -44,12 +44,12 @@ collision_plot <-  ggplot() +
   stat_lineribbon(data = results_shape_rate, mapping = aes(x = x, y = y), .width = c(.95, .8, .5), 
                   alpha = 0.8) +
   theme_bw() +
-  labs(x = "Flight altitude", y = "Probability density", fill= "Credible intervals") +
+  labs(x = "Flight altitude (m)", y = "Probability density", fill= "Credible intervals") +
   scale_fill_manual(values = rev(c("#636363", "#bdbdbd", "#f0f0f0"))) +
   #scale_fill_brewer() + 
   theme(legend.position="bottom") +
   coord_cartesian(ylim=c(0, 0.8)) +
-  scale_x_continuous(label = scales::label_number(suffix = "m")) +
+  #scale_x_continuous(label = scales::label_number(suffix = "m")) +
   geom_image(mapping = aes(x = x, y = y, image = image), 
              data = icon_tibble, 
              color = c("#f03b20", "#feb24c", "#f6c700"), #"#ef5a30", "#f87c4c", "#ffd523"

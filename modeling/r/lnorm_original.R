@@ -137,6 +137,8 @@ unknown_df_results$p_flight <- unknown_df_results$param %>%
   }) %>% 
   unlist()
 
+saveRDS(unknown_df_results, here("intermediate_results.rds"))
+
 unknown_df_results <- unknown_df_results %>% 
   dplyr::select(event_id, height_above_terrain, on_land, p_flight)
 
