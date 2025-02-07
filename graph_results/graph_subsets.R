@@ -54,8 +54,8 @@ plot_mean_season <- ggplot(mean_altitude_season, aes(x = samples,
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
-  annotate("text", label = "Fall", x = 310, y = 0.95, col = "#e6550d") +
-  annotate("text", label = "Spring", x = 505, y = 0.65, col = "#756bb1")
+  annotate("text", label = "Fall", x = 318, y = 0.965, col = "#e6550d") +
+  annotate("text", label = "Spring", x = 520, y = 0.66, col = "#756bb1")
 
 plot_mean_season
 
@@ -104,8 +104,8 @@ plot_mean_age <- ggplot(mean_altitude_age, aes(x = samples,
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
-  annotate("text", label = "Juvenile", x = 350, y = 0.95, col = "#3182bd") +
-  annotate("text", label = "Adult", x = 500, y = 0.67, col = "#de2d26")
+  annotate("text", label = "Juvenile", x = 350, y = 0.96, col = "#3182bd") +
+  annotate("text", label = "Adult", x = 525, y = 0.67, col = "#de2d26")
 
 plot_mean_age
  
@@ -154,8 +154,8 @@ plot_mean_sex <- ggplot(mean_altitude_sex, aes(x = samples,
   theme(axis.text.x = element_text(size = 8),
         axis.text.y = element_text(size = 8)) +
   expand_limits(x = c(200, 1200)) +
-  annotate("text", label = "Female", x = 330, y = 0.95, col = "#c5247d") +
-  annotate("text", label = "Male", x = 480, y = 0.85, col = "#4d9221")
+  annotate("text", label = "Female", x = 330, y = 0.97, col = "#c5247d") +
+  annotate("text", label = "Male", x = 550, y = 0.82, col = "#4d9221") 
 
 plot_mean_sex
 
@@ -182,7 +182,7 @@ plot_combined <- ggarrange(plot_mean_season_p, plot_mean_age_p, plot_mean_sex_p,
 
 ggsave(plot = plot_combined, 
        filename = here("graph_results", "figures", "subset_plot_stan.png"),
-       width = 8.5,
-       height = 3,
+       width = 8.5/1.2,
+       height = 3/1.2,
        units = "in")
  
