@@ -184,5 +184,6 @@ ggsave(plot = plot_combined,
        filename = here("graph_results", "figures", "subset_plot_stan.png"),
        width = 8.5/1.2,
        height = 3/1.2,
-       units = "in")
+       units = "in",
+       dpi = 600)
  
