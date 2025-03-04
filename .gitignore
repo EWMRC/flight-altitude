@@ -20,9 +20,6 @@ bayesian_modeling/gamma_age_stan2.rds
 bayesian_modeling/gamma_original_stan2.rds
 /sensitivity_analysis/landfire_2023_evh
 sensitivity_analysis/lnorm_sensitivity.rds
-modeling/results/lnorm_age.rds
-modeling/results/lnorm_original.rds
-modeling/results/lnorm_season.rds
-modeling/results/lnorm_sex.rds
-modeling/results/lnorm_age.rds
 sensitivity_analysis/lnorm_sensitivity.rds
+dryad/old_version/flight-altitude-compressed.zip
+/modeling/results
