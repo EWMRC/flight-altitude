@@ -2,24 +2,17 @@
 .Rhistory
 .RData
 .Ruserdata
-
-# credentials
+sensitivity_analysis/landfire_2023_evh/LC23_EVH_240.tfw
+sensitivity_analysis/landfire_2023_evh/LC23_EVH_240.tif
+sensitivity_analysis/landfire_2023_evh/LC23_EVH_240.tif.aux.xml
+sensitivity_analysis/landfire_2023_evh/LC23_EVH_240.tif.ovr
+sensitivity_analysis/landfire_2023_evh/LC23_EVH_240.tif.vat.cpg
+sensitivity_analysis/landfire_2023_evh/LC23_EVH_240.tif.vat.dbf
+sensitivity_analysis/landfire_2023_evh/LC23_EVH_240.tif.xml
 movebank_credentials.rds
-
-# large files
-gamma_age_300k.rds
-gamma_original_300k.rds
-gamma_season_300k.rds
-gamma_sex_300k.rds
-
-gamma_age_stan.rds
-gamma_original_stan.rds
-gamma_season_stan.rds
-gamma_sex_stan.rds
-bayesian_modeling/gamma_age_stan2.rds
-bayesian_modeling/gamma_original_stan2.rds
-/sensitivity_analysis/landfire_2023_evh
 sensitivity_analysis/lnorm_sensitivity.rds
-sensitivity_analysis/lnorm_sensitivity.rds
+modeling/results/lnorm_age.rds
+modeling/results/lnorm_original.rds
+modeling/results/lnorm_season.rds
+modeling/results/lnorm_sex.rds
 dryad/old_version/flight-altitude-compressed.zip
-/modeling/results
