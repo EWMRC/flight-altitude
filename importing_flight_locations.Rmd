@@ -18,7 +18,7 @@ amwo_data <- getMovebankData(study = "American Woodcock Migration Ecology in Eas
                              removeDuplicatedTimestamps=TRUE)
 amwo_data <- as.data.frame(amwo_data)
 
-amwo_data %>%
+amwo_data <- amwo_data %>%
   transmute(ID = local_identifier,
             time = as.character(timestamp),
             lon = location_long, 
@@ -29,8 +29,9 @@ amwo_data %>%
             age = taxon_detail,
             height_above_wgs84 = height_above_msl,
             fix = location_error_text,
-            point_state = behavioural_classification) ->
-  amwo_data
+            point_state = behavioural_classification,
+            designated_before = !is.na(bas_confidence))
+  
 ```
 
 Delineate skips here (need to do it before I start filtering)
