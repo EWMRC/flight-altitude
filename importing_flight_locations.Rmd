@@ -111,9 +111,9 @@ overwater_exceptions <- read.csv(here("overwater_exceptions.csv"))
 amwo_sf <- amwo_sf %>%
   mutate(on_land = if_else(event_id %in% overwater_exceptions$event_id, FALSE, on_land))
 
-# set na values to FALSE (ie onland == FALSE is an overwater location)
+# set na values to TRUE (ie onland == FALSE is an overwater location, these locations have been proofed)
 amwo_sf <- amwo_sf %>%
-  mutate(on_land = if_else(is.na(on_land), FALSE, on_land))
+  mutate(on_land = if_else(is.na(on_land), TRUE, on_land))
 
 # count the number of overwater locations
 amwo_sf %>%
@@ -121,19 +121,20 @@ amwo_sf %>%
   group_by(on_land) %>%
   tally()
 
-# map the overwater locations: good for proofing the locations
+# map the overwater locations: good for proofing the locations - currently unhappy
 amwo_sf %>%
-  filter(on_land == FALSE) -> amwo_overwater
-write.csv(amwo_overwater, here("intermediate_files", "amwo_potential_overwater.csv"))
+  filter(on_land == FALSE) %>% 
+  st_as_sf(coords = c("lon", "lat"), crs = 4326) -> amwo_overwater
+# write.csv(amwo_overwater, here("intermediate_files", "amwo_potential_overwater.csv"))
 
-mapview::mapview(amwo_overwater)
+mapview::mapView(amwo_overwater)
 
 ```
 
 
 Save for later use
 ```{r}
-# amwo_data$on_land <- amwo_sf$on_land
+amwo_data$on_land <- amwo_sf$on_land
 
 amwo_data %>%
   filter((!is.na(height_above_wgs84)) & (!is.na(point_state))) %>%

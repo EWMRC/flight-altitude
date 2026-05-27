@@ -1,0 +1,136 @@
+﻿,ID,time,lon,lat,event_id,tagtype,sex,age,height_above_wgs84,fix,point_state,designated_before,moving,on_land
+1,AL-2020-04,2/4/2020 14:00,-87.1527557,32.0798073,14074649788,4g - Night,m,After Second Year,65,3D,Point state: Winter,TRUE,FALSE,TRUE
+2,AL-2020-04,2/4/2020 19:58,-87.1527023,32.0798073,14074649789,4g - Night,m,After Second Year,61,3D,Point state: Winter,TRUE,FALSE,TRUE
+3,AL-2020-04,2/5/2020 5:00,-87.1550064,32.0839539,14074649790,4g - Night,m,After Second Year,56,3D,Point state: Winter,TRUE,FALSE,TRUE
+4,AL-2020-04,2/7/2020 5:00,-87.1547241,32.0838013,14074649791,4g - Night,m,After Second Year,53,3D,Point state: Winter,TRUE,FALSE,TRUE
+5,AL-2020-04,2/9/2020 5:00,-87.1593094,32.0868225,14074649792,4g - Night,m,After Second Year,51,3D,Point state: Winter,TRUE,FALSE,TRUE
+6,AL-2020-04,2/13/2020 5:00,-87.1578522,32.0883827,14074649793,4g - Night,m,After Second Year,68,3D,Point state: Winter,TRUE,FALSE,TRUE
+7,AL-2020-04,2/15/2020 5:00,-87.1595917,32.0862846,14074648105,4g - Night,m,After Second Year,54,3D,Point state: Winter,TRUE,FALSE,TRUE
+8,AL-2020-04,2/17/2020 5:00,-87.1590042,32.0870781,14074648106,4g - Night,m,After Second Year,55,3D,Point state: Winter,TRUE,FALSE,TRUE
+9,AL-2020-04,2/19/2020 5:00,-87.1588211,32.08741,14074648107,4g - Night,m,After Second Year,62,3D,Point state: Winter,TRUE,FALSE,TRUE
+10,AL-2020-04,2/21/2020 5:00,-87.1564178,32.0409203,14074648108,4g - Night,m,After Second Year,65,3D,Point state: Winter,TRUE,FALSE,TRUE
+11,AL-2020-04,2/23/2020 5:00,-87.1589737,32.0872841,14074648109,4g - Night,m,After Second Year,21,3D,Point state: Winter,TRUE,FALSE,TRUE
+12,AL-2020-04,2/25/2020 5:00,-87.1588211,32.08741,14074648110,4g - Night,m,After Second Year,42,3D,Point state: Winter,TRUE,FALSE,TRUE
+13,AL-2020-04,2/27/2020 5:00,-87.1588516,32.08741,14074607078,4g - Night,m,After Second Year,53,3D,Point state: Winter,TRUE,FALSE,TRUE
+14,AL-2020-04,2/29/2020 5:00,-87.1590805,32.0872307,14074607079,4g - Night,m,After Second Year,54,3D,Point state: Winter,TRUE,FALSE,TRUE
+15,AL-2020-04,3/2/2020 5:00,-84.4078445,38.3455353,14074607080,4g - Night,m,After Second Year,249,3D,Point state: Migratory (spring),TRUE,FALSE,TRUE
+16,AL-2020-04,3/4/2020 5:00,-84.4094315,38.3490944,14074607081,4g - Night,m,After Second Year,255,3D,Point state: Migratory (spring),TRUE,FALSE,TRUE
+17,AL-2020-04,3/8/2020 4:01,-84.9207687,42.9927826,14514929469,4g - Night,m,After Second Year,197,3D,Point state: Summer,TRUE,FALSE,TRUE
+18,AL-2020-04,3/10/2020 4:01,-84.9204636,42.9919357,14514929470,4g - Night,m,After Second Year,198,3D,Point state: Summer,TRUE,FALSE,TRUE
+19,AL-2020-04,3/12/2020 4:01,-84.9181061,42.9942398,14121570358,4g - Night,m,After Second Year,212,3D,Point state: Summer,TRUE,FALSE,TRUE
+20,AL-2020-04,3/14/2020 4:01,-84.9204636,42.9918327,14121570359,4g - Night,m,After Second Year,209,3D,Point state: Summer,TRUE,FALSE,TRUE
+21,AL-2020-04,3/15/2020 3:58,-84.9204102,42.9918098,14121570360,4g - Night,m,After Second Year,143,3D,Point state: Summer,TRUE,FALSE,TRUE
+22,AL-2020-04,3/16/2020 4:01,-84.9203568,42.9917831,14121570361,4g - Night,m,After Second Year,194,3D,Point state: Summer,TRUE,FALSE,TRUE
+23,AL-2020-04,3/17/2020 3:58,-84.9204102,42.9918327,14138835827,4g - Night,m,After Second Year,202,3D,Point state: Summer,TRUE,FALSE,TRUE
+24,AL-2020-04,3/18/2020 4:01,-84.9207153,42.9920387,14138835828,4g - Night,m,After Second Year,34,3D,Point state: Summer,TRUE,FALSE,TRUE
+25,AL-2020-04,3/19/2020 3:58,-84.920433,42.991909,14214397396,4g - Night,m,After Second Year,206,3D,Point state: Summer,TRUE,FALSE,TRUE
+26,AL-2020-04,3/20/2020 4:01,-84.9197159,43.0526085,14214397397,4g - Night,m,After Second Year,243,3D,Point state: Summer,TRUE,TRUE,TRUE
+27,AL-2020-04,3/22/2020 4:01,-84.9204102,42.9917564,14212529094,4g - Night,m,After Second Year,194,3D,Point state: Summer,TRUE,FALSE,TRUE
+28,AL-2020-04,3/23/2020 3:58,-84.9204102,42.9918327,14212529095,4g - Night,m,After Second Year,195,3D,Point state: Summer,TRUE,FALSE,TRUE
+29,AL-2020-04,3/24/2020 4:01,-84.9204636,42.9916801,14195546220,4g - Night,m,After Second Year,233,3D,Point state: Summer,TRUE,FALSE,TRUE
+30,AL-2020-04,3/25/2020 4:03,-84.920311,42.9924736,14195546221,4g - Night,m,After Second Year,34,2D,Point state: Summer,FALSE,FALSE,TRUE
+31,AL-2020-04,3/26/2020 4:01,-84.9203873,42.9920387,14212529096,4g - Night,m,After Second Year,170,3D,Point state: Summer,TRUE,FALSE,TRUE
+32,AL-2020-04,3/27/2020 3:58,-84.920433,42.9918861,14212529097,4g - Night,m,After Second Year,197,3D,Point state: Summer,TRUE,FALSE,TRUE
+33,AL-2020-04,3/28/2020 4:01,-84.9204102,42.991909,14243374228,4g - Night,m,After Second Year,196,3D,Point state: Summer,TRUE,FALSE,TRUE
+34,AL-2020-04,3/29/2020 3:58,-84.9205093,42.9920387,14243374229,4g - Night,m,After Second Year,184,3D,Point state: Summer,TRUE,FALSE,TRUE
+35,AL-2020-04,3/30/2020 4:01,-84.9204102,42.991909,14271288708,4g - Night,m,After Second Year,187,3D,Point state: Summer,TRUE,FALSE,TRUE
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,
