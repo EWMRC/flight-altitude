@@ -71,7 +71,8 @@ raw_data %>%
 altitude_data <- raw_data %>% 
   mutate(probable_ground = if_else(day_night == "Day", 1, NA)) %>% 
   mutate(possible_flight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)", "") & day_night == "Night" & moving == TRUE, 1, NA)) %>% 
-  mutate(possible_dayflight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)", "") & day_night == "Day" & moving == TRUE, 1, NA))  # because occasionally woodcock are migrating during the day?
+  mutate(possible_dayflight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)", "") & day_night == "Day" & moving == TRUE, 1, NA)) %>%  # because occasionally woodcock are migrating during the day?
+  mutate(ground_outside_model = if_else(is.na(probable_ground) & is.na(possible_flight) & is.na(possible_dayflight), 1, NA)) # points which we believe are ground locations, but aren't being used to train the model
 
 altitude_data %>% 
   group_by(possible_flight) %>% 
@@ -106,7 +107,7 @@ altitude_data %>%
 altitude_data <- altitude_data %>% 
   mutate(hat_scaled = height_above_terrain/2183.475) # maximum altitude recorded
 
-# splitting into three dataframes
+# splitting into four dataframes
 known_ground_df <- altitude_data %>% 
   filter(probable_ground == 1)
 
@@ -115,6 +116,9 @@ unknown_df <- altitude_data %>%
 
 unknown_df_day <- altitude_data %>% 
   filter(possible_dayflight == 1)
+
+ground_outside_model_df <- altitude_data %>% 
+  filter(ground_outside_model == 1)
 
 # Just to get a rough estimate of the % of flight locations we should expect
 threshold <- known_ground_df$height_above_terrain %>% quantile(0.95) #31.5227, 29.52786 in May 2026
@@ -182,7 +186,11 @@ known_df_results <- known_ground_df %>%
     ) %>% 
   mutate(p_flight = 0)
 
-movebank_upload <- bind_rows(known_df_results, unknown_df_results)
+ground_outside_model_results <- ground_outside_model_df |> 
+  dplyr::select(event_id, height_above_terrain, on_land) %>% 
+  mutate(p_flight = 0)
+
+movebank_upload <- bind_rows(known_df_results, unknown_df_results, ground_outside_model_results)
 
 ## checking that all overwater locations are flight locations
 movebank_upload %>% # one is a "ground location"
@@ -212,6 +220,8 @@ write.csv(movebank_upload, file = here("movebank_upload_2026.csv"), row.names = 
 ##########################################################################################
 ##########################################################################################
 ## second run through, adapting Liam's code to include potential day flight locations ####
+
+### Liam note: I haven't done any bug correction below this point.
 
 known_ground <- anti_join(known_ground_df, unknown_df_day)
 unknown_day <- rbind(unknown_df, unknown_df_day)

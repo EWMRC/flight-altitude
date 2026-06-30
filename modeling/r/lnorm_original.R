@@ -10,13 +10,15 @@ options(mc.cores = 4)
 
 covariates <- read.csv(here("intermediate_files", "imported_movebank_data.csv"))
 
-raw_data <- st_read(here("intermediate_files", "raw_elevation_values.shp")) %>% 
+raw_data <- st_read(here("intermediate_files", "raw_elevation_values.shp")) %>%
   st_drop_geometry() %>% 
   arrange(Field1) %>% 
-  dplyr::select(t_hae_m)
+  dplyr::select(Terrain)
 
 raw_data <- covariates %>% 
   bind_cols(raw_data)
+
+raw_data <- rename(raw_data, t_hae_m = Terrain)
 
 #calculate height above terrain and begin filtering to 3D fixes
 raw_data <- raw_data %>% 
@@ -59,7 +61,8 @@ raw_data %>%
 
 altitude_data <- raw_data %>% 
   mutate(probable_ground = if_else(day_night == "Day", 1, NA)) %>% 
-  mutate(possible_flight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, 1, NA))
+  mutate(possible_flight = if_else(point_state %in% c("Point state: Migratory (spring)", "Point state: Migratory (fall)") & day_night == "Night" & moving == TRUE, 1, NA)) %>% 
+  mutate(ground_outside_model = if_else(is.na(probable_ground) & is.na(possible_flight), 1, NA)) # points which we believe are ground locations, but aren't being used to train the model
 
 altitude_data %>% 
   group_by(possible_flight) %>% 
@@ -80,12 +83,15 @@ altitude_data %>%
 altitude_data <- altitude_data %>% 
   mutate(hat_scaled = height_above_terrain/2183.475)
 
-#splitting into two dataframes
+#splitting into dataframes
 known_ground_df <- altitude_data %>% 
   filter(probable_ground == 1)
 
 unknown_df <- altitude_data %>% 
   filter(possible_flight == 1)
+
+ground_outside_model_df <- altitude_data %>% 
+  filter(ground_outside_model == 1)
 
 # Just to get a rough estimate of the % of flight locations we should expect
 threshold <- known_ground_df$height_above_terrain %>% quantile(0.95) #31.5227 
@@ -146,7 +152,11 @@ known_df_results <- known_ground_df %>%
   dplyr::select(event_id, height_above_terrain, on_land) %>% 
   mutate(p_flight = 0)
 
-movebank_upload <- bind_rows(known_df_results, unknown_df_results)
+ground_outside_model_results <- ground_outside_model_df |> 
+  dplyr::select(event_id, height_above_terrain, on_land) %>% 
+  mutate(p_flight = 0)
+
+movebank_upload <- bind_rows(known_df_results, unknown_df_results, ground_outside_model_results)
 
 ## checking that all overwater locations are flight locations
 # movebank_upload %>% # one is a "ground location"
